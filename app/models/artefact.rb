@@ -1,4 +1,5 @@
 require "slug_validator"
+require "tag_repository"
 
 class Artefact
   include Mongoid::Document

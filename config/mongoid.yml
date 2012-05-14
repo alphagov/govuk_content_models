@@ -1,0 +1,3 @@
+test:
+  host: localhost
+  database: govuk_content_shared_test

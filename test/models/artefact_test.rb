@@ -1,5 +1,6 @@
 require 'test_helper'
 require 'artefact'
+require 'tag_repository'
 
 class ArtefactTest < ActiveSupport::TestCase
   test "it allows nice clean slugs" do
