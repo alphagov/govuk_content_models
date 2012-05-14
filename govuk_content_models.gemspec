@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["pbattley@gmail.com"]
   gem.description   = %q{Shared models for Panopticon and Publisher}
   gem.summary       = %q{Shared models for Panopticon and Publisher, as a Rails Engine}
-  gem.homepage      = "https://github.com/alphagov/gds_content_models"
+  gem.homepage      = "https://github.com/alphagov/govuk_content_models"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }

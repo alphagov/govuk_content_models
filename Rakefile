@@ -12,7 +12,7 @@ end
 
 require "gem_publisher"
 task :publish_gem do |t|
-  gem = GemPublisher.publish_if_updated("gds_content_models.gemspec", :gemfury)
+  gem = GemPublisher.publish_if_updated("govuk_content_models.gemspec", :gemfury)
   puts "Published #{gem}" if gem
 end
 
