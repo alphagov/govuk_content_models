@@ -53,10 +53,6 @@ class Artefact
 
   before_save :save_section_as_tags
 
-  # TODO: Remove this 'unless' hack after importing. It's only here because
-  # some old entries in Panopticon lack a need_id.
-  validates_presence_of :need_id, :unless => lambda { defined? IMPORTING_LEGACY_DATA }
-
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
   end
