@@ -24,4 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "active_support"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "database_cleaner"
+  gem.add_development_dependency "gem_publisher"
 end
