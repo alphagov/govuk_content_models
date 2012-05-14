@@ -1,4 +1,5 @@
 require 'gds_api/contactotron'
+require 'plek'
 
 class Contact
   include Mongoid::Document

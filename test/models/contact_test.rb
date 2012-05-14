@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'contact'
 
 class ContactTest < ActiveSupport::TestCase
   test "should store multiple phone numbers" do
@@ -12,7 +13,7 @@ class ContactTest < ActiveSupport::TestCase
 
   test "should import contact details from contactotron" do
     FakeWeb.register_uri(:get, "#{Plek.current.find("contactotron")}/contacts/189",
-      body: File.read(Rails.root.join("test", "fixtures", "contactotron_api_response.json"))
+      body: File.read(File.join(PROJECT_ROOT, "test", "fixtures", "contactotron_api_response.json"))
     )
     contact = Contact.new(contactotron_id: 189)
     contact.update_from_contactotron

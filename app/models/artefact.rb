@@ -1,5 +1,6 @@
 require "slug_validator"
 require "tag_repository"
+require "plek"
 
 class Artefact
   include Mongoid::Document

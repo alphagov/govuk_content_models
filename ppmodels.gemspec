@@ -18,6 +18,9 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "fakeweb"
   gem.add_development_dependency "active_support"
   gem.add_development_dependency "rake"
+  gem.add_development_dependency "database_cleaner"
   gem.add_dependency "mongoid"
   gem.add_dependency "bson_ext"
+  gem.add_dependency "plek"
+  gem.add_dependency "gds-api-adapters"
 end
