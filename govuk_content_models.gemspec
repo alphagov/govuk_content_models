@@ -15,14 +15,14 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib", "app"]
   gem.version       = GovukContentModels::VERSION
 
-  gem.add_dependency "mongoid"
+  gem.add_dependency "mongoid",          "~> 2.4.10"
   gem.add_dependency "bson_ext"
-  gem.add_dependency "plek"
-  gem.add_dependency "gds-api-adapters"
+  gem.add_dependency "plek",             "~> 0.1.21"
+  gem.add_dependency "gds-api-adapters", "~> 0.0.47"
 
   gem.add_development_dependency "fakeweb"
-  gem.add_development_dependency "active_support"
+  gem.add_development_dependency "activesupport"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "database_cleaner"
-  gem.add_development_dependency "gem_publisher"
+  gem.add_development_dependency "gem_publisher", "~> 1.0.0"
 end
