@@ -1,5 +1,5 @@
-require 'test_helper'
-require 'user'
+require "test_helper"
+require "user"
 
 class UserTest < ActiveSupport::TestCase
   test "should convert to string" do

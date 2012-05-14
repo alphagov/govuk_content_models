@@ -35,10 +35,10 @@ class Artefact
   ].freeze
 
   KIND_TRANSLATIONS = {
-    'standard transaction link'        => 'transaction',
-    'local authority transaction link' => 'local_transaction',
-    'benefit / scheme'                 => 'programme',
-    'find my nearest'                  => 'place',
+    "standard transaction link"        => "transaction",
+    "local authority transaction link" => "local_transaction",
+    "benefit / scheme"                 => "programme",
+    "find my nearest"                  => "place",
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
   has_and_belongs_to_many :related_artefacts, :class_name => "Artefact"
@@ -72,7 +72,7 @@ class Artefact
     # goes from 'Crime and Justice:The police'
     # to 'crime-and-justice', 'the-police'
     # tag_ids: 'crime-and-justice', 'crime-and-justice/the-police'
-    section, sub_section = self.section.downcase.gsub(' ', '-').split(':')
+    section, sub_section = self.section.downcase.gsub(" ", "-").split(":")
 
     tag_ids = [section]
     tag_ids.push "#{section}/#{sub_section}" unless sub_section.blank?
@@ -99,10 +99,10 @@ class Artefact
     super(options.merge(
       include: {contact: {}}
     )).tap { |hash|
-      if hash['tag_ids']
-        hash['tag_ids'] = hash['tag_ids'].map { |tag_id| TagRepository.load(tag_id).as_json }
+      if hash["tag_ids"]
+        hash["tag_ids"] = hash["tag_ids"].map { |tag_id| TagRepository.load(tag_id).as_json }
       else
-        hash.delete 'tag_ids'
+        hash.delete "tag_ids"
       end
 
       unless options[:ignore_related_artefacts]

@@ -11,7 +11,7 @@ require "active_support/test_case"
 require "minitest/autorun"
 require "fakeweb"
 require "mongoid"
-require 'database_cleaner'
+require "database_cleaner"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
 FakeWeb.allow_net_connect = false

@@ -1,4 +1,4 @@
-require 'tag'
+require "tag"
 
 module TagRepository
 

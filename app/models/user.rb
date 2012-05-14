@@ -22,7 +22,7 @@ class User
   end
 
   def self.create_from_auth_hash(auth_hash)
-    user_params = auth_hash['extra']['user_hash'].select { |k,v|
+    user_params = auth_hash["extra"]["user_hash"].select { |k,v|
       %w[ uid email name version ].include?(k)
     }
     User.create!(user_params)

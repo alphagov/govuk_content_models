@@ -1,5 +1,5 @@
-require 'gds_api/contactotron'
-require 'plek'
+require "gds_api/contactotron"
+require "plek"
 
 class Contact
   include Mongoid::Document
@@ -32,7 +32,7 @@ class Contact
 
   private
     def contactotron_uri
-      URI.join(Plek.current.find('contactotron'), "/contacts/#{contactotron_id}").to_s
+      URI.join(Plek.current.find("contactotron"), "/contacts/#{contactotron_id}").to_s
     end
 
     def api_adapter

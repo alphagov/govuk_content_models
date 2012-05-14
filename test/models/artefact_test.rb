@@ -1,6 +1,6 @@
-require 'test_helper'
-require 'artefact'
-require 'tag_repository'
+require "test_helper"
+require "artefact"
+require "tag_repository"
 
 class ArtefactTest < ActiveSupport::TestCase
   test "it allows nice clean slugs" do
@@ -47,7 +47,7 @@ class ArtefactTest < ActiveSupport::TestCase
 
   test "should raise a not found exception if the slug doesn't match" do
     assert_raise Mongoid::Errors::DocumentNotFound do
-      Artefact.from_param('something-fake')
+      Artefact.from_param("something-fake")
     end
   end
 
