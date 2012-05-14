@@ -1,6 +1,11 @@
+require "digest/md5"
+require "cgi"
+require "gds-sso/user"
+
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
+  include GDS::SSO::User
 
   field "name",    type: String
   field "uid",     type: String
@@ -10,25 +15,24 @@ class User
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :name, :uid, :version
 
+  scope :alphabetized, order_by(name: :asc)
+
   # GDS::SSO specifically looks for find_by_uid within warden
   # when loading authentication user from session
   def self.find_by_uid(uid)
     where(uid: uid).first
   end
 
-  # GDS::SSO override for first time authentication of the app
-  def self.find_for_gds_oauth(auth_hash)
-    find_by_uid(auth_hash["uid"]) || create_from_auth_hash(auth_hash)
-  end
-
-  def self.create_from_auth_hash(auth_hash)
-    user_params = auth_hash["extra"]["user_hash"].select { |k,v|
-      %w[ uid email name version ].include?(k)
-    }
-    User.create!(user_params)
-  end
-
   def to_s
-    email
+    name || email || ""
+  end
+
+  def gravatar_url(opts = {})
+    opts.symbolize_keys!
+    "%s.gravatar.com/avatar/%s%s" % [
+      opts[:ssl] ? "https://secure" : "http://www",
+      Digest::MD5.hexdigest(email.downcase),
+      opts[:s] ? "?s=#{CGI.escape(opts[:s])}" : ""
+    ]
   end
 end

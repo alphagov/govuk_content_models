@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "plek",             "~> 0.1.21"
   gem.add_dependency "gds-api-adapters", "~> 0.0.47"
+  gem.add_dependency "gds-sso"
 
   gem.add_development_dependency "fakeweb"
   gem.add_development_dependency "rake"
