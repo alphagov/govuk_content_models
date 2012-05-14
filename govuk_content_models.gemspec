@@ -21,7 +21,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency "gds-api-adapters", "~> 0.0.47"
 
   gem.add_development_dependency "fakeweb"
-  gem.add_development_dependency "activesupport"
   gem.add_development_dependency "rake"
   gem.add_development_dependency "database_cleaner"
   gem.add_development_dependency "gem_publisher", "~> 1.0.0"
