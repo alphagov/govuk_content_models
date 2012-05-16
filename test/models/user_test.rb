@@ -3,12 +3,12 @@ require "user"
 
 class UserTest < ActiveSupport::TestCase
   test "should convert to string using name by preference" do
-    user = User.new(:name => "Bob", :email => "user@example.com")
+    user = User.new(name: "Bob", email: "user@example.com")
     assert_equal "Bob", user.to_s
   end
 
   test "should convert to string using email if name if missing" do
-    user = User.new(:email => "user@example.com")
+    user = User.new(email: "user@example.com")
     assert_equal "user@example.com", user.to_s
   end
 
@@ -44,20 +44,20 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "should create insecure gravatar URL" do
-    user = User.new(:email => "User@example.com")
+    user = User.new(email: "User@example.com")
     expected = "http://www.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af"
     assert_equal expected, user.gravatar_url
   end
 
   test "should create secure gravatar URL" do
-    user = User.new(:email => "user@example.com")
+    user = User.new(email: "user@example.com")
     expected = "https://secure.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af"
-    assert_equal expected, user.gravatar_url(:ssl => true)
+    assert_equal expected, user.gravatar_url(ssl: true)
   end
 
   test "should add escaped s parameter if supplied" do
-    user = User.new(:email => "user@example.com")
+    user = User.new(email: "user@example.com")
     expected = "http://www.gravatar.com/avatar/b58996c504c5638798eb6b511e6f49af?s=foo+bar"
-    assert_equal expected, user.gravatar_url(:s => "foo bar")
+    assert_equal expected, user.gravatar_url(s: "foo bar")
   end
 end

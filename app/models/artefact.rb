@@ -41,14 +41,14 @@ class Artefact
     "find my nearest"                  => "place",
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
-  has_and_belongs_to_many :related_artefacts, :class_name => "Artefact"
+  has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
   belongs_to :contact
 
-  before_validation :normalise, :on => :create
+  before_validation :normalise, on: :create
 
-  validates :name, :presence => true
-  validates :slug, :presence => true, :uniqueness => true, :slug => true
-  validates :kind, :inclusion => { :in => FORMATS }
+  validates :name, presence: true
+  validates :slug, presence: true, uniqueness: true, slug: true
+  validates :kind, inclusion: { in: FORMATS }
   validates_presence_of :owning_app
 
   before_save :save_section_as_tags
@@ -65,9 +65,9 @@ class Artefact
   def save_section_as_tags
     return if self.section.blank?
 
-    # goes from 'Crime and Justice:The police'
-    # to 'crime-and-justice', 'the-police'
-    # tag_ids: 'crime-and-justice', 'crime-and-justice/the-police'
+    # goes from "Crime and Justice:The police"
+    # to "crime-and-justice", "the-police"
+    # tag_ids: "crime-and-justice", "crime-and-justice/the-police"
     section, sub_section = self.section.downcase.gsub(" ", "-").split(":")
 
     tag_ids = [section]
