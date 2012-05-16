@@ -12,9 +12,8 @@ class ContactTest < ActiveSupport::TestCase
   end
 
   test "should import contact details from contactotron" do
-    FakeWeb.register_uri(:get, "#{Plek.current.find("contactotron")}/contacts/189",
-      body: File.read(File.join(PROJECT_ROOT, "test", "fixtures", "contactotron_api_response.json"))
-    )
+    stub_request(:get, "#{Plek.current.find("contactotron")}/contacts/189").
+      to_return(body: File.read(File.join(PROJECT_ROOT, "test", "fixtures", "contactotron_api_response.json")))
     contact = Contact.new(contactotron_id: 189)
     contact.update_from_contactotron
     contact.reload

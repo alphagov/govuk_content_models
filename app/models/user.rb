@@ -1,11 +1,13 @@
 require "digest/md5"
 require "cgi"
 require "gds-sso/user"
+require "workflow_actor"
 
 class User
   include Mongoid::Document
   include Mongoid::Timestamps
   include GDS::SSO::User
+  include WorkflowActor
 
   field "name",    type: String
   field "uid",     type: String

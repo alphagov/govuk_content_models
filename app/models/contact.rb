@@ -13,7 +13,7 @@ class Contact
   field "contactotron_id", type: Integer
   field "phone_numbers",   type: Array
 
-  validates :name, :presence => true
+  validates :name, presence: true
 
   def update_from_contactotron
     [ :name, :postal_address, :email_address, :website_url,
