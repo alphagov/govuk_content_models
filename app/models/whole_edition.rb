@@ -184,4 +184,9 @@ class WholeEdition
     super(callback_action) unless (callback_action == "destroyed" and self.siblings.any?)
   end
 
+  def was_published
+    previous_siblings.all.each(&:archive)
+    notify_siblings_of_published_edition
+  end
+
 end

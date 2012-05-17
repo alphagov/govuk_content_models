@@ -23,10 +23,7 @@ module Workflow
       end
 
       after_transition on: :publish do |edition, transition|
-        #maybe edition.previous_siblings.where(:published).each would work better
-        #additionally may need transitions from each state to archived
-        edition.previous_siblings.all.each(&:archive)
-        edition.notify_siblings_of_published_edition
+        edition.was_published
       end
 
       event :start_work do

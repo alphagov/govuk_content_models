@@ -5,8 +5,8 @@ module WorkflowActor
   def record_action(edition, type, options={})
     type = Action.const_get(type.to_s.upcase)
     action = edition.new_action(self, type, options)
-    messenger_topic = edition.state.to_s.downcase
     edition.save! # force callbacks for denormalisation
+    action
   end
 
   def take_action(edition, action, details = {})
