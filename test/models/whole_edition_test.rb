@@ -186,10 +186,10 @@ class WholeEditionTest < ActiveSupport::TestCase
   end
 
   test "should not change edition name if published" do
-    guide = Factory(:guide_edition,
-                    panopticon_id: 2356,
-                    title: "Original title",
-                    slug: "original-title"
+    guide = FactoryGirl.create(:guide_edition,
+      panopticon_id: 2356,
+      title: "Original title",
+      slug: "original-title"
     )
     guide.state = "ready"
     guide.save!
