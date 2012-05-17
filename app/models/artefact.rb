@@ -6,20 +6,24 @@ class Artefact
   include Mongoid::Document
   include Mongoid::Timestamps
 
-  field "section",              type: String
+
+  # NOTE: these fields are deprecated, and soon to be replaced with a
+  # tag-based implementation
+  field "department",           type: String
+  field "tags",                 type: String
+  field "business_proposition", type: Boolean, default: false
+
   field "name",                 type: String
   field "slug",                 type: String
   field "kind",                 type: String
   field "owning_app",           type: String
   field "active",               type: Boolean, default: false
-  field "tags",                 type: String
   field "need_id",              type: String
-  field "department",           type: String
   field "fact_checkers",        type: String
   field "relatedness_done",     type: Boolean, default: false
   field "publication_id",       type: String
-  field "business_proposition", type: Boolean, default: false
-  field "tag_ids",              type: Array
+  field "tag_ids",              type: Array, default: []
+  field "primary_section",      type: String
 
   MAXIMUM_RELATED_ITEMS = 8
 
@@ -51,8 +55,6 @@ class Artefact
   validates :kind, inclusion: { in: FORMATS }
   validates_presence_of :owning_app
 
-  before_save :save_section_as_tags
-
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
   end
@@ -61,22 +63,54 @@ class Artefact
     where(slug: s).first
   end
 
-
-  def save_section_as_tags
-    return if self.section.blank?
-
-    # goes from "Crime and Justice:The police"
-    # to "crime-and-justice", "the-police"
-    # tag_ids: "crime-and-justice", "crime-and-justice/the-police"
-    section, sub_section = self.section.downcase.gsub(" ", "-").split(":")
-
-    tag_ids = [section]
-    tag_ids.push "#{section}/#{sub_section}" unless sub_section.blank?
-
-    tag_ids.each do |tag_id|
-      raise "missing tag #{tag_id}" unless TagRepository.load(tag_id)
+  # The old-style section string identifier, of the form 'Crime:Prisons'
+  def section
+    return '' unless self.primary_section
+    primary_section_tag = TagRepository.load self.primary_section
+    if primary_section_tag.parent
+      [primary_section_tag.parent.title, primary_section_tag.title].join ':'
+    else
+      primary_section_tag.title
     end
-    self.tag_ids = tag_ids
+  end
+
+  # primary section is the home section for the artefact
+  # this is used to display the bread crumb
+  def primary_section=(section_id)
+    t = TagRepository.load(section_id)
+    raise "Missing tag '#{t}" if t.nil?
+    raise "Tag #{t} is not a section" if t[:tag_type] != 'section'
+
+    self['primary_section'] = section_id
+    if not self.tag_ids.include?(section_id)
+      self.tag_ids.insert(0, section_id)
+    end
+  end
+
+  # All the section tags assigned to this artefact
+  def sections
+    self.tag_ids.select { |t| TagRepository.load(t).tag_type == 'section' }.freeze
+  end
+
+  # Set the section tags for this artefact
+  def sections=(section_ids)
+    # Check each new section ID exists
+    new_tags = section_ids.map { |i| TagRepository.load i }
+    new_tags.each do |new_tag|
+      raise "Missing tag '#{new_tag}" if new_tag.nil?
+      raise "Tag #{new_tag} is not a section" if new_tag[:tag_type] != 'section'
+    end
+    self.tag_ids = (self.tag_ids or []).reject do |tag_id|
+      tag = TagRepository.load(tag_id)
+      tag.tag_type == 'section'
+    end
+    self.tag_ids = (self.tag_ids + section_ids).uniq
+    # we are implying an order to section tags here
+    # the first section tag is the same as the primary_section
+    if self.primary_section.present? and self.tag_ids[0] != self.primary_section
+      self.tag_ids.insert(0, self.primary_section)
+     end
+    return nil
   end
 
   def normalise
@@ -108,6 +142,9 @@ class Artefact
       hash.delete("related_artefact_ids")
       hash["id"] = hash.delete("_id")
       hash["contact"]["id"] = hash["contact"].delete("_id") if hash["contact"]
+
+      # Add a section identifier if needed
+      hash["section"] ||= section
     }
   end
 
