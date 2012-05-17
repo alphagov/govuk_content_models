@@ -26,7 +26,6 @@ module Workflow
         #maybe edition.previous_siblings.where(:published).each would work better
         #additionally may need transitions from each state to archived
         edition.previous_siblings.all.each(&:archive)
-        edition.update_in_search_index
         edition.notify_siblings_of_published_edition
       end
 

@@ -1,3 +1,4 @@
+require "factory_girl"
 require "faker"
 require "answer_edition"
 

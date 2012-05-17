@@ -29,9 +29,12 @@ class LocalAuthority
   end
 
   def interactions_for(lgsl_code, lgil_code = nil)
-    conditions = {lgsl_code: lgsl_code}
-    conditions[:lgil_code] = lgil_code if lgil_code
-    local_interactions.all_in(conditions)
+    interactions = local_interactions.where(lgsl_code: lgsl_code)
+    if lgil_code
+      interactions.where(lgil_code: lgil_code)
+    else
+      interactions
+    end
   end
 
   def preferred_interaction_for(lgsl_code)

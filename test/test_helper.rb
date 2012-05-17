@@ -2,7 +2,7 @@ ENV["RACK_ENV"] = "test"
 
 require "bundler/setup"
 
-%w[ app/models app/validators app/repositories test/helpers ].each do |path|
+%w[ app/models app/validators app/repositories lib ].each do |path|
   full_path = File.expand_path("../../#{path}", __FILE__)
   $:.unshift full_path unless $:.include?(full_path)
 end
@@ -13,9 +13,7 @@ require "mongoid"
 require "database_cleaner"
 require "gds_api/test_helpers/panopticon"
 require "webmock/test_unit"
-require "factory_girl"
-
-require File.expand_path("../factories", __FILE__)
+require "govuk_content_models/test_helpers/factories"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
 WebMock.disable_net_connect!
