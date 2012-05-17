@@ -149,8 +149,8 @@ class LocalServiceTest < ActiveSupport::TestCase
     service = create_service_for_tiers(:district, :unitary)
     providers = service.provided_by
     assert_equal 2, providers.length
-    assert_include providers.map(&:snac), @district_council.snac
-    assert_include providers.map(&:snac), @unitary_authority.snac
+    assert_includes providers.map(&:snac), @district_council.snac
+    assert_includes providers.map(&:snac), @unitary_authority.snac
   end
 
   test "should return district URL for both-tier service in county/district" do
@@ -180,8 +180,8 @@ class LocalServiceTest < ActiveSupport::TestCase
     service = create_service_for_tiers("district", "unitary", "county")
     make_authority("county", snac: "CC00", lgsl: 124)
     providers = service.provided_by
-    assert_include providers.map(&:snac), @district_council.snac
-    assert_include providers.map(&:snac), @unitary_authority.snac
-    assert_include providers.map(&:snac), @county_council.snac
+    assert_includes providers.map(&:snac), @district_council.snac
+    assert_includes providers.map(&:snac), @unitary_authority.snac
+    assert_includes providers.map(&:snac), @county_council.snac
   end
 end
