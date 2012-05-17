@@ -89,20 +89,20 @@ class WorkflowTest < ActiveSupport::TestCase
   test "a new guide has lined_up but isn't published" do
     g = FactoryGirl.create(:guide_edition)
     assert g.lined_up?
-    assert !g.published?
+    refute g.published?
   end
 
   test "when work started a new guide has draft but isn't published" do
     g = FactoryGirl.create(:guide_edition)
     g.start_work
     assert g.draft?
-    assert !g.published?
+    refute g.published?
   end
 
   test "a guide should be marked as having reviewables if requested for review" do
     guide = template_guide
     user = User.create(name:"Ben")
-    assert !guide.in_review?
+    refute guide.in_review?
     user.request_review(guide, {comment: "Review this guide please."})
     assert guide.in_review?
   end
@@ -116,10 +116,10 @@ class WorkflowTest < ActiveSupport::TestCase
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
-    assert !edition.can_request_review?
+    refute edition.can_request_review?
     assert edition.can_request_amendments?
     other_user.request_amendments(edition, {comment: "I've reviewed it"})
-    assert !edition.can_request_amendments?
+    refute edition.can_request_amendments?
     user.request_review(edition,{comment: "Review this guide please."})
     assert edition.can_approve_review?
     other_user.approve_review(edition, {comment: "Looks good to me"})
@@ -156,7 +156,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
-    assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
+    refute user.request_amendments(edition, {comment: "Well Done, but work harder"})
   end
 
   test "user should not be able to okay a guide they requested review for" do
@@ -167,20 +167,20 @@ class WorkflowTest < ActiveSupport::TestCase
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
-    assert ! user.approve_review(edition, "")
+    refute user.approve_review(edition, "")
   end
 
   test "a new programme has drafts but isn't published" do
     p = template_programme
     assert p.draft?
-    assert ! p.published?
+    refute p.published?
   end
 
   test "a programme should be marked as having reviewables if requested for review" do
     programme = template_programme
     user, other_user = template_users
 
-    assert !programme.in_review?
+    refute programme.in_review?
     user.request_review(programme, {comment: "Review this programme please."})
     assert programme.in_review?, "A review was not requested for this programme."
   end
@@ -192,10 +192,10 @@ class WorkflowTest < ActiveSupport::TestCase
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
-    assert !edition.can_request_review?
+    refute edition.can_request_review?
     assert edition.can_request_amendments?
     other_user.request_amendments(edition, {comment: "I've reviewed it"})
-    assert !edition.can_request_amendments?
+    refute edition.can_request_amendments?
     user.request_review(edition,{comment: "Review this guide please."})
     assert edition.can_approve_review?
     other_user.approve_review(edition, {comment: "Looks good to me"})
@@ -209,15 +209,15 @@ class WorkflowTest < ActiveSupport::TestCase
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
-    assert ! user.approve_review(edition, "")
+    refute user.approve_review(edition, "")
   end
 
   test "you can only create a new edition from a published edition" do
     user, other_user = template_users
 
     edition = user.create_whole_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
-    assert ! edition.published?
-    assert ! user.new_version(edition)
+    refute edition.published?
+    refute user.new_version(edition)
   end
 
 
