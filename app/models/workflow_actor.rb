@@ -1,3 +1,11 @@
+require "answer_edition"
+require "guide_edition"
+require "local_transaction_edition"
+require "place_edition"
+require "programme_edition"
+require "transaction_edition"
+require "whole_edition"
+
 module WorkflowActor
   SIMPLE_WORKFLOW_ACTIONS = %W[start_work request_review
     request_amendments approve_review approve_fact_check]
