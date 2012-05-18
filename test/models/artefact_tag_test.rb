@@ -35,13 +35,28 @@ class ArtefactTagTest < ActiveSupport::TestCase
     assert_equal 'Crime:The Police', a.section
   end
 
-
   test "cannot set non-existent sections" do
     a = Artefact.create!(:slug => "a", :name => "a", :kind => "answer",
                          :need_id => 1, :owning_app => 'x')
     assert_raise RuntimeError do
       a.sections = ['weevils']
     end
+  end
+
+  test "can set primary section to the empty string" do
+    a = Artefact.create!(:slug => "a", :name => "a", :kind => "answer",
+                         :need_id => 1, :owning_app => 'x')
+    a.primary_section = 'crime'
+    a.primary_section = ''
+    assert_equal nil, a.primary_section
+  end
+
+  test "can set primary section to nil" do
+    a = Artefact.create!(:slug => "a", :name => "a", :kind => "answer",
+                         :need_id => 1, :owning_app => 'x')
+    a.primary_section = 'crime'
+    a.primary_section = nil
+    assert_equal nil, a.primary_section
   end
 
   test "cannot set non-section tags" do

@@ -77,6 +77,11 @@ class Artefact
   # primary section is the home section for the artefact
   # this is used to display the bread crumb
   def primary_section=(section_id)
+    if section_id.blank?
+      self['primary_section'] = nil
+      return
+    end
+
     t = TagRepository.load(section_id)
     raise "Missing tag '#{t}" if t.nil?
     raise "Tag #{t} is not a section" if t[:tag_type] != 'section'
