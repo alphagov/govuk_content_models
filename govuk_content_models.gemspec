@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "gds-api-adapters"
   gem.add_dependency "gds-sso"
   gem.add_dependency "mongoid",          "~> 2.4.10"
-  gem.add_dependency "plek"
+  gem.add_dependency "plek",             "~> 0.1.22"
   gem.add_dependency "state_machine"
 
   gem.add_development_dependency "database_cleaner"
