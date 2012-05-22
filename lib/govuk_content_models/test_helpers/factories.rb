@@ -1,6 +1,7 @@
 require "factory_girl"
 require "faker"
 require "answer_edition"
+require "user"
 
 FactoryGirl.define do
   factory :user do
@@ -51,6 +52,10 @@ FactoryGirl.define do
     lte.sequence(:lgsl_code) { |nlgsl| nlgsl }
     introduction { "Test introduction" }
     more_information { "This is more information" }
+  end
+
+  factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
+    licence_identifier    "AB1234"
   end
 
   factory :local_service do |ls|

@@ -2,9 +2,11 @@ require "parted"
 require "whole_edition"
 
 class LicenceEdition < WholeEdition
-  include Parted
 
-  def safe_to_preview?
-    parts.any? and parts.first.slug.present?
-  end
+  field :licence_identifier,  :type => String
+  field :short_description,   :type => String
+
+  validates :licence_identifier, :presence => true
+
+  @fields_to_clone = [:licence_identifier, :short_description]
 end
