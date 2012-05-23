@@ -1,6 +1,7 @@
 require "factory_girl"
 require "faker"
 require "answer_edition"
+require "user"
 
 FactoryGirl.define do
   factory :user do
@@ -37,7 +38,7 @@ FactoryGirl.define do
 
   factory :guide_edition_with_two_parts, parent: :guide_edition do
     title "a title"
-    after_build do |getp|
+    after :build do |getp|
       getp.parts.build(title: "PART !", body: "This is some version text.", slug: "part-one")
       getp.parts.build(title: "PART !!", body: "This is some more version text.", slug: "part-two")
     end
@@ -51,6 +52,10 @@ FactoryGirl.define do
     lte.sequence(:lgsl_code) { |nlgsl| nlgsl }
     introduction { "Test introduction" }
     more_information { "This is more information" }
+  end
+
+  factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
+    licence_identifier    "AB1234"
   end
 
   factory :local_service do |ls|

@@ -8,6 +8,7 @@ require "bundler/setup"
 end
 
 require "active_support/test_case"
+require "shoulda/context"
 require "minitest/autorun"
 require "mongoid"
 require "database_cleaner"
