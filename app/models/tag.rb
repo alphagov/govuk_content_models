@@ -5,6 +5,7 @@ class Tag
   field :tag_type, type: String #TODO: list of accepted types?
 
   index :tag_id, unique: true
+  index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
 
