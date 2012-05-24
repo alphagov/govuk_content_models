@@ -166,22 +166,24 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should create a publication based on data imported from panopticon" do
-    panopticon_has_metadata(
-        "id" => 2356,
-        "slug" => "foo-bar",
-        "kind" => "answer",
-        "name" => "Foo bar",
-        "section" => "Test section",
-        "department" => "Test dept"
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
     )
 
     user = User.create
 
-    publication = Edition.create_from_panopticon_data(2356, user, {})
+    publication = Edition.find_or_create_from_panopticon_data(artefact.id, user, {})
 
     assert_kind_of AnswerEdition, publication
     assert_equal "Foo bar", publication.title
-    assert_equal "2356", publication.panopticon_id.to_s
+    assert_equal artefact.id.to_s, publication.panopticon_id.to_s
     assert_equal "Test section", publication.section
     assert_equal "Test dept", publication.department
   end
@@ -595,7 +597,7 @@ class EditionTest < ActiveSupport::TestCase
   test "should denormalise a creator's name when an edition is created" do
     @user = FactoryGirl.create(:user)
 
-    edition = AnswerEdition.create_from_panopticon_data("2356", @user, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data("2356", @user, {})
 
     assert_equal @user.name, edition.creator
   end

@@ -1,6 +1,8 @@
 require "factory_girl"
 require "faker"
 require "answer_edition"
+require "artefact"
+require "tag"
 require "user"
 
 FactoryGirl.define do
@@ -8,6 +10,14 @@ FactoryGirl.define do
     uid   { Faker::Name.name.downcase.gsub(/[^a-z]+/, "_") }
     name  { Faker::Name.name }
     email { Faker::Internet.email }
+  end
+
+  factory :tag do
+
+  end
+
+  factory :artefact do
+
   end
 
   factory :edition, class: AnswerEdition do
