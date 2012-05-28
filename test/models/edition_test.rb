@@ -193,25 +193,33 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal "Test dept", publication.department
   end
 
+  # TODO: come back and remove this one.
   test "should not change edition name if published" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
     guide = FactoryGirl.create(:guide_edition,
-      panopticon_id: 2356,
+      panopticon_id: artefact.id,
       title: "Original title",
       slug: "original-title"
     )
     guide.state = "ready"
     guide.save!
     User.create(name: "Winston").publish(guide, comment: "testing")
-
-    panopticon_has_metadata(
-        "id" => 2356,
-        "slug" => "foo-bar",
-        "kind" => "guide",
-        "name" => "New title"
-    )
-    guide.save!
+    artefact.name = "New title"
+    artefact.slug = "new-slug"
+    artefact.save
 
     assert_equal "Original title", guide.reload.title
+    assert_equal "new-slug", guide.reload.slug
   end
 
   test "should scope publications by assignee" do
