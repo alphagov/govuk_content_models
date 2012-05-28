@@ -46,10 +46,20 @@ module Workflow
         transition [:fact_check_received, :in_review] => :amends_needed
       end
 
+      # Editions can optionally be sent out for fact check
       event :send_fact_check do
         transition ready: :fact_check
       end
 
+      # If no response is received to a fact check request we can skip
+      # that fact check and return the edition to the 'ready' state
+      event :skip_fact_check do
+        transition fact_check: :ready
+      end
+
+      # Where a fact check response has been received the item is moved
+      # into a special state so that the fact check responses can be
+      # reviewed
       event :receive_fact_check do
         transition fact_check: :fact_check_received
       end
