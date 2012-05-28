@@ -1,17 +1,18 @@
 require "test_helper"
+
 require "answer_edition"
+require "edition"
 require "guide_edition"
 require "local_transaction_edition"
 require "programme_edition"
-require "whole_edition"
 require "user"
 
-class WholeEdition
+class Edition
   def update_in_search_index
   end
 end
 
-class WholeEditionTest < ActiveSupport::TestCase
+class EditionTest < ActiveSupport::TestCase
   setup do
     panopticon_has_metadata("id" => "2356", "kind" => "answer", "slug" => "childcare", "name" => "Childcare")
   end
@@ -147,15 +148,15 @@ class WholeEditionTest < ActiveSupport::TestCase
     second_publication = template_unpublished_answer(2)
 
     assert dummy_publication.published?
-    assert_equal dummy_publication, WholeEdition.find_and_identify("childcare", "")
+    assert_equal dummy_publication, Edition.find_and_identify("childcare", "")
   end
 
   test "edition finder should return the latest edition when asked" do
     dummy_publication = template_published_answer
     second_publication = template_unpublished_answer(2)
 
-    assert_equal 2, WholeEdition.where(slug: dummy_publication.slug).count
-    found_edition = WholeEdition.find_and_identify("childcare", "latest")
+    assert_equal 2, Edition.where(slug: dummy_publication.slug).count
+    found_edition = Edition.find_and_identify("childcare", "latest")
     assert_equal second_publication.version_number, found_edition.version_number
   end
 
@@ -176,7 +177,7 @@ class WholeEditionTest < ActiveSupport::TestCase
 
     user = User.create
 
-    publication = WholeEdition.create_from_panopticon_data(2356, user, {})
+    publication = Edition.create_from_panopticon_data(2356, user, {})
 
     assert_kind_of AnswerEdition, publication
     assert_equal "Foo bar", publication.title
@@ -219,7 +220,7 @@ class WholeEditionTest < ActiveSupport::TestCase
     alice.assign(a, charlie)
     alice.assign(b, bob)
 
-    assert_equal [b], WholeEdition.assigned_to(bob).to_a
+    assert_equal [b], Edition.assigned_to(bob).to_a
   end
 
   test "cannot delete a publication that has been published" do
@@ -240,7 +241,7 @@ class WholeEditionTest < ActiveSupport::TestCase
     new_edition.body = "Two"
     dummy_answer.save
 
-    assert_raise (WholeEdition::CannotDeletePublishedPublication) do
+    assert_raise (Edition::CannotDeletePublishedPublication) do
       dummy_answer.destroy
     end
   end
@@ -271,10 +272,10 @@ class WholeEditionTest < ActiveSupport::TestCase
     a.reload
     assert_equal charlie, a.assigned_to
 
-    assert_equal 2, WholeEdition.count
-    assert_equal [b], WholeEdition.assigned_to(nil).to_a
-    assert_equal [], WholeEdition.assigned_to(bob).to_a
-    assert_equal [a], WholeEdition.assigned_to(charlie).to_a
+    assert_equal 2, Edition.count
+    assert_equal [b], Edition.assigned_to(nil).to_a
+    assert_equal [], Edition.assigned_to(bob).to_a
+    assert_equal [a], Edition.assigned_to(charlie).to_a
   end
 
   test "given multiple editions, can return the most recent published edition" do

@@ -1,7 +1,7 @@
-require "whole_edition"
+require "edition"
 require "expectant"
 
-class PlaceEdition < WholeEdition
+class PlaceEdition < Edition
   include Expectant
 
   field :introduction,      type: String

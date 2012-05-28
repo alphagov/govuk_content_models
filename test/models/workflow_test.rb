@@ -30,7 +30,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_whole_edition(:guide, panopticon_id: 1234574, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: 1234574, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
     edition = guide
     user.start_work(edition)
     user.request_review(edition,{comment: "Review this guide please."})
@@ -47,7 +47,7 @@ class WorkflowTest < ActiveSupport::TestCase
     other_user = User.create(name: "James")
     expectation = Expectation.create css_class:"card_payment",  text:"Credit card required"
 
-    transaction = user.create_whole_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: 123)
+    transaction = user.create_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: 123)
     transaction.expectation_ids = [expectation.id]
     transaction.save
 
@@ -111,7 +111,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_whole_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -147,7 +147,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_whole_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
     edition = guide
 
     assert_equal 0, guide.rejected_count
@@ -167,7 +167,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to review a guide they requested review for" do
     user = User.create(name: "Ben")
 
-    guide = user.create_whole_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -178,7 +178,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to okay a guide they requested review for" do
     user = User.create(name: "Ben")
 
-    guide = user.create_whole_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -204,7 +204,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "programme workflow" do
     user, other_user = template_users
 
-    edition = user.create_whole_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
@@ -221,7 +221,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to okay a programme they requested review for" do
     user, other_user = template_users
 
-    edition = user.create_whole_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
@@ -231,7 +231,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "you can only create a new edition from a published edition" do
     user, other_user = template_users
 
-    edition = user.create_whole_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
     refute edition.published?
     refute user.new_version(edition)
   end

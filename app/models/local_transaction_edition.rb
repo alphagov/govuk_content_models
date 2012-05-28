@@ -1,8 +1,8 @@
-require "whole_edition"
 require "expectant"
 require "local_service"
+require "edition"
 
-class LocalTransactionEdition < WholeEdition
+class LocalTransactionEdition < Edition
   include Expectant
 
   field :lgsl_code,         type: Integer

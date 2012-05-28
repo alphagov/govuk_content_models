@@ -1,7 +1,7 @@
 require "plek"
 require "workflow"
 
-class WholeEdition
+class Edition
   include Mongoid::Document
   include Mongoid::Timestamps
   include Workflow
@@ -54,7 +54,7 @@ class WholeEdition
   alias_method :admin_list_title, :title
 
   def series
-    WholeEdition.where(panopticon_id: panopticon_id)
+    Edition.where(panopticon_id: panopticon_id)
   end
 
   def history
@@ -126,7 +126,7 @@ class WholeEdition
   end
 
   def self.create_from_panopticon_data(panopticon_id, importing_user, api_credentials)
-    existing_publication = WholeEdition.where(panopticon_id: panopticon_id).order_by([:version_number, :desc]).first
+    existing_publication = Edition.where(panopticon_id: panopticon_id).order_by([:version_number, :desc]).first
     return existing_publication if existing_publication
 
     require "gds_api/panopticon"
@@ -134,7 +134,7 @@ class WholeEdition
     metadata = api.artefact_for_slug(panopticon_id)
     raise "Artefact not found" if metadata.nil?
 
-    importing_user.create_whole_edition(metadata.kind.to_sym,
+    importing_user.create_edition(metadata.kind.to_sym,
       panopticon_id: metadata.id,
       slug: metadata.slug,
       title: metadata.name,

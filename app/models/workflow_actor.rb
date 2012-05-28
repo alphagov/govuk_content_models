@@ -4,7 +4,6 @@ require "local_transaction_edition"
 require "place_edition"
 require "programme_edition"
 require "transaction_edition"
-require "whole_edition"
 
 module WorkflowActor
   SIMPLE_WORKFLOW_ACTIONS = %W[start_work request_review
@@ -44,7 +43,7 @@ module WorkflowActor
     edition.new_action(self, "note", comment: comment)
   end
 
-  def create_whole_edition(format, attributes = {})
+  def create_edition(format, attributes = {})
     format = "#{format}_edition" unless format.to_s.match(/edition$/)
     publication_class = format.to_s.camelize.constantize
 

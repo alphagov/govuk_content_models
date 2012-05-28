@@ -1,7 +1,7 @@
 require "parted"
-require "whole_edition"
+require "edition"
 
-class LicenceEdition < WholeEdition
+class LicenceEdition < Edition
 
   field :licence_identifier,  :type => String
   field :licence_overview,  :type => String

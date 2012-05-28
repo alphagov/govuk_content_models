@@ -1,8 +1,7 @@
 require "parted"
 
-class GuideEdition < WholeEdition
+class GuideEdition < Edition
   include Parted
-
 
   field :video_url,     type: String
   field :video_summary, type: String
@@ -16,5 +15,4 @@ class GuideEdition < WholeEdition
   def safe_to_preview?
     parts.any? and parts.first.slug.present?
   end
-
 end

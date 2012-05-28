@@ -1,7 +1,7 @@
-require "whole_edition"
+require "edition"
 require "expectant"
 
-class TransactionEdition < WholeEdition
+class TransactionEdition < Edition
 
   include Expectant
 

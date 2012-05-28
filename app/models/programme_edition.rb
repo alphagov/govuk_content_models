@@ -1,7 +1,6 @@
-require "whole_edition"
 require "parted"
 
-class ProgrammeEdition < WholeEdition
+class ProgrammeEdition < Edition
   include Parted
 
   before_save :setup_default_parts, on: :create

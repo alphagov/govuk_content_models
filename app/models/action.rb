@@ -21,7 +21,7 @@ class Action
     ASSIGN               = "assign",
   ]
 
-  embedded_in :whole_edition
+  embedded_in :edition
   belongs_to :recipient, class_name: "User"
   belongs_to :requester, class_name: "User"
 
@@ -83,6 +83,6 @@ class Action
   end
 
   def edition
-    whole_edition
+    edition
   end
 end

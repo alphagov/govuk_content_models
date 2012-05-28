@@ -1,6 +1,6 @@
-require "whole_edition"
+require "edition"
 
-class AnswerEdition < WholeEdition
+class AnswerEdition < Edition
   field :body, type: String
 
   @fields_to_clone = [:body]
