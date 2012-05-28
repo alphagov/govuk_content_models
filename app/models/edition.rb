@@ -44,6 +44,8 @@ class Edition
   validates :version_number, presence: true #, uniqueness: {:scope => :panopticon_id}
   validates :panopticon_id, presence: true
 
+  before_destroy :destroy_artefact
+
   index "assigned_to_id"
   index "panopticon_id"
   index "state"
@@ -193,5 +195,11 @@ class Edition
     self.department = artefact.department
     self.business_proposition = artefact.business_proposition
     self.save!
+  end
+
+  def destroy_artefact
+    if can_destroy?
+      Artefact.find(self.panopticon_id).destroy
+    end
   end
 end

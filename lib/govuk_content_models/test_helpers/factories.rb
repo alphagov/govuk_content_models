@@ -17,7 +17,7 @@ FactoryGirl.define do
   end
 
   factory :artefact do
-
+    sequence(:slug) { |n| "slug-#{n}" }
   end
 
   factory :edition, class: AnswerEdition do

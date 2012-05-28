@@ -15,7 +15,15 @@ end
 class EditionTest < ActiveSupport::TestCase
 
   def template_answer(version_number = 1)
-    AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: 1,
+    artefact = FactoryGirl.create(:artefact,
+        kind: "answer",
+        name: "Foo bar",
+        # primary_section: "test-section",
+        # sections: ["test-section"],
+        # department: "Test dept",
+        owning_app: "publisher")
+
+    AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: artefact.id,
       title: "Child care stuff", body: "Lots of info", version_number: version_number)
   end
 
@@ -251,6 +259,26 @@ class EditionTest < ActiveSupport::TestCase
 
     loaded_answer = AnswerEdition.where(slug: dummy_answer.slug).first
     assert_nil loaded_answer
+  end
+
+  test "should also delete associated artefact" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+
+    assert_difference "Artefact.count", -1 do
+      edition.destroy
+    end
   end
 
   test "should scope publications assigned to nobody" do
