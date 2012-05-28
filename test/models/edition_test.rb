@@ -13,9 +13,6 @@ class Edition
 end
 
 class EditionTest < ActiveSupport::TestCase
-  setup do
-    panopticon_has_metadata("id" => "2356", "kind" => "answer", "slug" => "childcare", "name" => "Childcare")
-  end
 
   def template_answer(version_number = 1)
     AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: 1,
@@ -596,8 +593,18 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should denormalise a creator's name when an edition is created" do
     @user = FactoryGirl.create(:user)
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
 
-    edition = AnswerEdition.find_or_create_from_panopticon_data("2356", @user, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, @user, {})
 
     assert_equal @user.name, edition.creator
   end

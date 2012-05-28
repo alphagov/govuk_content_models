@@ -53,6 +53,7 @@ class Artefact
   belongs_to :contact
 
   before_validation :normalise, on: :create
+  after_update :update_whole_editions
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
@@ -155,6 +156,12 @@ class Artefact
       # Add a section identifier if needed
       hash["section"] ||= section
     }
+  end
+
+  def update_whole_editions
+    WholeEdition.where(panopticon_id: self.id).each do |whole_edition|
+      whole_edition.update_from_artefact(self)
+    end
   end
 
   def self.from_param(slug_or_id)

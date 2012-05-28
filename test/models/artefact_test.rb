@@ -51,4 +51,57 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  test "on save update metadata with associated publication" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+
+    assert_equal artefact.name, edition.title
+    assert_equal artefact.section, edition.section
+
+    artefact.name = "Babar"
+    artefact.save
+
+    edition.reload
+    assert_equal artefact.name, edition.title
+  end
+
+  # should continue to work in the way it has been:
+  # i.e. you can edit everything but the name/title for published content in panop
+  test "on save title should not be applied to already published content" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition.state = "published"
+    edition.save!
+
+    assert_equal artefact.name, edition.title
+    assert_equal artefact.section, edition.section
+
+    artefact.name = "Babar"
+    artefact.save
+
+    edition.reload
+    assert_not_equal artefact.name, edition.title
+  end
 end
