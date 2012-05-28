@@ -159,7 +159,7 @@ class Artefact
   end
 
   def update_whole_editions
-    WholeEdition.where(panopticon_id: self.id).each do |whole_edition|
+    WholeEdition.where(:state.nin => ["archived"], panopticon_id: self.id).each do |whole_edition|
       whole_edition.update_from_artefact(self)
     end
   end

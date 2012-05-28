@@ -222,6 +222,30 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal "new-slug", guide.reload.slug
   end
 
+  test "should not change edition metadata if archived" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
+    guide = FactoryGirl.create(:guide_edition,
+      panopticon_id: artefact.id,
+      title: "Original title",
+      slug: "original-title",
+      state: "archived"
+    )
+    artefact.slug = "new-slug"
+    artefact.save
+
+    assert_not_equal "new-slug", guide.reload.slug
+  end
+
   test "should scope publications by assignee" do
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})

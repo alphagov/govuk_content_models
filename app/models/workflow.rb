@@ -140,13 +140,18 @@ module Workflow
   end
 
   def not_editing_published_item
-    if changed? and published? and ! state_changed?
-      changes_allowed_when_published = ["slug", "section", "department", "business_proposition"]
-      illegal_changes = changes.keys - changes_allowed_when_published
-      if illegal_changes.empty?
-        # Allow it
-      else
-        errors.add(:base, "Published editions can't be edited")
+    if changed? and ! state_changed?
+      if archived?
+        errors.add(:base, "Archived editions can't be edited")
+      end
+      if published?
+        changes_allowed_when_published = ["slug", "section", "department", "business_proposition"]
+        illegal_changes = changes.keys - changes_allowed_when_published
+        if illegal_changes.empty?
+          # Allow it
+        else
+          errors.add(:base, "Published editions can't be edited")
+        end
       end
     end
   end
