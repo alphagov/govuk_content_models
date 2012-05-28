@@ -81,8 +81,4 @@ class Action
     #SEND_FACT_CHECK is now a state - in older publications it isn't
     request_type == SEND_FACT_CHECK || request_type == "fact_check_requested" ? true : false
   end
-
-  def edition
-    edition
-  end
 end
