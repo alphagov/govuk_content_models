@@ -10,6 +10,7 @@ class Action
     REQUEST_AMENDMENTS  = "request_amendments",
     SEND_FACT_CHECK     = "send_fact_check",
     RECEIVE_FACT_CHECK  = "receive_fact_check",
+    SKIP_FACT_CHECK     = "skip_fact_check",
     PUBLISH             = "publish",
     ARCHIVE             = "archive",
     NEW_VERSION         = "new_version",

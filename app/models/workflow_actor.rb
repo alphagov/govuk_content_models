@@ -81,6 +81,11 @@ module WorkflowActor
     record_action(edition, :receive_fact_check, details)
   end
 
+  def skip_fact_check(edition, details)
+    edition.skip_fact_check
+    record_action(edition, :skip_fact_check, details)
+  end
+
   SIMPLE_WORKFLOW_ACTIONS.each do |method|
     define_method(method) do |edition, details = {}|
       take_action(edition, __method__, details)
