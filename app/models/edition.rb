@@ -128,7 +128,7 @@ class Edition
   end
 
   def self.find_or_create_from_panopticon_data(panopticon_id, importing_user, api_credentials)
-    existing_publication = WholeEdition.where(panopticon_id: panopticon_id).order_by([:version_number, :desc]).first
+    existing_publication = Edition.where(panopticon_id: panopticon_id).order_by([:version_number, :desc]).first
     return existing_publication if existing_publication
 
     raise "Artefact not found" unless metadata = Artefact.find(panopticon_id)
