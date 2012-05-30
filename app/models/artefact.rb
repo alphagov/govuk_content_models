@@ -60,7 +60,7 @@ class Artefact
   belongs_to :contact
 
   before_validation :normalise, on: :create
-  after_update :update_whole_editions
+  after_update :update_editions
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
@@ -170,7 +170,7 @@ class Artefact
     Edition.where(:panopticon_id => self.id, :state.in => ['published', 'archived']).any?
   end
 
-  def update_whole_editions
+  def update_editions
     Edition.where(:state.nin => ["archived"], panopticon_id: self.id).each do |edition|
       edition.update_from_artefact(self)
     end
