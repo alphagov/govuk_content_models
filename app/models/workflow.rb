@@ -189,6 +189,6 @@ module Workflow
   end
 
   def in_progress?
-    ! ["archived","published"].include? self.state
+    ! ["archived", "published"].include? self.state
   end
 end
