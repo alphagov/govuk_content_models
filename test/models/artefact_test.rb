@@ -76,6 +76,28 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal artefact.name, edition.title
   end
 
+  test "should not let you edit the slug if there are any published edition" do
+    artefact = FactoryGirl.create(:artefact,
+        slug: "too-late-to-edit",
+        kind: "answer",
+        name: "Foo bar",
+        owning_app: "publisher",
+    )
+
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition.state = "published"
+    edition.save!
+
+    assert_equal artefact.slug, edition.slug
+
+    artefact.slug = "belated-correction"
+    artefact.save
+
+    assert_equal "too-late-to-edit", edition.slug
+    assert_equal "too-late-to-edit", artefact.reload.slug
+  end
+
   # should continue to work in the way it has been:
   # i.e. you can edit everything but the name/title for published content in panop
   test "on save title should not be applied to already published content" do
@@ -103,5 +125,23 @@ class ArtefactTest < ActiveSupport::TestCase
 
     edition.reload
     assert_not_equal artefact.name, edition.title
+  end
+
+  test "should indicate when any editions have been published for this artefact" do
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        owning_app: "publisher",
+    )
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+
+    assert_equal false, artefact.any_editions_published?
+
+    edition.state = "published"
+    edition.save!
+
+    assert_equal true, artefact.any_editions_published?
   end
 end

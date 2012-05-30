@@ -2,10 +2,17 @@ require "slug_validator"
 require "tag_repository"
 require "plek"
 
+class CannotEditSlugIfEverPublished < ActiveModel::Validator
+  def validate(record)
+    if record.changes.keys.include?("slug") && record.any_editions_published?
+      record.errors[:slug] << ("Cannot edit slug for artefacts that have published editions")
+    end
+  end
+end
+
 class Artefact
   include Mongoid::Document
   include Mongoid::Timestamps
-
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
@@ -59,6 +66,7 @@ class Artefact
   validates :slug, presence: true, uniqueness: true, slug: true
   validates :kind, inclusion: { in: FORMATS }
   validates_presence_of :owning_app
+  validates_with CannotEditSlugIfEverPublished
 
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
@@ -156,6 +164,10 @@ class Artefact
       # Add a section identifier if needed
       hash["section"] ||= section
     }
+  end
+
+  def any_editions_published?
+    Edition.where(:panopticon_id => self.id, :state.in => ['published', 'archived']).any?
   end
 
   def update_whole_editions

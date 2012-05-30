@@ -200,8 +200,6 @@ class EditionTest < ActiveSupport::TestCase
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
         department: "Test dept",
         owning_app: "publisher",
     )
@@ -215,11 +213,11 @@ class EditionTest < ActiveSupport::TestCase
     guide.save!
     User.create(name: "Winston").publish(guide, comment: "testing")
     artefact.name = "New title"
-    artefact.slug = "new-slug"
+    artefact.primary_section = "test-section"
     artefact.save
 
     assert_equal "Original title", guide.reload.title
-    assert_equal "new-slug", guide.reload.slug
+    assert_equal "Test section", guide.reload.section
   end
 
   test "should not change edition metadata if archived" do
