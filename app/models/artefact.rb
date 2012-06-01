@@ -80,7 +80,7 @@ class Artefact
   def section
     return '' unless self.primary_section
     primary_section_tag = TagRepository.load self.primary_section
-    if primary_section_tag.parent
+    if primary_section_tag.parent_id?
       [primary_section_tag.parent.title, primary_section_tag.title].join ':'
     else
       primary_section_tag.title
