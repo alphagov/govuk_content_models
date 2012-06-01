@@ -6,11 +6,13 @@ class LicenceEditionTest < ActiveSupport::TestCase
   should "have correct extra fields" do
     l = FactoryGirl.build(:licence_edition)
     l.licence_identifier = "AB1234"
+    l.licence_short_description = "Short description of licence"
     l.licence_overview = "Markdown overview of licence..."
     l.safely.save!
 
     l = LicenceEdition.first
     assert_equal "AB1234", l.licence_identifier
+    assert_equal "Short description of licence", l.licence_short_description
     assert_equal "Markdown overview of licence...", l.licence_overview
   end
 
