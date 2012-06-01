@@ -12,10 +12,6 @@ FactoryGirl.define do
     email { Faker::Internet.email }
   end
 
-  factory :tag do
-
-  end
-
   factory :artefact do
     sequence(:slug) { |n| "slug-#{n}" }
   end
