@@ -1,6 +1,7 @@
 require "slug_validator"
 require "tag_repository"
 require "plek"
+require 'taggable'
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
@@ -13,6 +14,14 @@ end
 class Artefact
   include Mongoid::Document
   include Mongoid::Timestamps
+
+  include Taggable
+  stores_tags_for :sections, :writing_teams, :propositions
+  has_primary_tag_for :sections
+
+  def section
+    primary_section
+  end
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
@@ -80,59 +89,14 @@ class Artefact
   end
 
   # The old-style section string identifier, of the form 'Crime:Prisons'
-  def section
-    return '' unless self.primary_section
-    primary_section_tag = TagRepository.load self.primary_section
-    if primary_section_tag.parent
-      [primary_section_tag.parent.title, primary_section_tag.title].join ':'
-    else
-      primary_section_tag.title
-    end
-  end
-
-  # primary section is the home section for the artefact
-  # this is used to display the bread crumb
-  def primary_section=(section_id)
-    if section_id.blank?
-      self['primary_section'] = nil
-      return
-    end
-
-    t = TagRepository.load(section_id)
-    raise "Missing tag '#{t}" if t.nil?
-    raise "Tag #{t} is not a section" if t[:tag_type] != 'section'
-
-    self['primary_section'] = section_id
-    if not self.tag_ids.include?(section_id)
-      self.tag_ids.insert(0, section_id)
-    end
-  end
-
-  # All the section tags assigned to this artefact
-  def sections
-    self.tag_ids.select { |t| TagRepository.load(t).tag_type == 'section' }.freeze
-  end
-
-  # Set the section tags for this artefact
-  def sections=(section_ids)
-    # Check each new section ID exists
-    new_tags = section_ids.map { |i| TagRepository.load i }
-    new_tags.each do |new_tag|
-      raise "Missing tag '#{new_tag}" if new_tag.nil?
-      raise "Tag #{new_tag} is not a section" if new_tag[:tag_type] != 'section'
-    end
-    self.tag_ids = (self.tag_ids or []).reject do |tag_id|
-      tag = TagRepository.load(tag_id)
-      tag.tag_type == 'section'
-    end
-    self.tag_ids = (self.tag_ids + section_ids).uniq
-    # we are implying an order to section tags here
-    # the first section tag is the same as the primary_section
-    if self.primary_section.present? and self.tag_ids[0] != self.primary_section
-      self.tag_ids.insert(0, self.primary_section)
-     end
-    return nil
-  end
+  # def section
+  #   return '' unless self.primary_section
+  #   if primary_section.parent
+  #     [primary_section.parent.title, primary_section.title].join ':'
+  #   else
+  #     primary_section.title
+  #   end
+  # end
 
   def normalise
     return unless kind.present?
