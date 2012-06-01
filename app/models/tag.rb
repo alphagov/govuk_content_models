@@ -2,7 +2,7 @@ class Tag
   include Mongoid::Document
   field :tag_id,   type: String
   field :title,    type: String
-  field :tag_type, type: String #TODO: list of accepted types?
+  field :tag_type, type: String
 
   index :tag_id, unique: true
   index :tag_type
@@ -17,9 +17,4 @@ class Tag
     }
   end
 
-  def parent
-    # Warning: distinctly hacky implementation of parent detection
-    return nil unless tag_id.include? '/'
-    return TagRepository.load tag_id.split('/').first
-  end
 end

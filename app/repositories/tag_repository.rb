@@ -1,4 +1,5 @@
 require "tag"
+require "section_tag"
 
 module TagRepository
 
@@ -19,7 +20,11 @@ module TagRepository
   def self.put(tag)
     t = Tag.where(tag_id: tag[:tag_id]).first
     unless t
-      Tag.create! tag
+      if tag[:tag_type] == "section"
+        SectionTag.create! tag
+      else
+        Tag.create! tag
+      end
     else
       t.update_attributes! tag
     end

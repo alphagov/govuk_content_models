@@ -1,14 +1,19 @@
 require 'test_helper'
 
-TEST_SECTIONS = [['crime', 'Crime'], ['crime/the-police', 'The Police'],
+TEST_PARENT = ['crime', 'Crime']
+TEST_SECTIONS = [['crime/the-police', 'The Police'],
                  ['crime/batman', 'Batman']]
 TEST_KEYWORDS = [['cheese', 'Cheese'], ['bacon', 'Bacon']]
 
 class ArtefactTagTest < ActiveSupport::TestCase
 
   setup do
+    TagRepository.put(:tag_id => TEST_PARENT[0], :tag_type => 'section',
+                      :title => TEST_PARENT[1])
+
     TEST_SECTIONS.each do |tag_id, title|
-      TagRepository.put(:tag_id => tag_id, :tag_type => 'section', :title => title)
+      TagRepository.put(:tag_id => tag_id, :tag_type => 'section',
+                        :title => title, :parent_id => TEST_PARENT[0])
     end
     TEST_KEYWORDS.each do |tag_id, title|
       TagRepository.put(:tag_id => tag_id, :tag_type => 'keyword', :title => title)

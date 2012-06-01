@@ -52,7 +52,8 @@ class ArtefactTest < ActiveSupport::TestCase
   end
 
   test "on save update metadata with associated publication" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    TagRepository.put(:tag_id => "test-section", :tag_type => 'section',
+                        :title => "Test section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
@@ -101,7 +102,8 @@ class ArtefactTest < ActiveSupport::TestCase
   # should continue to work in the way it has been:
   # i.e. you can edit everything but the name/title for published content in panop
   test "on save title should not be applied to already published content" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    TagRepository.put(:tag_id => "test-section", :tag_type => 'section',
+                        :title => "Test section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
