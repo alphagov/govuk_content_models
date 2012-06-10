@@ -6,25 +6,25 @@ module Taggable
       keys.each { |k| 
         attr_accessor k
 
-        define_method "#{k.singularize}=" do |values|
-          # tag_ids.clear
-          # tags.clear
-          
-          values.each do |value|
-            tag_id, tag = Tag.id_and_entity(value)
+        # define_method "#{k.singularize}=" do |values|
+        #   # tag_ids.clear
+        #   # tags.clear
 
-            tag_ids.push(tag_id) unless tag_ids.include?(tag_id)
-            tags.push(tag_id) unless tags.include?(tag)
-          end
-        end
+        #   values.each do |value|
+        #     tag_id, tag = Tag.id_and_entity(value)
 
-        define_method "#{k.singularize}_ids" do
-          tags.select { |t| t.tag_type == k.singularize }.collect(&:tag_id)
-        end
+        #     tag_ids.push(tag_id) unless tag_ids.include?(tag_id)
+        #     tags.push(tag_id) unless tags.include?(tag)
+        #   end
+        # end
 
-        define_method k do
-          tags.select { |t| t.tag_type == k.singularize }
-        end
+        # define_method "#{k.singularize}_ids" do
+        #   tags.select { |t| t.tag_type == k.singularize }.collect(&:tag_id)
+        # end
+
+        # define_method k do
+        #   tags.select { |t| t.tag_type == k.singularize }
+        # end
       }
       self.tag_keys = keys
     end
@@ -33,20 +33,20 @@ module Taggable
       raise "Only one primary tag type allowed" unless key.is_a?(Symbol)
 
       method_name = "primary_#{key.to_s.singularize}"
+      attr_accessor method_name
+      # define_method "#{method_name}=" do |value|
+      #   tag_id, tag = Tag.id_and_entity(value)
 
-      define_method "#{method_name}=" do |value|
-        tag_id, tag = Tag.id_and_entity(value)
+      #   tag_ids.delete(tag_id)
+      #   tag_ids.unshift(tag_id)
 
-        tag_ids.delete(tag_id)
-        tag_ids.unshift(tag_id)
+      #   tags.delete(tag)
+      #   tags.unshift(tag)
+      # end
 
-        tags.delete(tag)
-        tags.unshift(tag)
-      end
-
-      define_method method_name do
-        __send__(key.to_s.pluralize).first
-      end
+      # define_method method_name do
+      #   __send__(key.to_s.pluralize).first
+      # end
     end
   end
 
@@ -64,24 +64,24 @@ module Taggable
   #   # Process types of tags and drop into appropriate places
   # end
 
-  # def reconcile_tags
-  #   general_tags = []
-  #   special_tags = []
+  def reconcile_tags
+    general_tags = []
+    special_tags = []
 
-  #   self.class.tag_keys.each do |key|
-  #     general_tags += __send__(key).to_a
-  #   end
+    self.class.tag_keys.each do |key|
+      general_tags += __send__(key).to_a
+    end
 
-  #   self.class.primary_tag_keys.each do |key|
-  #     special_tags << __send__("primary_#{key.to_s.singularize}")
-  #   end
+    self.class.primary_tag_keys.each do |key|
+      special_tags << __send__("primary_#{key.to_s.singularize}")
+    end
 
-  #   # Don't duplicate tags
-  #   general_tags -= special_tags
+    # Don't duplicate tags
+    general_tags -= special_tags
 
-  #   # Fill up tag_ids
-  #   self.tag_ids = (special_tags + general_tags).reject { |t| t.blank? }
-  # end
+    # Fill up tag_ids
+    self.tag_ids = (special_tags + general_tags).reject { |t| t.blank? }
+  end
 
   # TODO: Work out best way to memoise this
   def tags
