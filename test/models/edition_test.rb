@@ -557,6 +557,19 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
+  test "a part's slug must be of the correct format" do
+    without_metadata_denormalisation(GuideEdition) do
+      edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: 1)
+      edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-One-1"
+      edition_one.save!
+
+      edition_one.parts[0].slug = "part one"
+      assert_raise (Mongoid::Errors::Validations) do
+        edition_one.save!
+      end
+    end
+  end
+
   test "user should not be able to review an edition they requested review for" do
     without_metadata_denormalisation(ProgrammeEdition) do
       user = User.create(name: "Mary")
