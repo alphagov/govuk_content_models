@@ -37,10 +37,12 @@ class LicenceEditionTest < ActiveSupport::TestCase
     licence = FactoryGirl.create(:licence_edition,
                                  :state => "published",
                                  :licence_identifier => "1234",
+                                 :licence_short_description => "Short description of licence",
                                  :licence_overview => "Overview to be cloned")
     new_licence = licence.build_clone
 
     assert_equal licence.licence_identifier, new_licence.licence_identifier
+    assert_equal licence.licence_short_description, new_licence.licence_short_description
     assert_equal licence.licence_overview, new_licence.licence_overview
   end
 end

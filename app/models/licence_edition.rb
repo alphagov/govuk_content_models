@@ -9,5 +9,5 @@ class LicenceEdition < Edition
 
   validates :licence_identifier, :presence => true, :uniqueness => true
 
-  @fields_to_clone = [:licence_identifier, :licence_overview]
+  @fields_to_clone = [:licence_identifier, :licence_short_description, :licence_overview]
 end
