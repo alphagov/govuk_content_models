@@ -29,7 +29,17 @@ class LicenceEditionTest < ActiveSupport::TestCase
     should "require a unique licence identifier" do
       FactoryGirl.create(:licence_edition, :licence_identifier => "wibble")
       @l.licence_identifier = "wibble"
-      assert_equal false, @l.valid?, "expected licence edition not to be valid"
+      assert ! @l.valid?, "expected licence edition not to be valid"
+    end
+
+    should "not require a unique licence identifier for different versions of the same licence edition" do
+      @l.state = 'published'
+      @l.licence_identifier = 'wibble'
+      @l.save!
+
+      new_version = @l.build_clone
+      assert_equal 'wibble', new_version.licence_identifier
+      assert new_version.valid?, "Expected clone to be valid"
     end
   end
 

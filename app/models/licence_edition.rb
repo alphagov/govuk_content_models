@@ -7,7 +7,16 @@ class LicenceEdition < Edition
   field :licence_short_description, :type => String
   field :licence_overview,  :type => String
 
-  validates :licence_identifier, :presence => true, :uniqueness => true
+  validates :licence_identifier, :presence => true
+  validate :licence_identifier_unique
 
   @fields_to_clone = [:licence_identifier, :licence_short_description, :licence_overview]
+
+  private
+
+  def licence_identifier_unique
+    if self.class.where(:licence_identifier => licence_identifier, :panopticon_id.ne => panopticon_id).any?
+      errors.add(:licence_identifier, :taken)
+    end
+  end
 end
