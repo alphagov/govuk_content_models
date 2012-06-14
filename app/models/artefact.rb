@@ -32,6 +32,7 @@ class Artefact
   field "tag_ids",              type: Array, default: []
   field "primary_section",      type: String
   field "description",          type: String
+  field "live",                 type: Boolean, default: false
 
   index "tag_ids"
   index "primary_section"
