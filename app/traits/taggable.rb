@@ -1,3 +1,10 @@
+# An unfinished sketch of a module to add 'taggable' behaviour to
+# an item in the gov.uk publishing domain model. It won't work as is
+# but is intended to demonstrate one mechanism for representing 
+# tagging.
+#
+#
+
 module Taggable
   module ClassMethods
     def stores_tags_for(*keys)
@@ -55,14 +62,8 @@ module Taggable
     klass.field          :tag_ids, type: Array, default: []
     klass.attr_protected :tags, :tag_ids
     klass.cattr_accessor :tag_keys, :primary_tag_keys
+    klass.private :tags, :tag_ids
   end
-
-  def reconcile_tags
-  end
-
-  # def expand_tags
-  #   # Process types of tags and drop into appropriate places
-  # end
 
   def reconcile_tags
     general_tags = []
