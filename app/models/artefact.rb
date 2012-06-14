@@ -31,6 +31,7 @@ class Artefact
   field "publication_id",       type: String
   field "tag_ids",              type: Array, default: []
   field "primary_section",      type: String
+  field "description",          type: String
 
   index "tag_ids"
   index "primary_section"
