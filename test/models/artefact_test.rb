@@ -45,6 +45,26 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal [b, c], a.related_artefacts
   end
 
+  test "published_related_artefacts should return all non-publisher artefacts, but only published publisher artefacts" do
+    # because currently only publisher has an idea of "published"
+    
+    parent = Artefact.create!(slug: "parent", name: "Parent", kind: "guide", owning_app: "x") 
+
+    a = Artefact.create!(slug: "a", name: "has no published editions", kind: "guide", owning_app: "publisher")
+    Edition.create!(panopticon_id: a.id, title: "Unpublished", state: "draft")
+    parent.related_artefacts << a
+
+    b = Artefact.create!(slug: "b", name: "has a published edition", kind: "guide", owning_app: "publisher")
+    Edition.create!(panopticon_id: b.id, title: "Published", state: "published")
+    parent.related_artefacts << b
+
+    c = Artefact.create!(slug: "c", name: "not a publisher artefact", kind: "place", owning_app: "x")
+    parent.related_artefacts << c
+    parent.save!
+
+    assert_equal [b.slug, c.slug], parent.published_related_artefacts.map(&:slug)
+  end
+
   test "should raise a not found exception if the slug doesn't match" do
     assert_raise Mongoid::Errors::DocumentNotFound do
       Artefact.from_param("something-fake")

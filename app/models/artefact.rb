@@ -156,7 +156,7 @@ class Artefact
       end
 
       unless options[:ignore_related_artefacts]
-        hash["related_items"] = related_artefacts.map { |a| {"artefact" => a.as_json(ignore_related_artefacts: true)} }
+        hash["related_items"] = published_related_artefacts.map { |a| {"artefact" => a.as_json(ignore_related_artefacts: true)} }
       end
       hash.delete("related_artefacts")
       hash.delete("related_artefact_ids")
@@ -168,8 +168,23 @@ class Artefact
     }
   end
 
+  def published_related_artefacts
+    related_artefacts.select do |related_artefact| 
+      if related_artefact.owning_app == "publisher"
+        related_artefact.any_editions_published_now?
+      else
+        true
+      end
+    end
+  end
+
+  def any_editions_published_now?
+    Edition.where(panopticon_id: self.id, state: 'published').any?
+  end
+
+  # TODO rename
   def any_editions_published?
-    Edition.where(:panopticon_id => self.id, :state.in => ['published', 'archived']).any?
+    Edition.where(panopticon_id: self.id, :state.in => ['published', 'archived']).any?
   end
 
   def update_editions
