@@ -171,19 +171,18 @@ class Artefact
   def published_related_artefacts
     related_artefacts.select do |related_artefact| 
       if related_artefact.owning_app == "publisher"
-        related_artefact.any_editions_published_now?
+        related_artefact.any_editions_published?
       else
         true
       end
     end
   end
 
-  def any_editions_published_now?
+  def any_editions_published?
     Edition.where(panopticon_id: self.id, state: 'published').any?
   end
 
-  # TODO rename
-  def any_editions_published?
+  def any_editions_ever_published?
     Edition.where(panopticon_id: self.id, :state.in => ['published', 'archived']).any?
   end
 
