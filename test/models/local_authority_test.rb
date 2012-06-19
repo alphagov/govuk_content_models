@@ -1,12 +1,12 @@
 require "test_helper"
 require "local_authority"
 
-class LocalAuthorityTest < ActiveSupport::TestCase
-  def setup
+describe LocalAuthority do
+  before :each do
     LocalAuthority.delete_all
   end
 
-  test "should create an authority with correct field types" do
+  it "should create an authority with correct field types" do
     # Although it may seem overboard, this test is helpful to confirm
     # the correct field types are being used on the model
     LocalAuthority.create!(
