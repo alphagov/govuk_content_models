@@ -25,22 +25,15 @@ class UserTest < ActiveSupport::TestCase
   test "should create new user with oauth params" do
     auth_hash = {
       "uid" => "1234abcd",
-      "user_info" => {
-        "uid"     => "1234abcd",
+      "info" => {
         "email"   => "user@example.com",
-        "name"    => "Luther Blisset",
-      },
-      "extra" => {
-        "user_hash" => {
-          "version" => 2
-        }
+        "name"    => "Luther Blisset"
       }
     }
     user = User.find_for_gds_oauth(auth_hash).reload
     assert_equal "1234abcd", user.uid
     assert_equal "user@example.com", user.email
     assert_equal "Luther Blisset", user.name
-    assert_equal 2, user.version
   end
 
   test "should create insecure gravatar URL" do
