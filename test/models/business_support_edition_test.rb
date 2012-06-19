@@ -26,4 +26,12 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal 1000, support.min_value
     assert_equal 3000, support.max_value
   end
+
+  should "not allow max_value to be less than min_value" do
+    support = FactoryGirl.create(:business_support_edition)
+    support.min_value = 100
+    support.max_value = 50
+
+    refute support.valid?
+  end
 end

@@ -2,6 +2,7 @@ require "edition"
 
 class BusinessSupportEdition < Edition
   include Parted
+  validate :min_must_be_less_than_max
 
   before_save :setup_default_parts, on: :create
 
@@ -21,6 +22,15 @@ class BusinessSupportEdition < Edition
       DEFAULT_PARTS.each do |part|
         parts.build(title: part[:title], slug: part[:slug], body: "")
       end
+    end
+  end
+
+  private
+
+  def min_must_be_less_than_max
+    if !min_value.nil? && !max_value.nil? && min_value > max_value
+      errors[:min_value] << "Min value must be smaller than max value"
+      errors[:max_value] << "Max value must be larger than min value"
     end
   end
 end
