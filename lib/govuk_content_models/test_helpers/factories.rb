@@ -32,6 +32,13 @@ FactoryGirl.define do
   factory :answer_edition, parent: :edition do
   end
 
+  factory :business_support_edition do |edition|
+    edition.sequence(:panopticon_id) {|n| n}
+    edition.sequence(:title) {|n| "Test business support edition #{n}"}
+    edition.sequence(:slug) {|n| "slug-#{n}"}
+    section {"test:subsection test"}
+  end
+
   factory :guide_edition do |ge|
     ge.sequence(:panopticon_id) { |n| n }
     ge.sequence(:title)  { |n| "Test guide #{n}" }

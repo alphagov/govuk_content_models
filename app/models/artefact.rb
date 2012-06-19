@@ -48,7 +48,8 @@ class Artefact
     "place",
     "smart-answer",
     "custom-application",
-    "licence"
+    "licence",
+    "business_support"
   ].freeze
 
   KIND_TRANSLATIONS = {
