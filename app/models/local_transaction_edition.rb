@@ -6,6 +6,7 @@ class LocalTransactionEdition < Edition
   include Expectant
 
   field :lgsl_code,         type: Integer
+  field :lgil_override,     type: Integer
   field :introduction,      type: String
   field :more_information,  type: String
 

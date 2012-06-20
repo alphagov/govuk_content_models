@@ -16,9 +16,9 @@ class LocalService
     LocalService.where(lgsl_code: lgsl_code).first
   end
 
-  def preferred_interaction(snac_or_snac_list)
+  def preferred_interaction(snac_or_snac_list, lgil_override = nil)
     provider = preferred_provider(snac_or_snac_list)
-    provider && provider.preferred_interaction_for(lgsl_code)
+    provider && provider.preferred_interaction_for(lgsl_code, lgil_override)
   end
 
   def preferred_provider(snac_or_snac_list)

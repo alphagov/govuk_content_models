@@ -37,10 +37,14 @@ class LocalAuthority
     end
   end
 
-  def preferred_interaction_for(lgsl_code)
+  def preferred_interaction_for(lgsl_code, lgil_code = nil)
     interactions = local_interactions.where(lgsl_code: lgsl_code)
-    interactions.excludes(lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION).first ||
-      interactions.where(lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION).first
+    if lgil_code
+      interactions.where(lgil_code: lgil_code).first
+    else
+      interactions.excludes(lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION).order_by([:lgil_code, :asc]).first ||
+        interactions.where(lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION).first
+    end
   end
 
 end

@@ -71,6 +71,19 @@ class LocalServiceTest < ActiveSupport::TestCase
     assert_nil service.preferred_interaction(councils)
   end
 
+  test "should allow overriding returned LGIL" do
+    FactoryGirl.create(:local_interaction,
+      local_authority: @county_council,
+      lgsl_code:       @lgsl_code,
+      lgil_code:       12,
+      url:             "http://some.county.council.gov/do-456.html"
+    )
+    service = create_service_for_tiers(:county, :unitary)
+    councils = [@county_council.snac, @district_council.snac]
+    assert_equal "http://some.county.council.gov/do-456.html",
+                 service.preferred_interaction(councils, 12).url
+  end
+
   test "should not list a county (in a UA) as providing a service it does not provide" do
     service = create_service_for_tiers(:county, :unitary)
     other_service = service.lgsl_code.to_i + 1
