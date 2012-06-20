@@ -170,7 +170,7 @@ class Artefact
   end
 
   def published_related_artefacts
-    related_artefacts.select do |related_artefact| 
+    related_artefacts.select do |related_artefact|
       if related_artefact.owning_app == "publisher"
         related_artefact.any_editions_published?
       else

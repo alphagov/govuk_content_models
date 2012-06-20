@@ -47,8 +47,8 @@ class ArtefactTest < ActiveSupport::TestCase
 
   test "published_related_artefacts should return all non-publisher artefacts, but only published publisher artefacts" do
     # because currently only publisher has an idea of "published"
-    
-    parent = Artefact.create!(slug: "parent", name: "Parent", kind: "guide", owning_app: "x") 
+
+    parent = Artefact.create!(slug: "parent", name: "Parent", kind: "guide", owning_app: "x")
 
     a = Artefact.create!(slug: "a", name: "has no published editions", kind: "guide", owning_app: "publisher")
     Edition.create!(panopticon_id: a.id, title: "Unpublished", state: "draft")
