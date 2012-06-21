@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "differ"
   gem.add_dependency "gds-api-adapters"
-  gem.add_dependency "gds-sso",          "~> 0.5.0"
+  gem.add_dependency "gds-sso",          "~> 0.7.0"
   gem.add_dependency "mongoid",          "~> 2.4.10"
   gem.add_dependency "plek",             "~> 0.1.22"
   gem.add_dependency "state_machine"
