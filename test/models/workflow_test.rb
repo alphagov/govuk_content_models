@@ -143,27 +143,6 @@ class WorkflowTest < ActiveSupport::TestCase
     assert edition.actions.detect { |e| e.request_type == 'skip_fact_check' }
   end
 
-  test "check counting reviews" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
-
-    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
-    edition = guide
-
-    assert_equal 0, guide.rejected_count
-
-    user.start_work(edition)
-    user.request_review(edition,{comment: "Review this guide please."})
-    other_user.request_amendments(edition, {comment: "I've reviewed it"})
-
-    assert_equal 1, guide.rejected_count
-
-    user.request_review(edition,{comment: "Review this guide please."})
-    other_user.approve_review(edition, {comment: "Looks good to me"})
-
-    assert_equal 1, guide.rejected_count
-  end
-
   test "user should not be able to review a guide they requested review for" do
     user = User.create(name: "Ben")
 
