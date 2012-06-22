@@ -1,5 +1,4 @@
 require "factory_girl"
-require "faker"
 require "answer_edition"
 require "artefact"
 require "tag"
@@ -7,9 +6,9 @@ require "user"
 
 FactoryGirl.define do
   factory :user do
-    uid   { Faker::Name.name.downcase.gsub(/[^a-z]+/, "_") }
-    name  { Faker::Name.name }
-    email { Faker::Internet.email }
+    sequence(:uid) { |n| "uid-#{n}"}
+    sequence(:name) { |n| "Joe Bloggs #{n}" }
+    sequence(:email) { |n| "joe#{n}@bloggs.com" }
   end
 
   factory :tag do
@@ -24,7 +23,7 @@ FactoryGirl.define do
     sequence(:panopticon_id)
     sequence(:slug) { |n| "slug-#{n}" }
 
-    title { Faker::Name.name }
+    title "A key answer to your question"
     section "test:subsection test"
 
     association :assigned_to, factory: :user
@@ -40,15 +39,15 @@ FactoryGirl.define do
   end
 
   factory :guide_edition do |ge|
-    ge.sequence(:panopticon_id) { |n| n }
+    ge.sequence(:panopticon_id)
     ge.sequence(:title)  { |n| "Test guide #{n}" }
     ge.sequence(:slug) { |ns| "slug-#{ns}"}
     section { "test:subsection test" }
   end
 
   factory :programme_edition do |edition|
-    edition.sequence(:panopticon_id) { |n| n }
-    edition.sequence(:title)  { |n| "Test programme #{n}" }
+    edition.sequence(:panopticon_id)
+    edition.sequence(:title) { |n| "Test programme #{n}" }
     edition.sequence(:slug) { |ns| "slug-#{ns}"}
     section { "test:subsection test" }
   end
@@ -62,7 +61,7 @@ FactoryGirl.define do
   end
 
   factory :local_transaction_edition do |lte|
-    lte.sequence(:panopticon_id) { |n| n }
+    lte.sequence(:panopticon_id)
     title  { "Test title" }
     version_number 1
     lte.sequence(:slug) { |ns| "slug-#{ns}"}
@@ -76,7 +75,7 @@ FactoryGirl.define do
   end
 
   factory :local_service do |ls|
-    ls.sequence(:lgsl_code) { |nlgsl| nlgsl }
+    ls.sequence(:lgsl_code)
     providing_tier { %w{district unitary county} }
   end
 

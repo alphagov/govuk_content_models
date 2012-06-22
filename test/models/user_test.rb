@@ -17,22 +17,19 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "", user.to_s
   end
 
-  test "should find existing user by oauth hash" do
-    user = User.create!("uid" => "1234abcd")
-    assert_equal user, User.find_for_gds_oauth("uid" => "1234abcd")
-  end
-
   test "should create new user with oauth params" do
     auth_hash = {
       "uid" => "1234abcd",
-      "user_info" => {
+      "info" => {
         "uid"     => "1234abcd",
         "email"   => "user@example.com",
-        "name"    => "Luther Blisset",
+        "name"    => "Luther Blisset"
       },
       "extra" => {
-        "user_hash" => {
-          "version" => 2
+        "user" => {
+          "permissions" => {
+            "dummy-app" => ["signin"]
+          }
         }
       }
     }
@@ -40,7 +37,32 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "1234abcd", user.uid
     assert_equal "user@example.com", user.email
     assert_equal "Luther Blisset", user.name
-    assert_equal 2, user.version
+    assert_equal({ "dummy-app" => ["signin"] }, user.permissions)
+  end
+
+  test "should find and update the user with oauth params" do
+    attributes = {uid: "1234abcd", name: "Old", email: "old@m.com",
+        permissions: { "dummy-app" => ["everything"]}}
+    User.create!(attributes, without_protection: true)
+    auth_hash = {
+      "uid" => "1234abcd",
+      "info" => {
+        "email"   => "new@m.com",
+        "name"    => "New"
+      },
+      "extra" => {
+        "user" => {
+          "permissions" => {
+            "dummy-app" => []
+          }
+        }
+      }
+    }
+    user = User.find_for_gds_oauth(auth_hash).reload
+    assert_equal "1234abcd", user.uid
+    assert_equal "new@m.com", user.email
+    assert_equal "New", user.name
+    assert_equal({ "dummy-app" => [] }, user.permissions)
   end
 
   test "should create insecure gravatar URL" do
