@@ -3,29 +3,16 @@ require "state_machine"
 require "action"
 
 module Workflow
-  class CannotDeletePublishedPublication < RuntimeError; end
   extend ActiveSupport::Concern
 
   included do
     validate :not_editing_published_item
-    before_destroy :check_can_delete_and_notify
-
-    before_save :denormalise_users
-    after_create :notify_siblings_of_new_edition
 
     field :state, type: String, default: "lined_up"
     belongs_to :assigned_to, class_name: "User"
     embeds_many :actions
 
     state_machine initial: :lined_up do
-      after_transition on: :request_amendments do |edition, transition|
-        edition.mark_as_rejected
-      end
-
-      after_transition on: :publish do |edition, transition|
-        edition.was_published
-      end
-
       event :start_work do
         transition lined_up: :draft
       end
@@ -90,19 +77,6 @@ module Workflow
     self.human_state_name.capitalize
   end
 
-  def denormalise_users
-    create_action = actions.where(:request_type.in => [Action::CREATE, Action::NEW_VERSION]).first
-    publish_action = actions.where(request_type: Action::PUBLISH).first
-    archive_action = actions.where(request_type: Action::ARCHIVE).first
-
-    self.assignee = assigned_to.name if assigned_to
-    self.creator = create_action.requester.name if create_action and create_action.requester
-    self.publisher = publish_action.requester.name if publish_action and publish_action.requester
-    self.archiver = archive_action.requester.name if archive_action and archive_action.requester
-
-    return self
-  end
-
   def created_by
     creation = actions.detect { |a| a.request_type == Action::CREATE || a.request_type == Action::NEW_VERSION }
     creation.requester if creation
@@ -156,14 +130,6 @@ module Workflow
     end
   end
 
-  def can_destroy?
-    ! published? and ! archived?
-  end
-
-  def check_can_delete_and_notify
-    raise CannotDeletePublishedPublication unless can_destroy?
-  end
-
   def mark_as_rejected
     self.inc(:rejected_count, 1)
   end
@@ -174,10 +140,6 @@ module Workflow
 
   def edition_changes
     self.whole_body.empty? ? false : Differ.diff_by_line( self.whole_body, self.published_edition.whole_body )
-  end
-
-  def notify_siblings_of_new_edition
-    siblings.update_all(sibling_in_progress: self.version_number)
   end
 
   def notify_siblings_of_published_edition

@@ -201,4 +201,8 @@ class Edition
       Artefact.find(self.panopticon_id).destroy
     end
   end
+
+  def can_destroy?
+    !published? and !archived?
+  end
 end

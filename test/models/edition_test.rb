@@ -260,57 +260,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal [b], Edition.assigned_to(bob).to_a
   end
 
-  test "cannot delete a publication that has been published" do
-    dummy_answer = template_published_answer
-    loaded_answer = AnswerEdition.where(slug: "childcare").first
-
-    assert_equal loaded_answer, dummy_answer
-    assert ! dummy_answer.can_destroy?
-    assert_raise (Workflow::CannotDeletePublishedPublication) do
-      dummy_answer.destroy
-    end
-  end
-
-  test "cannot delete a published publication with a new draft edition" do
-    dummy_answer = template_published_answer
-
-    new_edition = dummy_answer.build_clone
-    new_edition.body = "Two"
-    dummy_answer.save
-
-    assert_raise (Edition::CannotDeletePublishedPublication) do
-      dummy_answer.destroy
-    end
-  end
-
-  test "can delete a publication that has not been published" do
-    dummy_answer = template_unpublished_answer
-    dummy_answer.destroy
-
-    loaded_answer = AnswerEdition.where(slug: dummy_answer.slug).first
-    assert_nil loaded_answer
-  end
-
-  test "should also delete associated artefact" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
-        department: "Test dept",
-        owning_app: "publisher",
-    )
-
-    user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
-
-    assert_difference "Artefact.count", -1 do
-      edition.destroy
-    end
-  end
-
   test "should scope publications assigned to nobody" do
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})
@@ -421,33 +370,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_not_nil GuideEdition.where(state: "published", panopticon_id: edition.panopticon_id).first
   end
 
-  test "when an edition of a guide is published, all other published editions are archived" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition = FactoryGirl.create(:guide_edition, state: "ready")
-
-      user = User.create name: "bob"
-      user.publish edition, comment: "First publication"
-
-      second_edition = edition.build_clone
-      second_edition.update_attribute(:state, "ready")
-      second_edition.save!
-      user.publish second_edition, comment: "Second publication"
-
-      third_edition = second_edition.build_clone
-      third_edition.update_attribute(:state, "ready")
-      third_edition.save!
-      user.publish third_edition, comment: "Third publication"
-
-      edition.reload
-      assert edition.archived?
-
-      second_edition.reload
-      assert second_edition.archived?
-
-      assert_equal 2, GuideEdition.where(panopticon_id: edition.panopticon_id, state: "archived").count
-    end
-  end
-
   test "edition can return latest status action of a specified request type" do
     edition = FactoryGirl.create(:guide_edition, state: "draft")
     user = User.create(name: "George")
@@ -511,24 +433,6 @@ class EditionTest < ActiveSupport::TestCase
 
      assert_nil edition.sibling_in_progress
    end
-  end
-
-  test "a series with one published and one draft edition should have a sibling in progress" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition = FactoryGirl.create(:guide_edition, state: "ready")
-      edition.save!
-
-      user = User.create name: "bob"
-      user.publish edition, comment: "First publication"
-
-      new_edition = edition.build_clone
-      new_edition.save!
-
-      edition = edition.reload
-
-      assert_not_nil edition.sibling_in_progress
-      assert_equal new_edition.version_number, edition.sibling_in_progress
-    end
   end
 
   test "a new guide edition with multiple parts creates a full diff when published" do
@@ -606,17 +510,6 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  test "a published publication with a draft edition is in progress" do
-    dummy_answer = template_published_answer
-    assert !dummy_answer.has_sibling_in_progress?
-
-    edition = dummy_answer.build_clone
-    edition.save
-
-    dummy_answer.reload
-    assert dummy_answer.has_sibling_in_progress?
-  end
-
   test "a draft edition cannot be published" do
     edition = FactoryGirl.create(:guide_edition, state: "draft")
     edition.start_work
@@ -629,98 +522,11 @@ class EditionTest < ActiveSupport::TestCase
     assert edition.can_emergency_publish?
   end
 
+  test "can delete a publication that has not been published" do
+    dummy_answer = template_unpublished_answer
+    dummy_answer.destroy
 
-  # test denormalisation
-
-  test "should denormalise an edition with an assigned user and action requesters" do
-    @user1 = FactoryGirl.create(:user, name: "Morwenna")
-    @user2 = FactoryGirl.create(:user, name: "John")
-    @user3 = FactoryGirl.create(:user, name: "Nick")
-
-    edition = FactoryGirl.create(:guide_edition, state: "archived")
-
-    edition = FactoryGirl.create(:guide_edition, state: "archived", assigned_to_id: @user1.id)
-    edition.actions.create request_type: Action::CREATE, requester: @user2
-    edition.actions.create request_type: Action::PUBLISH, requester: @user3
-    edition.actions.create request_type: Action::ARCHIVE, requester: @user1
-    edition.save! and edition.reload
-
-    assert_equal @user1.name, edition.assignee
-    assert_equal @user2.name, edition.creator
-    assert_equal @user3.name, edition.publisher
-    assert_equal @user1.name, edition.archiver
-  end
-
-  test "should denormalise an assignee's name when an edition is assigned" do
-    @user1 = FactoryGirl.create(:user)
-    @user2 = FactoryGirl.create(:user)
-
-    edition = FactoryGirl.create(:guide_edition, state: "lined_up")
-    @user1.assign edition, @user2
-
-    assert_equal @user2, edition.assigned_to
-    assert_equal @user2.name, edition.assignee
-  end
-
-  test "should denormalise a creator's name when an edition is created" do
-    @user = FactoryGirl.create(:user)
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
-        department: "Test dept",
-        owning_app: "publisher",
-    )
-
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, @user, {})
-
-    assert_equal @user.name, edition.creator
-  end
-
-  test "should denormalise a publishing user's name when an edition is published" do
-    @user = FactoryGirl.create(:user)
-
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @user.publish edition, { }
-
-    assert_equal @user.name, edition.publisher
-  end
-
-  test "should set siblings in progress to nil for new editions" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
-    assert_equal 1, @edition.version_number
-    assert_nil @edition.sibling_in_progress
-  end
-
-  test "should update previous editions when new edition is added" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
-    @new_edition = @published_edition.build_clone
-    @new_edition.save
-    @published_edition.reload
-
-    assert_equal 2, @new_edition.version_number
-    assert_equal 2, @published_edition.sibling_in_progress
-  end
-
-  test "should update previous editions when new edition is published" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
-    @new_edition = @published_edition.build_clone
-    @new_edition.save
-    @new_edition.update_attribute(:state, "ready")
-    @user.publish(@new_edition, comment: "Publishing this")
-    @published_edition.reload
-
-    assert_equal 2, @new_edition.version_number
-    assert_nil @new_edition.sibling_in_progress
-    assert_nil @published_edition.sibling_in_progress
+    loaded_answer = AnswerEdition.where(slug: dummy_answer.slug).first
+    assert_nil loaded_answer
   end
 end
