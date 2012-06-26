@@ -60,6 +60,14 @@ FactoryGirl.define do
     end
   end
 
+  factory :guide_edition_with_two_govspeak_parts, parent: :guide_edition do
+    title "A title"
+    after :create do |getp|
+      getp.parts.build(title: "Some Part Title!", body: "This is some **version** text.", slug: "part-one")
+      getp.parts.build(title: "Another Part Title", body: "This is @some more@ version text.", slug: "part-two")
+    end
+  end
+
   factory :local_transaction_edition do |lte|
     lte.sequence(:panopticon_id)
     title  { "Test title" }
