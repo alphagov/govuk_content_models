@@ -64,7 +64,7 @@ FactoryGirl.define do
     title "A title"
     after :create do |getp|
       getp.parts.build(title: "Some Part Title!", body: "This is some **version** text.", slug: "part-one")
-      getp.parts.build(title: "Another Part Title", body: "This is @some more@ version text.", slug: "part-two")
+      getp.parts.build(title: "Another Part Title", body: "This is [link](http://example.net/) text.", slug: "part-two")
     end
   end
 
