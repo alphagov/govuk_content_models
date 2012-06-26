@@ -61,7 +61,7 @@ FactoryGirl.define do
   end
 
   factory :guide_edition_with_two_govspeak_parts, parent: :guide_edition do
-    title "A title"
+    title "A title for govspeak parts"
     after :create do |getp|
       getp.parts.build(title: "Some Part Title!", body: "This is some **version** text.", slug: "part-one")
       getp.parts.build(title: "Another Part Title", body: "This is [link](http://example.net/) text.", slug: "part-two")
