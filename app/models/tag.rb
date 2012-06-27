@@ -25,7 +25,7 @@ class Tag
 
   def parent
     if has_parent?
-      TagRepository.load(parent_id).first
+      TagRepository.load(parent_id)
     end
   end
 
