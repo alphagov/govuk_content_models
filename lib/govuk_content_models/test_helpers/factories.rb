@@ -22,8 +22,8 @@ FactoryGirl.define do
   factory :edition, class: AnswerEdition do
     sequence(:panopticon_id)
     sequence(:slug) { |n| "slug-#{n}" }
+    sequence(:title) { |n| "A key answer to your question #{n}" }
 
-    title "A key answer to your question"
     section "test:subsection test"
 
     association :assigned_to, factory: :user
