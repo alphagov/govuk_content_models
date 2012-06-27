@@ -171,26 +171,30 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should create a publication based on data imported from panopticon" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    section = FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
         department: "Test dept",
         owning_app: "publisher",
     )
+    artefact.primary_section = section.tag_id
+    artefact.save!
+    
+    a = Artefact.find(artefact.id)
 
+    assert_equal section.tag_id, artefact.primary_section.tag_id
+    assert_equal section.title, artefact.primary_section.title
     user = User.create
 
     publication = Edition.find_or_create_from_panopticon_data(artefact.id, user, {})
 
     assert_kind_of AnswerEdition, publication
-    assert_equal "Foo bar", publication.title
+    assert_equal artefact.name, publication.title
     assert_equal artefact.id.to_s, publication.panopticon_id.to_s
-    assert_equal "Test section", publication.section
-    assert_equal "Test dept", publication.department
+    assert_equal section.title, publication.section
+    assert_equal artefact.department, publication.department
   end
 
   # TODO: come back and remove this one.

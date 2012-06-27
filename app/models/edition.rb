@@ -136,7 +136,7 @@ class Edition
       panopticon_id: metadata.id,
       slug: metadata.slug,
       title: metadata.name,
-      section: metadata.section,
+      section: metadata.primary_section ? metadata.primary_section.title : nil,
       department: metadata.department,
       business_proposition: metadata.business_proposition ? metadata.business_proposition : false)
   end
