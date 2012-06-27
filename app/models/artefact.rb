@@ -35,12 +35,16 @@ class Artefact
   field "relatedness_done",     type: Boolean, default: false
   field "publication_id",       type: String
   field "tag_ids",              type: Array, default: []
+<<<<<<< HEAD
   field "primary_section",      type: String
   field "description",          type: String
   field "live",                 type: Boolean, default: false
+=======
+  # field "primary_section",      type: String
+>>>>>>> Comment out some old references to section
 
   index "tag_ids"
-  index "primary_section"
+  # index "primary_section"
 
   MAXIMUM_RELATED_ITEMS = 8
 
@@ -85,14 +89,14 @@ class Artefact
   end
 
   # The old-style section string identifier, of the form 'Crime:Prisons'
-  # def section
-  #   return '' unless self.primary_section
-  #   if primary_section.parent
-  #     [primary_section.parent.title, primary_section.title].join ':'
-  #   else
-  #     primary_section.title
-  #   end
-  # end
+  def section
+    return '' unless self.primary_section
+    if primary_section.parent
+      [primary_section.parent.title, primary_section.title].join ':'
+    else
+      primary_section.title
+    end
+  end
 
   def normalise
     return unless kind.present?
