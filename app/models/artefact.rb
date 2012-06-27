@@ -22,7 +22,7 @@ class Artefact
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
   field "department",           type: String
-  field "tags",                 type: String
+  # field "tags",                 type: String
   field "business_proposition", type: Boolean, default: false
 
   field "name",                 type: String
@@ -34,14 +34,9 @@ class Artefact
   field "fact_checkers",        type: String
   field "relatedness_done",     type: Boolean, default: false
   field "publication_id",       type: String
-  field "tag_ids",              type: Array, default: []
-<<<<<<< HEAD
-  field "primary_section",      type: String
   field "description",          type: String
   field "live",                 type: Boolean, default: false
-=======
   # field "primary_section",      type: String
->>>>>>> Comment out some old references to section
 
   index "tag_ids"
   # index "primary_section"
