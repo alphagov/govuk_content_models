@@ -100,4 +100,9 @@ module Taggable
     reconcile_tag_ids
     super
   end
+
+  def save!
+    reconcile_tag_ids
+    super
+  end
 end
