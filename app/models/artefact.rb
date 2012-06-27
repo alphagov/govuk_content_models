@@ -72,7 +72,7 @@ class Artefact
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
   validates :kind, inclusion: { in: FORMATS }
-  validates_presence_of :owning_app
+  validates :owning_app, presence: true
   validates_with CannotEditSlugIfEverPublished
 
   def self.in_alphabetical_order
