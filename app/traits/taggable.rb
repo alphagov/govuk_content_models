@@ -43,7 +43,7 @@ module Taggable
     klass.extend         ClassMethods
     klass.field          :tag_ids, type: Array, default: []
     klass.attr_protected :tags, :tag_ids
-    klass.__send__       :private, :tags, :tag_ids
+    klass.__send__       :private, :tag_ids=
   end
 
   def set_tags_of_type(collection_name, values)
