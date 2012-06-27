@@ -13,7 +13,7 @@ module TagRepository
   end
 
   def self.load_all_with_ids(ids)
-    Tag.where(tag_id: ids)
+    Tag.any_in(tag_id: ids)
   end
 
   def self.load(id)
