@@ -52,7 +52,8 @@ module Taggable
     # Ensure all tags loaded from database. This feels inelegant
     # but ensures integrity. It could go away if we moved to a more
     # consistent repository approach to retrieving and constructing
-    # objects
+    # objects, or if we used a custom serialization type for tags
+    # as documented on http://mongoid.org/en/mongoid/docs/documents.html
     tags
 
     new_tags = values.map { |v| TagRepository.load(v) }.compact
@@ -83,6 +84,9 @@ module Taggable
   end
 
   def reconcile_tag_ids
+    # Ensure tags are loaded so we don't accidentally
+    # remove all tagging in situations where tags haven't
+    # been accessed during the lifetime of the object
     tags
 
     self.tag_ids = @tags.collect(&:tag_id)
