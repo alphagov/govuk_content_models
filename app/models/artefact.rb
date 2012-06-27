@@ -16,12 +16,8 @@ class Artefact
   include Mongoid::Timestamps
 
   include Taggable
-  stores_tags_for :sections, :writing_teams, :propositions
-  has_primary_tag_for :sections
-
-  def section
-    primary_section
-  end
+  stores_tags_for :sections, :writing_teams, :propositions, :keywords
+  has_primary_tag_for :section
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
