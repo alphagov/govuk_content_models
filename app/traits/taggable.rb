@@ -1,59 +1,41 @@
-# An unfinished sketch of a module to add 'taggable' behaviour to
-# an item in the gov.uk publishing domain model. It won't work as is
-# but is intended to demonstrate one mechanism for representing 
-# tagging.
-#
-#
-
 module Taggable
   module ClassMethods
     def stores_tags_for(*keys)
-      keys.map!(&:to_s)
+      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+      class_attribute :tag_types
+      self.tag_types = tag_types
 
-      keys.each { |k| 
-        attr_accessor k
+      tag_types.each do |k| 
+        define_method "#{k}=" do |values|
+          set_tags_of_type(k, values)
+        end
 
-        # define_method "#{k.singularize}=" do |values|
-        #   # tag_ids.clear
-        #   # tags.clear
+        define_method "#{k.singularize}_ids" do
+          tags_of_type(k.singularize).collect(&:tag_id)
+        end
 
-        #   values.each do |value|
-        #     tag_id, tag = Tag.id_and_entity(value)
-
-        #     tag_ids.push(tag_id) unless tag_ids.include?(tag_id)
-        #     tags.push(tag_id) unless tags.include?(tag)
-        #   end
-        # end
-
-        # define_method "#{k.singularize}_ids" do
-        #   tags.select { |t| t.tag_type == k.singularize }.collect(&:tag_id)
-        # end
-
-        # define_method k do
-        #   tags.select { |t| t.tag_type == k.singularize }
-        # end
-      }
-      self.tag_keys = keys
+        define_method k do
+          tags_of_type(k.singularize)
+        end
+      end
     end
 
-    def has_primary_tag_for(key)
-      raise "Only one primary tag type allowed" unless key.is_a?(Symbol)
+    def has_primary_tag_for(*keys)
+      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+      class_attribute :primary_tag_types
+      self.primary_tag_types = tag_types
 
-      method_name = "primary_#{key.to_s.singularize}"
-      attr_accessor method_name
-      # define_method "#{method_name}=" do |value|
-      #   tag_id, tag = Tag.id_and_entity(value)
+      tag_types.each do |key|
+        method_name = "primary_#{key}"
 
-      #   tag_ids.delete(tag_id)
-      #   tag_ids.unshift(tag_id)
+        define_method "#{method_name}=" do |value|
+          set_primary_tag_of_type(key.to_s, value)
+        end
 
-      #   tags.delete(tag)
-      #   tags.unshift(tag)
-      # end
-
-      # define_method method_name do
-      #   __send__(key.to_s.pluralize).first
-      # end
+        define_method method_name do
+          tags_of_type(key.to_s).first
+        end
+      end
     end
   end
 
@@ -61,36 +43,57 @@ module Taggable
     klass.extend         ClassMethods
     klass.field          :tag_ids, type: Array, default: []
     klass.attr_protected :tags, :tag_ids
-    klass.cattr_accessor :tag_keys, :primary_tag_keys
-    klass.private :tags, :tag_ids
+    klass.__send__       :private, :tags, :tag_ids
   end
 
-  def reconcile_tags
-    general_tags = []
-    special_tags = []
+  def set_tags_of_type(collection_name, values)
+    tag_type = collection_name.singularize
 
-    self.class.tag_keys.each do |key|
-      general_tags += __send__(key).to_a
-    end
+    # Ensure all tags loaded from database. This feels inelegant
+    # but ensures integrity. It could go away if we moved to a more
+    # consistent repository approach to retrieving and constructing
+    # objects
+    tags
 
-    self.class.primary_tag_keys.each do |key|
-      special_tags << __send__("primary_#{key.to_s.singularize}")
-    end
+    new_tags = values.map { |v| TagRepository.load(v) }.compact
+    raise "Missing tags" unless new_tags.size == values.size
+    raise "Wrong tag type" unless new_tags.all? { |t| t.tag_type == tag_type }
 
-    # Don't duplicate tags
-    general_tags -= special_tags
-
-    # Fill up tag_ids
-    self.tag_ids = (special_tags + general_tags).reject { |t| t.blank? }
+    @tags.reject! { |t| t.tag_type == tag_type }
+    @tags += new_tags
   end
 
-  # TODO: Work out best way to memoise this
+  # The primary tag is simply the first one of its
+  # type. If that tag is already applied this method
+  # moves it to the start of the list. If it's not then
+  # we add it at the start of the list.
+  def set_primary_tag_of_type(tag_type, value)
+    tags
+
+    tag = TagRepository.load(value)
+    raise "Missing tag" unless tag
+    raise "Wrong tag type" unless tag.tag_type == tag_type
+
+    @tags -= [tag]
+    @tags.unshift(tag)
+  end
+
+  def tags_of_type(tag_type)
+    tags.select { |t| t.tag_type == tag_type }
+  end
+
+  def reconcile_tag_ids
+    tags
+
+    self.tag_ids = @tags.collect(&:tag_id)
+  end
+
   def tags
-    TagRepository.load_all_with_ids(tag_ids).to_a
+    @tags ||= TagRepository.load_all_with_ids(tag_ids).to_a
   end
 
   def save
-    reconcile_tags
-    parent
+    reconcile_tag_ids
+    super
   end
 end
