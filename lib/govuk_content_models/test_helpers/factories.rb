@@ -17,6 +17,9 @@ FactoryGirl.define do
 
   factory :artefact do
     sequence(:slug) { |n| "slug-#{n}" }
+    name "An Artefact"
+    kind "answer"
+    owning_app "publisher"
   end
 
   factory :edition, class: AnswerEdition do
