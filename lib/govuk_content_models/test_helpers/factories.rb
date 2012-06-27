@@ -16,11 +16,16 @@ FactoryGirl.define do
   end
 
   factory :tag do
-
+    sequence(:tag_id) { |n| "crime-and-justice/the-police-#{n}" }
+    sequence(:title) { |n| "The title #{n}" }
+    tag_type "section"
   end
 
   factory :artefact do
+    sequence(:name) { |n| "Artefact #{n}" }
     sequence(:slug) { |n| "slug-#{n}" }
+    kind            Artefact::FORMATS.first
+    owning_app      'publisher'
   end
 
   factory :edition, class: AnswerEdition do
