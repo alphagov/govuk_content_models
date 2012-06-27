@@ -9,6 +9,10 @@ FactoryGirl.define do
     sequence(:uid) { |n| "uid-#{n}"}
     sequence(:name) { |n| "Joe Bloggs #{n}" }
     sequence(:email) { |n| "joe#{n}@bloggs.com" }
+    if defined?(GDS::SSO::Config)
+      # Grant permission to signin to the app using the gem
+      permissions { Hash[GDS::SSO::Config.default_scope => ["signin"]] }
+    end
   end
 
   factory :tag do
