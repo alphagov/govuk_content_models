@@ -38,7 +38,6 @@ class Artefact
   field "live",                 type: Boolean, default: false
   # field "primary_section",      type: String
 
-  index "tag_ids"
   # index "primary_section"
 
   MAXIMUM_RELATED_ITEMS = 8

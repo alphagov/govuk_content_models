@@ -42,6 +42,7 @@ module Taggable
   def self.included(klass)
     klass.extend         ClassMethods
     klass.field          :tag_ids, type: Array, default: []
+    klass.index          :tag_ids
     klass.attr_protected :tags, :tag_ids
     klass.__send__       :private, :tag_ids=
   end
