@@ -1,0 +1,2 @@
+class SectionTag < Tag
+end

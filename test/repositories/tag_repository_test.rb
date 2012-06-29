@@ -26,4 +26,7 @@ class TagRepositoryTest < ActiveSupport::TestCase
     assert_equal TagRepository.load_all(:tag_type => 'weevil').count, 0
   end
 
+  test "should return a SectionTag object when loading a section" do
+    assert_equal SectionTag, TagRepository.load('crime').class
+  end
 end
