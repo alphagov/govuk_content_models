@@ -11,10 +11,12 @@ module TagRepository
   def self.load_all(options={})
     tag_type = options[:tag_type]
     if tag_type.nil?
-      Tag.all
+      tags = Tag.all
     else
-      Tag.where(:tag_type => tag_type)
+      tags = Tag.where(:tag_type => tag_type)
     end
+
+    tags.map { |t| correct_tag_class(t) }
   end
 
   def self.load(id)
