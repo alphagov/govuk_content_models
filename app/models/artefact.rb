@@ -4,8 +4,8 @@ require "plek"
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
-    if record.changes.keys.include?("slug") && record.any_editions_published?
-      record.errors[:slug] << ("Cannot edit slug for artefacts that have published editions")
+    if record.changes.keys.include?("slug") && record.live_was == true
+      record.errors[:slug] << ("Cannot edit slug for live artefacts")
     end
   end
 end

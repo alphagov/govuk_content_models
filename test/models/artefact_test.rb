@@ -96,25 +96,18 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal artefact.name, edition.title
   end
 
-  test "should not let you edit the slug if there are any published edition" do
+  test "should not let you edit the slug if the artefact is live" do
     artefact = FactoryGirl.create(:artefact,
         slug: "too-late-to-edit",
         kind: "answer",
         name: "Foo bar",
         owning_app: "publisher",
+        live: true
     )
 
-    user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
-    edition.state = "published"
-    edition.save!
-
-    assert_equal artefact.slug, edition.slug
-
     artefact.slug = "belated-correction"
-    artefact.save
+    refute artefact.save
 
-    assert_equal "too-late-to-edit", edition.slug
     assert_equal "too-late-to-edit", artefact.reload.slug
   end
 
