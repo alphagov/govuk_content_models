@@ -12,8 +12,11 @@ class LicenceEdition < Edition
 
   @fields_to_clone = [:licence_identifier, :licence_short_description, :licence_overview]
 
-  private
+  def whole_body
+    [license_short_description, license_overview].join("\n\n")
+  end
 
+  private
   def licence_identifier_unique
     if self.class.where(:licence_identifier => licence_identifier, :panopticon_id.ne => panopticon_id).any?
       errors.add(:licence_identifier, :taken)

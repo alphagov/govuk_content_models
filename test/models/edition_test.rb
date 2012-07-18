@@ -1,10 +1,10 @@
 require "test_helper"
 
-require "answer_edition"
-require "edition"
-require "guide_edition"
-require "local_transaction_edition"
-require "programme_edition"
+# Load all *edition models
+Dir.glob(File.expand_path("../../../app/models/*edition.rb", __FILE__)).each do |f|
+  require f
+end
+
 require "user"
 
 class Edition
@@ -722,5 +722,11 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, @new_edition.version_number
     assert_nil @new_edition.sibling_in_progress
     assert_nil @published_edition.sibling_in_progress
+  end
+
+  test "all subclasses should provide a whole_body method for diffing" do
+    Edition.subclasses.each do |klass|
+      assert klass.instance_methods.include?(:whole_body), "#{klass} doesn't provide a whole_body"
+    end
   end
 end
