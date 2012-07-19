@@ -724,9 +724,12 @@ class EditionTest < ActiveSupport::TestCase
     assert_nil @published_edition.sibling_in_progress
   end
 
-  test "all subclasses should provide a whole_body method for diffing" do
+  test "all subclasses should provide a working whole_body method for diffing" do
     Edition.subclasses.each do |klass|
       assert klass.instance_methods.include?(:whole_body), "#{klass} doesn't provide a whole_body"
+      assert_nothing_raised do
+        klass.new.whole_body
+      end
     end
   end
 end

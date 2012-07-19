@@ -13,7 +13,7 @@ class LicenceEdition < Edition
   @fields_to_clone = [:licence_identifier, :licence_short_description, :licence_overview]
 
   def whole_body
-    [license_short_description, license_overview].join("\n\n")
+    [licence_short_description, licence_overview].join("\n\n")
   end
 
   private
