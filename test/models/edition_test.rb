@@ -43,16 +43,6 @@ class EditionTest < ActiveSupport::TestCase
     template_answer(version_number)
   end
 
-  def fact_check_and_publish(edition = nil)
-    @user.start_work(edition)
-    @user.request_review(edition, {comment: "Review this guide please."})
-    @other_user.approve_review(edition, {comment: "I've reviewed it"})
-    @user.send_fact_check(edition, {comment: "Review this guide please.", email_addresses: 'test@test.com'})
-    @user.receive_fact_check(edition, {comment: "No changes needed, this is all correct"})
-    @other_user.approve_fact_check(edition, {comment: "Looks good to me"})
-    @user.publish(edition, {comment: "First edition"})
-  end
-
   test "it must have a title" do
     a = LocalTransactionEdition.new
     refute a.valid?
