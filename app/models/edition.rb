@@ -123,6 +123,15 @@ class Edition
     real_fields_to_merge.each do |attr|
       new_edition.send("#{attr}=", read_attribute(attr))
     end
+
+    if edition_class == AnswerEdition and self.class == GuideEdition
+      new_edition.body = self.whole_body
+    end
+
+    if edition_class == GuideEdition and self.class == AnswerEdition
+      new_edition.parts.build(title: "Part One", body: self.whole_body, slug: "part-one")
+    end
+
     new_edition
   end
 
