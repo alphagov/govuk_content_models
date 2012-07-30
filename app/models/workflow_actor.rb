@@ -52,10 +52,16 @@ module WorkflowActor
     item
   end
 
-  def new_version(edition)
+  def new_version(edition, convert_to = nil)
     return false unless edition.published?
 
-    new_edition = edition.build_clone
+    if not convert_to.nil?
+      convert_to = convert_to.to_s.camelize.constantize
+      new_edition = edition.build_clone(convert_to)
+    else
+      new_edition = edition.build_clone
+    end
+
     if new_edition
       record_action new_edition, Action::NEW_VERSION
       new_edition

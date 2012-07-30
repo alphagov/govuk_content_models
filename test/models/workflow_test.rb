@@ -73,6 +73,13 @@ class WorkflowTest < ActiveSupport::TestCase
     assert new_edition.save
   end
 
+  test "should allow creation of new editions from GuideEdition to AnswerEdition" do
+    user, guide = publisher_and_guide
+    new_edition = user.new_version(guide, AnswerEdition)
+
+    assert_equal "AnswerEdition", new_edition._type
+  end
+
   test "a new answer is lined up" do
     g = AnswerEdition.new(slug: "childcare", panopticon_id: "123", title: "My new answer")
     assert g.lined_up?
