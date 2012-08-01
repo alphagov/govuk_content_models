@@ -157,4 +157,14 @@ class ArtefactTest < ActiveSupport::TestCase
 
     assert_equal true, artefact.any_editions_published?
   end
+
+  test "should have a specialist_body field present for markdown content" do
+    artefact = Artefact.create!(slug: "parent", name: "Harry Potter", kind: "guide", owning_app: "x")
+
+    assert_equal false,  artefact.attributes.include?("specialist_body")
+
+    artefact.specialist_body = "Something wicked this way comes"
+    assert_equal true,  artefact.attributes.include?("specialist_body")
+    assert_equal "Something wicked this way comes", artefact.specialist_body
+  end
 end
