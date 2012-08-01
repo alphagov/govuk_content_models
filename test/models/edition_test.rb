@@ -748,4 +748,17 @@ class EditionTest < ActiveSupport::TestCase
 
     assert_equal expected, guide_edition.whole_body
   end
+
+  test "should have a specialist_body field present for markdown content" do
+    artefact = FactoryGirl.create(:artefact, kind: "answer",
+      name: "Foo bar", owning_app: "publisher")
+    edition = AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: artefact.id,
+      title: "Child care stuff", body: "Lots of info", version_number: 1)
+
+    assert_equal false,  edition.attributes.include?("specialist_body")
+
+    edition.specialist_body = "Something wicked this way comes"
+    assert_equal true,  edition.attributes.include?("specialist_body")
+    assert_equal "Something wicked this way comes", edition.specialist_body
+  end
 end
