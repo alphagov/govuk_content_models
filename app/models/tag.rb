@@ -36,4 +36,11 @@ class Tag
       return value, TagRepository.load(value)
     end
   end
+
+  def full_path_title
+    if has_parent?
+      return "#{self.parent.title}/#{self.title}"
+    end
+    self.title
+  end
 end
