@@ -20,7 +20,6 @@ class Edition
   field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
   field :tags,                 type: String
-  field :specialist_body,      type: String
 
   field :assignee,             type: String
   field :creator,              type: String
