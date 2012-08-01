@@ -33,6 +33,7 @@ class Artefact
   field "primary_section",      type: String
   field "description",          type: String
   field "live",                 type: Boolean, default: false
+  field "specialist_body",      type: String
 
   index "tag_ids"
   index "primary_section"
