@@ -43,4 +43,8 @@ class Tag
     end
     self.title
   end
+
+  def to_s
+    title
+  end
 end
