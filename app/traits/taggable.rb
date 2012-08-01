@@ -58,7 +58,7 @@ module Taggable
     tags
 
     new_tags = values.map { |v| TagRepository.load(v) }.compact
-    raise "Missing tags" unless new_tags.size == values.size
+    raise "Missing tags #{tag_type} got: #{values}" unless new_tags.size == values.size
     raise "Wrong tag type" unless new_tags.all? { |t| t.tag_type == tag_type }
 
     @tags.reject! { |t| t.tag_type == tag_type }
