@@ -1,3 +1,5 @@
-Shared models for Panopticon and Publisher.
+# Gov.uk Content Models
 
-Work in progress.
+A gem containing the shared models for Panopticon and Publisher.
+
+This is a continual **work in progress**.
