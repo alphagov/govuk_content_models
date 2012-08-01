@@ -35,9 +35,6 @@ class Artefact
   field "publication_id",       type: String
   field "description",          type: String
   field "live",                 type: Boolean, default: false
-  # field "primary_section",      type: String
-
-  # index "primary_section"
 
   MAXIMUM_RELATED_ITEMS = 8
 
