@@ -206,6 +206,18 @@ class Artefact
     raise Mongoid::Errors::DocumentNotFound.new(self, slug_or_id)
   end
 
+  def update_attributes_as(user, *args)
+    assign_attributes(*args)
+    save_as user
+  end
+
+  def save_as(user, options={})
+    default_action = new_record? ? "create" : "update"
+    action_type = options.delete(:action_type) || default_action
+    record_action action_type, user: user
+    save(options)
+  end
+
   def record_create_action
     record_action "create"
   end
@@ -214,12 +226,13 @@ class Artefact
     record_action "update"
   end
 
-  def record_action(action_type)
+  def record_action(action_type, options={})
+    user = options[:user]
     current_snapshot = snapshot
     last_snapshot = actions.last ? actions.last.snapshot : nil
     unless current_snapshot == last_snapshot
       actions.create!(
-        user: nil,
+        user: user,
         action_type: action_type,
         snapshot: current_snapshot
       )
