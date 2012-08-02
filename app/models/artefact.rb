@@ -231,11 +231,16 @@ class Artefact
     current_snapshot = snapshot
     last_snapshot = actions.last ? actions.last.snapshot : nil
     unless current_snapshot == last_snapshot
-      actions.build(
+      new_action = actions.build(
         user: user,
         action_type: action_type,
         snapshot: current_snapshot
       )
+      # Mongoid will not fire creation callbacks on embedded documents, so we
+      # need to trigger this manually. There is a `cascade_callbacks` option on
+      # `embeds_many`, but it doesn't appear to trigger creation events on
+      # children when an update event fires on the parent
+      new_action.set_created_at
     end
   end
 

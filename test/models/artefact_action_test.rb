@@ -44,6 +44,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
     action = a.actions.first
     assert_equal "create", action[:action_type]
     assert_equal merge_attributes(DEFAULTS, base_fields), action.snapshot
+    assert action.created_at, "Action has no creation timestamp"
   end
 
   test "an updated artefact should have two actions" do
@@ -58,6 +59,9 @@ class ArtefactActionTest < ActiveSupport::TestCase
     update_snapshot = create_snapshot.merge("description" => a.description)
     assert_equal create_snapshot, a.actions[0].snapshot
     assert_equal update_snapshot, a.actions[1].snapshot
+    a.actions.each do |action|
+      assert action.created_at, "Action has no creation timestamp"
+    end
   end
 
   test "saving with no tracked changes will not create a new snapshot" do
