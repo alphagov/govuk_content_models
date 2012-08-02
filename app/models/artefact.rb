@@ -24,6 +24,7 @@ class Artefact
   field "slug",                 type: String
   field "kind",                 type: String
   field "owning_app",           type: String
+  field "rendering_app",        type: String
   field "active",               type: Boolean, default: false
   field "need_id",              type: String
   field "fact_checkers",        type: String
