@@ -9,11 +9,12 @@ class User
   include GDS::SSO::User
   include WorkflowActor
 
-  field "name",         type: String
-  field "uid",          type: String
-  field "version",      type: Integer
-  field "email",        type: String
-  field "permissions",  type: Hash
+  field "name",                type: String
+  field "uid",                 type: String
+  field "version",             type: Integer
+  field "email",               type: String
+  field "permissions",         type: Hash
+  field "remotely_signed_out", type: Boolean, default: false
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :name, :uid

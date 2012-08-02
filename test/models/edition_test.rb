@@ -1,10 +1,10 @@
 require "test_helper"
 
-require "answer_edition"
-require "edition"
-require "guide_edition"
-require "local_transaction_edition"
-require "programme_edition"
+# Load all *edition models
+Dir.glob(File.expand_path("../../../app/models/*edition.rb", __FILE__)).each do |f|
+  require f
+end
+
 require "user"
 
 class Edition
@@ -726,5 +726,30 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, @new_edition.version_number
     assert_nil @new_edition.sibling_in_progress
     assert_nil @published_edition.sibling_in_progress
+  end
+
+  test "all subclasses should provide a working whole_body method for diffing" do
+    Edition.subclasses.each do |klass|
+      assert klass.instance_methods.include?(:whole_body), "#{klass} doesn't provide a whole_body"
+      assert_nothing_raised do
+        klass.new.whole_body
+      end
+    end
+  end
+
+  test "should convert a GuideEdition to an AnswerEdition" do
+    guide_edition = FactoryGirl.create(:guide_edition, state: "published")
+    answer_edition = guide_edition.build_clone(AnswerEdition)
+
+    assert_equal guide_edition.whole_body, answer_edition.whole_body
+  end
+
+  test "should convert an AnswerEdition to a GuideEdition" do
+    answer_edition = template_published_answer
+    guide_edition = answer_edition.build_clone(GuideEdition)
+
+    expected = "# Part One\n\n" + answer_edition.whole_body
+
+    assert_equal expected, guide_edition.whole_body
   end
 end

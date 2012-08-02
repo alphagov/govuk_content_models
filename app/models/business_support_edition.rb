@@ -1,4 +1,5 @@
 require "edition"
+require "parted"
 
 class BusinessSupportEdition < Edition
   include Parted

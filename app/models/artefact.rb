@@ -5,8 +5,8 @@ require 'taggable'
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
-    if record.changes.keys.include?("slug") && record.any_editions_published?
-      record.errors[:slug] << ("Cannot edit slug for artefacts that have published editions")
+    if record.changes.keys.include?("slug") && record.live_was == true
+      record.errors[:slug] << ("Cannot edit slug for live artefacts")
     end
   end
 end
@@ -28,6 +28,7 @@ class Artefact
   field "slug",                 type: String
   field "kind",                 type: String
   field "owning_app",           type: String
+  field "rendering_app",        type: String
   field "active",               type: Boolean, default: false
   field "need_id",              type: String
   field "fact_checkers",        type: String
@@ -35,6 +36,7 @@ class Artefact
   field "publication_id",       type: String
   field "description",          type: String
   field "live",                 type: Boolean, default: false
+  field "specialist_body",      type: String
 
   MAXIMUM_RELATED_ITEMS = 8
 

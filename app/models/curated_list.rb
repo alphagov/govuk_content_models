@@ -1,3 +1,5 @@
+require "slug_validator"
+
 class CuratedList
   include Mongoid::Document
   include Mongoid::Timestamps

@@ -38,37 +38,6 @@ class Action
     edition.container.class.name.underscore.humanize
   end
 
-  def friendly_description
-    case request_type
-    when CREATE
-      "Created #{edition.format_name}: \"#{edition.title}\" (by #{requester.name})"
-    when START_WORK
-      "Work started: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when REQUEST_REVIEW
-      "Review requested: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when APPROVE_REVIEW
-      "Okayed for publication: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when APPROVE_FACT_CHECK
-      "Fact check okayed for publication: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when REQUEST_AMENDMENTS
-      "Amends needed: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when SEND_FACT_CHECK
-      "Fact check requested: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when RECEIVE_FACT_CHECK
-      "Fact check response: \"#{edition.title}\" (#{edition.format_name})"
-    when PUBLISH
-      "Published: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when ARCHIVE
-      "Archived: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when NEW_VERSION
-      "New version: \"#{edition.title}\" (#{edition.format_name}) by #{requester.name}"
-    when NOTE
-      "Note added by #{requester.name}"
-    when ASSIGN
-      "Assigned: \"#{edition.title}\" (#{edition.format_name}) to #{recipient.name}"
-    end
-  end
-
   def status_action?
     STATUS_ACTIONS.include?(request_type)
   end
@@ -78,7 +47,7 @@ class Action
   end
 
   def is_fact_check_request?
-    #SEND_FACT_CHECK is now a state - in older publications it isn't
+    # SEND_FACT_CHECK is now a state - in older publications it isn't
     request_type == SEND_FACT_CHECK || request_type == "fact_check_requested" ? true : false
   end
 end

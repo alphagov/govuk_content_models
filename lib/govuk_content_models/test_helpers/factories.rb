@@ -9,24 +9,30 @@ FactoryGirl.define do
     sequence(:uid) { |n| "uid-#{n}"}
     sequence(:name) { |n| "Joe Bloggs #{n}" }
     sequence(:email) { |n| "joe#{n}@bloggs.com" }
+    if defined?(GDS::SSO::Config)
+      # Grant permission to signin to the app using the gem
+      permissions { Hash[GDS::SSO::Config.default_scope => ["signin"]] }
+    end
   end
 
   factory :tag do
-
+    sequence(:tag_id) { |n| "crime-and-justice/the-police-#{n}" }
+    sequence(:title) { |n| "The title #{n}" }
+    tag_type "section"
   end
 
   factory :artefact do
+    sequence(:name) { |n| "Artefact #{n}" }
     sequence(:slug) { |n| "slug-#{n}" }
-    name "An Artefact"
-    kind "answer"
-    owning_app "publisher"
+    kind            Artefact::FORMATS.first
+    owning_app      'publisher'
   end
 
   factory :edition, class: AnswerEdition do
     sequence(:panopticon_id)
     sequence(:slug) { |n| "slug-#{n}" }
+    sequence(:title) { |n| "A key answer to your question #{n}" }
 
-    title "A key answer to your question"
     section "test:subsection test"
 
     association :assigned_to, factory: :user
@@ -60,6 +66,14 @@ FactoryGirl.define do
     after :create do |getp|
       getp.parts.build(title: "PART !", body: "This is some version text.", slug: "part-one")
       getp.parts.build(title: "PART !!", body: "This is some more version text.", slug: "part-two")
+    end
+  end
+
+  factory :guide_edition_with_two_govspeak_parts, parent: :guide_edition do
+    title "A title for govspeak parts"
+    after :create do |getp|
+      getp.parts.build(title: "Some Part Title!", body: "This is some **version** text.", slug: "part-one")
+      getp.parts.build(title: "Another Part Title", body: "This is [link](http://example.net/) text.", slug: "part-two")
     end
   end
 

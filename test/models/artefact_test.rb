@@ -96,25 +96,18 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal artefact.name, edition.title
   end
 
-  test "should not let you edit the slug if there are any published edition" do
+  test "should not let you edit the slug if the artefact is live" do
     artefact = FactoryGirl.create(:artefact,
         slug: "too-late-to-edit",
         kind: "answer",
         name: "Foo bar",
         owning_app: "publisher",
+        live: true
     )
 
-    user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
-    edition.state = "published"
-    edition.save!
-
-    assert_equal artefact.slug, edition.slug
-
     artefact.slug = "belated-correction"
-    artefact.save
+    refute artefact.save
 
-    assert_equal "too-late-to-edit", edition.slug
     assert_equal "too-late-to-edit", artefact.reload.slug
   end
 
@@ -163,5 +156,15 @@ class ArtefactTest < ActiveSupport::TestCase
     edition.save!
 
     assert_equal true, artefact.any_editions_published?
+  end
+
+  test "should have a specialist_body field present for markdown content" do
+    artefact = Artefact.create!(slug: "parent", name: "Harry Potter", kind: "guide", owning_app: "x")
+
+    assert_equal false,  artefact.attributes.include?("specialist_body")
+
+    artefact.specialist_body = "Something wicked this way comes"
+    assert_equal true,  artefact.attributes.include?("specialist_body")
+    assert_equal "Something wicked this way comes", artefact.specialist_body
   end
 end
