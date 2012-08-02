@@ -53,20 +53,6 @@ class TaggableTest < ActiveSupport::TestCase
     end
   end
 
-  test "can set primary section to the empty string" do
-    pending "does this make sense if there are other sections set?"
-    @item.primary_section = 'crime'
-    @item.primary_section = ''
-    refute @item.primary_section
-  end
-
-  test "can set primary section to nil" do
-    pending "does this make sense if there are other sections set?"
-    @item.primary_section = 'crime'
-    @item.primary_section = nil
-    refute @item.primary_section
-  end
-
   test "cannot set non-section tags" do
     assert_raise RuntimeError do
       @item.sections = ['crime', 'bacon']
