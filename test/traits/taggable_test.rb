@@ -91,18 +91,6 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal 'Crime', @item.primary_section.title
   end
 
-  test "appending sections either works or raises an exception" do
-    pending "Where do we need this functionality?"
-
-    @item.sections = ['crime']
-    begin
-      @item.sections << 'crime/the-police'
-    rescue RuntimeError
-      return  # If the sections list is frozen, that's ok
-    end
-    assert_equal ['crime', 'crime/the-police'], @item.sections.collect(&:tag_id)
-  end
-
   test "setting primary section adds section to tags" do
     @item.sections = ['crime', 'crime/the-police']
     @item.primary_section = 'crime/batman'
@@ -119,21 +107,4 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal ['crime', 'crime/the-police'], @item.sections.collect(&:tag_id).sort
   end
 
-  test "can prepend tags" do
-    pending "This is no longer valid with the new implementation but needs exploration"
-
-    # A bug in earlier versions of the mongoid library meant it would try to be
-    # a little too clever dealing with arrays, and in so doing would process
-    # modified arrays as $pushAll operators, breaking the array's ordering
-    @item.tag_ids = ['crime', 'crime/the-police']
-    @item.save
-    @item.reload
-    assert_equal ['crime', 'crime/the-police'], @item.tag_ids
-
-    @item.tag_ids = ['crime/batman'] + @item.sections
-    assert_equal ['crime/batman', 'crime', 'crime/the-police'], @item.tag_ids
-    @item.save
-    @item.reload
-    assert_equal @item.tag_ids, ['crime/batman', 'crime', 'crime/the-police']
-  end
 end
