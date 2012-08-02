@@ -231,7 +231,7 @@ class Artefact
     current_snapshot = snapshot
     last_snapshot = actions.last ? actions.last.snapshot : nil
     unless current_snapshot == last_snapshot
-      actions.create!(
+      actions.build(
         user: user,
         action_type: action_type,
         snapshot: current_snapshot
