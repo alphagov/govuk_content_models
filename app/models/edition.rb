@@ -87,6 +87,10 @@ class Edition
     series.where(state: "published").order(version_number: "desc").second
   end
 
+  def in_progress_sibling
+    subsequent_siblings.in_progress.order(version_number: "desc").first
+  end
+
   def can_create_new_edition?
     subsequent_siblings.in_progress.empty?
   end
