@@ -97,6 +97,11 @@ module Taggable
     @tags ||= TagRepository.load_all_with_ids(tag_ids).to_a
   end
 
+  def reload
+    @tags = nil
+    super
+  end
+
   def save
     reconcile_tag_ids
     super
