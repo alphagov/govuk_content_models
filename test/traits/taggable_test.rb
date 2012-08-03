@@ -93,4 +93,15 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal ['crime', 'crime/the-police'], @item.sections.collect(&:tag_id).sort
   end
 
+  test "setting primary section to existing section reorders correctly" do
+    @item.sections = ['crime', 'crime/the-police']
+    @item.save!
+
+    @item.primary_section = 'crime/batman'
+    @item.save!
+
+    assert_equal 'crime/batman', @item.primary_section.tag_id
+    assert_equal ['crime/batman', 'crime', 'crime/the-police'], @item.sections.collect(&:tag_id)
+  end
+
 end
