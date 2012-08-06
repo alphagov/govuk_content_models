@@ -3,8 +3,6 @@ require "parted"
 class ProgrammeEdition < Edition
   include Parted
 
-  before_save :setup_default_parts, on: :create
-
   @fields_to_clone = []
 
   DEFAULT_PARTS = [
@@ -15,11 +13,7 @@ class ProgrammeEdition < Edition
     {title: "Further information", slug: "further-information"},
   ]
 
-  def setup_default_parts
-    if parts.empty?
-      DEFAULT_PARTS.each { |part|
-        parts.build(title: part[:title], slug: part[:slug], body: "")
-      }
-    end
+  set_callback(:create, :before) do |document|
+    setup_default_parts(DEFAULT_PARTS)
   end
 end
