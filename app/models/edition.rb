@@ -87,6 +87,10 @@ class Edition
     series.where(state: "published").order(version_number: "desc").second
   end
 
+  def in_progress_sibling
+    subsequent_siblings.in_progress.order(version_number: "desc").first
+  end
+
   def can_create_new_edition?
     subsequent_siblings.in_progress.empty?
   end
@@ -106,6 +110,7 @@ class Edition
 
   def build_clone(edition_class=nil)
     raise "Cloning of non published edition not allowed" if self.state != "published"
+    raise "Cloning of a published edition when an in-progress edition exists is not allowed" if ! can_create_new_edition?
 
     edition_class = self.class if edition_class.nil?
     new_edition = edition_class.new(title: self.title, version_number: get_next_version_number)

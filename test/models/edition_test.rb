@@ -96,7 +96,23 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(:guide_edition,
                                   panopticon_id: 1,
                                   version_number: 1)
-    assert_raise (RuntimeError) do
+    assert_raise(RuntimeError) do
+      edition.build_clone
+    end
+  end
+
+  test "cloning can only occur from a published edition with no subsequent in progress siblings" do
+    edition = FactoryGirl.create(:guide_edition,
+                                  panopticon_id: 1,
+                                  state: "published",
+                                  version_number: 1)
+    
+    FactoryGirl.create(:guide_edition,
+                        panopticon_id: 1,
+                        state: "draft",
+                        version_number: 2)
+
+    assert_raise(RuntimeError) do
       edition.build_clone
     end
   end
