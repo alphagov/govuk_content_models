@@ -1,7 +1,7 @@
 require "slug_validator"
 require "tag_repository"
 require "plek"
-require 'taggable'
+require "taggable"
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
