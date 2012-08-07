@@ -23,6 +23,8 @@ class Artefact
 
   field "name",                 type: String
   field "slug",                 type: String
+  field "paths",                type: Array, default: []
+  field "prefixes",             type: Array, default: []
   field "kind",                 type: String
   field "owning_app",           type: String
   field "rendering_app",        type: String

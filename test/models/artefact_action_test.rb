@@ -25,6 +25,8 @@ class ArtefactActionTest < ActiveSupport::TestCase
     "tag_ids" => [],
     "live" => false,
     "related_artefact_ids" => [],
+    "paths" => [],
+    "prefixes" => []
   }
 
   def base_fields
