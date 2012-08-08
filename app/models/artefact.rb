@@ -111,12 +111,8 @@ class Artefact
       else
         hash.delete "tag_ids"
       end
-      # Intermediate solution
-      # We do not want the field primary_section, we need the taggable method primary_section
-      # Note: This is an interim solution until the field is unset from the document
-      if hash['primary_section']
-        hash['primary_section'] = self.primary_section.tag_id
-      end
+      
+      hash['primary_section'] = self.primary_section.tag_id
 
       unless options[:ignore_related_artefacts]
         hash["related_items"] = published_related_artefacts.map { |a| {"artefact" => a.as_json(ignore_related_artefacts: true)} }
