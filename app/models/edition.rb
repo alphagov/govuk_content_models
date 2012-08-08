@@ -220,7 +220,7 @@ class Edition
   # published (and therefore aren't registered in the rest of the)
   # system.
   def destroy_artefact
-    if can_destroy? and siblings.empty?
+    if can_destroy? && siblings.empty?
       Artefact.find(self.panopticon_id).destroy
     end
   end
