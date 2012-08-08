@@ -11,6 +11,10 @@ class Tag
 
   validates_presence_of :tag_id, :title, :tag_type
 
+  # This doesn't get set automatically: the code that loads tags
+  # should go through them and set this attribute manually
+  attr_accessor :uniquely_named
+
   def as_json(options = {})
     {
       id: self.tag_id,
@@ -37,11 +41,9 @@ class Tag
     end
   end
 
-  def full_path_title
-    if has_parent?
-      return "#{self.parent.title}/#{self.title}"
-    end
-    self.title
+  def unique_title
+    logger.info(uniquely_named ? "#{self.tag_id} is uniquely named" : "#{self.tag_id} is not uniquely named")
+    self.uniquely_named ? self.title : "#{self.title} [#{self.tag_id}]"
   end
 
   def to_s
