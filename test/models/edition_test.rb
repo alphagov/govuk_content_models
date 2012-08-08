@@ -327,6 +327,31 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
+  test "should not delete associated artefact if there are other editions of this publication" do
+    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    artefact = FactoryGirl.create(:artefact,
+        slug: "foo-bar",
+        kind: "answer",
+        name: "Foo bar",
+        primary_section: "test-section",
+        sections: ["test-section"],
+        department: "Test dept",
+        owning_app: "publisher",
+    )
+
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition.update_attribute(:state, "published")
+
+    edition.reload
+    second_edition = edition.build_clone
+    second_edition.save!
+
+    assert_no_difference "Artefact.count" do
+      second_edition.destroy
+    end
+  end
+
   test "should scope publications assigned to nobody" do
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})

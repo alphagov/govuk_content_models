@@ -210,8 +210,17 @@ class Edition
     self.save!
   end
 
+  ##
+  # When we delete an edition is the only one in its series 
+  # we delete the associated artefact to remove all trace of the
+  # item from the system.
+  #
+  # We don't do this by notifying panopticon as this will only ever
+  # happen for artefacts representing editions that haven't been
+  # published (and therefore aren't registered in the rest of the)
+  # system.
   def destroy_artefact
-    if can_destroy?
+    if can_destroy? && siblings.empty?
       Artefact.find(self.panopticon_id).destroy
     end
   end
