@@ -203,6 +203,7 @@ class Artefact
   end
 
   def snapshot
+    reconcile_tag_ids
     attributes.except "_id", "created_at", "updated_at", "actions"
   end
 end
