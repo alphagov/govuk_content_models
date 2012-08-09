@@ -42,7 +42,6 @@ class Tag
   end
 
   def unique_title
-    logger.info(uniquely_named ? "#{self.tag_id} is uniquely named" : "#{self.tag_id} is not uniquely named")
     self.uniquely_named ? self.title : "#{self.title} [#{self.tag_id}]"
   end
 
