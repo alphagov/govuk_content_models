@@ -2,6 +2,7 @@ require "slug_validator"
 require "tag_repository"
 require "plek"
 require "taggable"
+require "artefact_action"  # Require this when running outside Rails
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
@@ -26,6 +27,8 @@ class Artefact
 
   field "name",                 type: String
   field "slug",                 type: String
+  field "paths",                type: Array, default: []
+  field "prefixes",             type: Array, default: []
   field "kind",                 type: String
   field "owning_app",           type: String
   field "rendering_app",        type: String
@@ -62,8 +65,11 @@ class Artefact
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
   belongs_to :contact
+  embeds_many :actions, class_name: "ArtefactAction", order: :created_at
 
   before_validation :normalise, on: :create
+  before_create :record_create_action
+  before_update :record_update_action
   after_update :update_editions
 
   validates :name, presence: true
@@ -156,5 +162,47 @@ class Artefact
     find_by_slug(slug_or_id) || find(slug_or_id)
   rescue BSON::InvalidObjectId
     raise Mongoid::Errors::DocumentNotFound.new(self, slug_or_id)
+  end
+
+  def update_attributes_as(user, *args)
+    assign_attributes(*args)
+    save_as user
+  end
+
+  def save_as(user, options={})
+    default_action = new_record? ? "create" : "update"
+    action_type = options.delete(:action_type) || default_action
+    record_action action_type, user: user
+    save(options)
+  end
+
+  def record_create_action
+    record_action "create"
+  end
+
+  def record_update_action
+    record_action "update"
+  end
+
+  def record_action(action_type, options={})
+    user = options[:user]
+    current_snapshot = snapshot
+    last_snapshot = actions.last ? actions.last.snapshot : nil
+    unless current_snapshot == last_snapshot
+      new_action = actions.build(
+        user: user,
+        action_type: action_type,
+        snapshot: current_snapshot
+      )
+      # Mongoid will not fire creation callbacks on embedded documents, so we
+      # need to trigger this manually. There is a `cascade_callbacks` option on
+      # `embeds_many`, but it doesn't appear to trigger creation events on
+      # children when an update event fires on the parent
+      new_action.set_created_at
+    end
+  end
+
+  def snapshot
+    attributes.except "_id", "created_at", "updated_at", "actions"
   end
 end
