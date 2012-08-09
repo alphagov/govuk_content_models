@@ -102,13 +102,13 @@ module Taggable
     super
   end
 
-  def save
+  def save(options={})
     reconcile_tag_ids
-    super
+    super(options)
   end
 
-  def save!
+  def save!(options={})
     reconcile_tag_ids
-    super
+    super(options)
   end
 end
