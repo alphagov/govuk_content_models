@@ -4,12 +4,18 @@ class Tag
   field :title,    type: String
   field :tag_type, type: String #TODO: list of accepted types?
 
+  field :parent_id, type: String
+
   index :tag_id, unique: true
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
 
-  def as_json(options={})
+  # This doesn't get set automatically: the code that loads tags
+  # should go through them and set this attribute manually
+  attr_accessor :uniquely_named
+
+  def as_json(options = {})
     {
       id: self.tag_id,
       title: self.title,
@@ -17,9 +23,29 @@ class Tag
     }
   end
 
+  def has_parent?
+    parent_id.present?
+  end
+
   def parent
-    # Warning: distinctly hacky implementation of parent detection
-    return nil unless tag_id.include? '/'
-    return TagRepository.load tag_id.split('/').first
+    if has_parent?
+      TagRepository.load(parent_id)
+    end
+  end
+
+  def self.id_and_entity(value)
+    if value.is_a?(Tag)
+      return value.name, value
+    else
+      return value, TagRepository.load(value)
+    end
+  end
+
+  def unique_title
+    self.uniquely_named ? self.title : "#{self.title} [#{self.tag_id}]"
+  end
+
+  def to_s
+    title
   end
 end

@@ -2,7 +2,7 @@ ENV["RACK_ENV"] = "test"
 
 require "bundler/setup"
 
-%w[ app/models app/validators app/repositories lib ].each do |path|
+%w[ app/models app/validators app/repositories app/traits lib ].each do |path|
   full_path = File.expand_path("../../#{path}", __FILE__)
   $:.unshift full_path unless $:.include?(full_path)
 end
