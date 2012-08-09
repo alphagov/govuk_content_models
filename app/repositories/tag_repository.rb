@@ -8,12 +8,21 @@ module TagRepository
     if tag_type.nil?
       Tag.all
     else
-      Tag.where(:tag_type => tag_type)
+      Tag.where(tag_type: tag_type)
     end
+  end
+
+  def self.load_all_with_ids(ids)
+    Tag.any_in(tag_id: ids).to_a.sort_by! { |tag| ids.index(tag.tag_id) }
   end
 
   def self.load(id)
     Tag.where(tag_id: id).first
+  end
+
+  def self.load_all_top_level(options = {})
+    options[:parent_id] = nil
+    Tag.where(options)
   end
 
   def self.put(tag)
