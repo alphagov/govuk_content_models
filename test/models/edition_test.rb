@@ -106,7 +106,7 @@ class EditionTest < ActiveSupport::TestCase
                                   panopticon_id: 1,
                                   state: "published",
                                   version_number: 1)
-    
+
     FactoryGirl.create(:guide_edition,
                         panopticon_id: 1,
                         state: "draft",
@@ -197,7 +197,7 @@ class EditionTest < ActiveSupport::TestCase
     )
     artefact.primary_section = section.tag_id
     artefact.save!
-    
+
     a = Artefact.find(artefact.id)
 
     assert_equal section.tag_id, artefact.primary_section.tag_id

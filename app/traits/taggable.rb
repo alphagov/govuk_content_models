@@ -5,7 +5,7 @@ module Taggable
       class_attribute :tag_types
       self.tag_types = tag_types
 
-      tag_types.each do |k| 
+      tag_types.each do |k|
         define_method "#{k}=" do |values|
           set_tags_of_type(k, values)
         end
