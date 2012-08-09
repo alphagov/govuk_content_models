@@ -118,8 +118,10 @@ class Artefact
         hash.delete "tag_ids"
       end
       
-      hash['primary_section'] = self.primary_section.tag_id
-
+      if self.primary_section
+        hash['primary_section'] = self.primary_section.tag_id
+      end
+      
       unless options[:ignore_related_artefacts]
         hash["related_items"] = published_related_artefacts.map { |a| {"artefact" => a.as_json(ignore_related_artefacts: true)} }
       end
