@@ -11,9 +11,10 @@ class VideoEdition < Edition
   end
 
   def whole_body
-    return nil if video_summary.nil? and video_url.nil?
-    return "#{video_url}" if video_summary.nil?
-    return "#{video_summary}" if video_url.nil?
-    "#{video_url}\n\n#{video_summary}"
+    if video_summary and video_url
+      "#{video_url}\n\n#{video_summary}"
+    else
+      video_url || video_summary
+    end
   end
 end
