@@ -167,4 +167,15 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal true,  artefact.attributes.include?("specialist_body")
     assert_equal "Something wicked this way comes", artefact.specialist_body
   end
+
+  test "should have 'video' as a supported FORMAT" do
+    assert_equal true, Artefact::FORMATS.include?("video")
+  end
+
+  test "should allow creation of artefacts with 'video' as the kind" do
+    artefact = Artefact.create!(slug: "omlette-du-fromage", name: "Omlette du fromage", kind: "video", owning_app: "Dexter's Lab")
+
+    assert_equal false, artefact.nil?
+    assert_equal "video", artefact.kind
+  end
 end
