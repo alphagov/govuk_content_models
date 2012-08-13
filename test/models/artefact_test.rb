@@ -5,19 +5,19 @@ require "tag_repository"
 class ArtefactTest < ActiveSupport::TestCase
   test "it allows nice clean slugs" do
     a = Artefact.new(slug: "its-a-nice-day")
-    a.valid?
+    refute a.valid?
     assert a.errors[:slug].empty?
   end
 
   test "it doesn't allow apostrophes in slugs" do
     a = Artefact.new(slug: "it's-a-nice-day")
-    assert ! a.valid?
+    refute a.valid?
     assert a.errors[:slug].any?
   end
 
   test "it doesn't allow spaces in slugs" do
     a = Artefact.new(slug: "it is-a-nice-day")
-    assert ! a.valid?
+    refute a.valid?
     assert a.errors[:slug].any?
   end
 
@@ -150,32 +150,31 @@ class ArtefactTest < ActiveSupport::TestCase
     user1 = FactoryGirl.create(:user)
     edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
 
-    assert_equal false, artefact.any_editions_published?
+    refute artefact.any_editions_published?
 
     edition.state = "published"
     edition.save!
 
-    assert_equal true, artefact.any_editions_published?
+    assert artefact.any_editions_published?
   end
 
   test "should have a specialist_body field present for markdown content" do
     artefact = Artefact.create!(slug: "parent", name: "Harry Potter", kind: "guide", owning_app: "x")
-
-    assert_equal false,  artefact.attributes.include?("specialist_body")
+    refute_includes artefact.attributes, "specialist_body"
 
     artefact.specialist_body = "Something wicked this way comes"
-    assert_equal true,  artefact.attributes.include?("specialist_body")
+    assert_includes artefact.attributes, "specialist_body"
     assert_equal "Something wicked this way comes", artefact.specialist_body
   end
 
   test "should have 'video' as a supported FORMAT" do
-    assert_equal true, Artefact::FORMATS.include?("video")
+    assert_includes Artefact::FORMATS, "video"
   end
 
   test "should allow creation of artefacts with 'video' as the kind" do
     artefact = Artefact.create!(slug: "omlette-du-fromage", name: "Omlette du fromage", kind: "video", owning_app: "Dexter's Lab")
 
-    assert_equal false, artefact.nil?
+    refute artefact.nil?
     assert_equal "video", artefact.kind
   end
 end

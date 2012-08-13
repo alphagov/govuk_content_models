@@ -3,7 +3,7 @@ require "test_helper"
 class VideoEditionTest < ActiveSupport::TestCase
   test "should not be nil when initialized" do
     video = VideoEdition.new
-    assert_equal false, video.nil?
+    refute video.nil?
   end
 
   test "should give a friendly (legacy supporting) description of its format" do
@@ -13,7 +13,7 @@ class VideoEditionTest < ActiveSupport::TestCase
 
   test "should have a whole_body method which is nil if video URL and video summary aren't present" do
     video = VideoEdition.new
-    assert_equal nil, video.whole_body
+    assert_nil video.whole_body
   end
 
   test "should have a whole_body method which just has the video URL if no summary is present" do
