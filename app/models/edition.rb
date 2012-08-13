@@ -191,7 +191,7 @@ class Edition
     ! sibling_in_progress.nil?
   end
 
-  # stop broadcasting a delete message unless there are no siblings
+  # Stop broadcasting a delete message unless there are no siblings.
   def broadcast_action(callback_action)
     super(callback_action) unless (callback_action == "destroyed" and self.siblings.any?)
   end
@@ -210,8 +210,7 @@ class Edition
     self.save!
   end
 
-  ##
-  # When we delete an edition is the only one in its series 
+  # When we delete an edition is the only one in its series
   # we delete the associated artefact to remove all trace of the
   # item from the system.
   #

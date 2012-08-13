@@ -53,7 +53,8 @@ class Artefact
     "smart-answer",
     "custom-application",
     "licence",
-    "business_support"
+    "business_support",
+    "video"
   ].freeze
 
   KIND_TRANSLATIONS = {
