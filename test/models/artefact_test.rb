@@ -102,7 +102,7 @@ class ArtefactTest < ActiveSupport::TestCase
         kind: "answer",
         name: "Foo bar",
         owning_app: "publisher",
-        live: true
+        state: "live"
     )
 
     artefact.slug = "belated-correction"
