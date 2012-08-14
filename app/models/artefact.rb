@@ -6,7 +6,7 @@ require "artefact_action"  # Require this when running outside Rails
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)
-    if record.changes.keys.include?("slug") && record.live_was == true
+    if record.changes.keys.include?("slug") && record.state_was == "live"
       record.errors[:slug] << ("Cannot edit slug for live artefacts")
     end
   end
@@ -38,7 +38,7 @@ class Artefact
   field "relatedness_done",     type: Boolean, default: false
   field "publication_id",       type: String
   field "description",          type: String
-  field "live",                 type: Boolean, default: false
+  field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
 
   MAXIMUM_RELATED_ITEMS = 8
@@ -76,6 +76,7 @@ class Artefact
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
   validates :kind, inclusion: { in: FORMATS }
+  validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
   validates_with CannotEditSlugIfEverPublished
 
@@ -202,6 +203,10 @@ class Artefact
       # children when an update event fires on the parent
       new_action.set_created_at
     end
+  end
+
+  def live?
+    self.state == "live"
   end
 
   def snapshot
