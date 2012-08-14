@@ -161,7 +161,6 @@ class Artefact
   end
 
   def self.from_param(slug_or_id)
-    # FIXME: A hack until the Publisher has panopticon ids for every article
     find_by_slug(slug_or_id) || find(slug_or_id)
   rescue BSON::InvalidObjectId
     raise Mongoid::Errors::DocumentNotFound.new(self, slug_or_id)
