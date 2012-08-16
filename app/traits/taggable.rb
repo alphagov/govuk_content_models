@@ -11,12 +11,11 @@ module Taggable
         end
         alias_method :"#{k.singularize}_ids=", :"#{k}="
 
-        define_method "#{k.singularize}_ids" do
-          tags_of_type(k.singularize).collect(&:tag_id)
-        end
-
         define_method k do
           tags_of_type(k.singularize)
+        end
+        define_method "#{k.singularize}_ids" do
+          tags_of_type(k.singularize).collect(&:tag_id)
         end
       end
     end
