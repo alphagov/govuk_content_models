@@ -177,4 +177,58 @@ class ArtefactTest < ActiveSupport::TestCase
     refute artefact.nil?
     assert_equal "video", artefact.kind
   end
+
+  context "returning json representation" do
+    context "returning tags" do
+      setup do
+        TagRepository.put :tag_type => 'section', :tag_id => 'crime', :title => 'Crime'
+        TagRepository.put :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice"
+        TagRepository.put :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov'
+        TagRepository.put :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link'
+
+        @a = FactoryGirl.create(:artefact, :slug => 'fooey')
+      end
+
+      should "return empty array of tags and tag_ids" do
+        hash = @a.as_json
+
+        assert_equal [], hash['tag_ids']
+        assert_equal [], hash['tags']
+      end
+
+      context "for an artefact with tags" do
+        setup do
+          @a.sections = ['justice']
+          @a.legacy_sources = ['businesslink']
+          @a.save!
+        end
+
+        should "return an array of tag_id strings in tag_ids" do
+          hash = @a.as_json
+
+          assert_equal ['justice', 'businesslink'], hash['tag_ids']
+        end
+
+        should "return an array of tag objects in tags" do
+          hash = @a.as_json
+
+          expected = [
+            {
+              :id => 'justice',
+              :title => 'Justice',
+              :type => 'section',
+              :description => 'All about justice'
+            },
+            {
+              :id => 'businesslink',
+              :title => 'Business Link',
+              :type => 'legacy_source',
+              :description => nil
+            }
+          ]
+          assert_equal expected, hash['tags']
+        end
+      end
+    end
+  end
 end
