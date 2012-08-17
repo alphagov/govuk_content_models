@@ -104,4 +104,12 @@ class TaggableTest < ActiveSupport::TestCase
     assert_equal ['crime/batman', 'crime', 'crime/the-police'], @item.sections.collect(&:tag_id)
   end
 
+  test "can set tags using foo_ids= type method" do
+    @item.keyword_ids = ['bacon']
+    @item.save!
+
+    @item.reload
+
+    assert_equal ['bacon'], @item.keyword_ids
+  end
 end

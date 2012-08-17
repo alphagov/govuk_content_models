@@ -36,4 +36,17 @@ class ArtefactTagTest < ActiveSupport::TestCase
 
     assert_equal "#{parent.title}:#{child.title}", a.section
   end
+
+  test "has legacy_sources tag collection" do
+    ls1 = FactoryGirl.create(:tag, :tag_id => 'businesslink', :tag_type => 'legacy_source', :title => 'Business Link')
+    ls2 = FactoryGirl.create(:tag, :tag_id => 'directgov', :tag_type => 'legacy_source', :title => 'Directgov')
+    ls3 = FactoryGirl.create(:tag, :tag_id => 'dvla', :tag_type => 'legacy_source', :title => 'DVLA')
+
+    a = FactoryGirl.build(:artefact)
+    a.legacy_sources = ['businesslink', 'dvla']
+    a.save
+
+    a = Artefact.first
+    assert_equal [ls1, ls3], a.legacy_sources
+  end
 end
