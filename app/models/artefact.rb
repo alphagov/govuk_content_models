@@ -115,9 +115,10 @@ class Artefact
       include: {contact: {}}
     )).tap { |hash|
       if hash["tag_ids"]
-        hash["tag_ids"] = hash["tag_ids"].map { |tag_id| TagRepository.load(tag_id).as_json }
+        hash["tags"] = hash["tag_ids"].map { |tag_id| TagRepository.load(tag_id).as_json }
       else
-        hash.delete "tag_ids"
+        hash["tag_ids"] = []
+        hash["tags"] = []
       end
 
       if self.primary_section
