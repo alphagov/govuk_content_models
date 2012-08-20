@@ -25,6 +25,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "state_machine"
 
   gem.add_development_dependency "database_cleaner", "0.7.2"
+  gem.add_development_dependency "debugger", "1.2.0"
   gem.add_development_dependency "factory_girl", "3.3.0"
   gem.add_development_dependency "gemfury", "0.4.8"
   gem.add_development_dependency "faraday", "0.7.6" # Pin to fix jenkins being unable to resolve
