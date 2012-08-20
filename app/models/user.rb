@@ -9,10 +9,7 @@ class User
   include GDS::SSO::User
   include WorkflowActor
 
-  def self.application_name
-    Rails.application.class.parent_name.downcase
-  end
-  self.collection_name = "#{application_name}_users"
+  self.collection_name = defined?(USER_COLLECTION_NAME) ? USER_COLLECTION_NAME : "users"
 
   field "name",                type: String
   field "uid",                 type: String
