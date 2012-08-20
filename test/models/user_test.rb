@@ -109,4 +109,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal(worker_user, publication.assigned_to)
   end
 
+  test "should default to a collection called 'users'" do
+    assert_equal "users", User.collection_name
+  end
 end
