@@ -19,10 +19,12 @@ Gem::Specification.new do |gem|
   gem.add_dependency "differ"
   gem.add_dependency "gds-api-adapters"
   gem.add_dependency "gds-sso",          ">= 0.7", "< 2.0"
+  gem.add_dependency "govspeak",         "~> 0.8.15"
   gem.add_dependency "omniauth-oauth2",  "~> 1.0" # Specify as a dependency here to get Jenkins to build
   gem.add_dependency "mongoid",          "~> 2.4.10"
   gem.add_dependency "plek",             ">= 0.1.22", "< 0.4"
   gem.add_dependency "state_machine"
+  gem.add_dependency "sanitize",         "2.0.3"
 
   gem.add_development_dependency "database_cleaner", "0.7.2"
   gem.add_development_dependency "debugger", "1.2.0"
