@@ -2,12 +2,32 @@ require 'test_helper'
 require 'validators/safe_html'
 
 class SafeHtmlTest < ActiveSupport::TestCase
-  class Dummy
+  class ::Dummy
     include Mongoid::Document
 
     field "declared", type: String
 
     validates_with SafeHtml
+
+    embeds_one :dummy_embedded_single
+  end
+
+  class ::DummyEmbeddedSingle
+    include Mongoid::Document
+
+    validates_with SafeHtml
+
+    embedded_in :dummy
+  end
+
+  context "we don't quite trust mongoid (2)" do
+    should "embedded documents should be validated automatically" do
+      embedded = DummyEmbeddedMany.new(dirty: "<script>")
+      dummy = Dummy.new(dummy_embedded_many: embedded)
+      # Can't invoke embedded.valid? because that would run the validations
+      assert ! dummy.valid?
+      assert dummy.errors.has_key?(:dummy_embedded_many)
+    end
   end
 
   context "what to validate" do
