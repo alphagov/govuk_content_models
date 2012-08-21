@@ -16,6 +16,7 @@ class LocalTransactionEdition < Edition
   ]
 
   validate :valid_lgsl_code
+  validates_with SafeHtml
 
   def valid_lgsl_code
     if ! self.service

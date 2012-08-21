@@ -152,5 +152,15 @@ class SafeHtmlTest < ActiveSupport::TestCase
       dummy = Dummy.new(declared: "Fortnum & Mason")
       assert dummy.valid?
     end
+
+    should "all models should use this validator" do
+      classes = ObjectSpace.each_object(::Module).select do |klass|
+        klass < Mongoid::Document
+      end
+
+      classes.each do |klass|
+        assert_includes klass.validators.map(&:class), SafeHtml
+      end
+    end
   end
 end

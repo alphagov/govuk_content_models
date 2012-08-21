@@ -41,6 +41,8 @@ class Artefact
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
 
+  validates_with SafeHtml
+
   MAXIMUM_RELATED_ITEMS = 8
 
   FORMATS = [

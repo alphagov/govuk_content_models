@@ -5,6 +5,8 @@ class ProgrammeEdition < Edition
 
   before_save :setup_default_parts, on: :create
 
+  validates_with SafeHtml
+
   @fields_to_clone = []
 
   DEFAULT_PARTS = [

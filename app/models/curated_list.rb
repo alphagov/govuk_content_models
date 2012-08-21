@@ -10,6 +10,7 @@ class CuratedList
   index "slug"
 
   validates :slug, presence: true, uniqueness: true, slug: true
+  validates_with SafeHtml
 
   def self.find_by_slug(slug)
     where(slug: slug).first
