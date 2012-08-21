@@ -22,11 +22,11 @@ class SafeHtmlTest < ActiveSupport::TestCase
 
   context "we don't quite trust mongoid (2)" do
     should "embedded documents should be validated automatically" do
-      embedded = DummyEmbeddedMany.new(dirty: "<script>")
-      dummy = Dummy.new(dummy_embedded_many: embedded)
+      embedded = DummyEmbeddedSingle.new(dirty: "<script>")
+      dummy = Dummy.new(dummy_embedded_single: embedded)
       # Can't invoke embedded.valid? because that would run the validations
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:dummy_embedded_many)
+      assert dummy.errors.has_key?(:dummy_embedded_single)
     end
   end
 
