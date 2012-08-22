@@ -18,8 +18,8 @@ class SafeHtml < ActiveModel::Validator
     end
   end
 
-  def check_string(record, field_name, new_value)
-    dirty_html = Govspeak::Document.new(new_value).to_html
+  def check_string(record, field_name, string)
+    dirty_html = Govspeak::Document.new(string).to_html
     dirty_html.strip!
     clean_html = Sanitize.clean(dirty_html, sanitize_config)
     # Trying to make whitespace consistent
