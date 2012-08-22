@@ -2,6 +2,7 @@ require "digest/md5"
 require "cgi"
 require "gds-sso/user"
 require "workflow_actor"
+require "safe_html"
 
 class User
   include Mongoid::Document
@@ -24,6 +25,8 @@ class User
   attr_accessible :email, :name, :uid, :permissions, as: :oauth
 
   scope :alphabetized, order_by(name: :asc)
+
+  validates_with SafeHtml
 
   # GDS::SSO specifically looks for find_by_uid within warden
   # when loading authentication user from session

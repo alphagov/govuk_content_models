@@ -1,3 +1,5 @@
+require "safe_html"
+
 class Action
   include Mongoid::Document
 
@@ -33,6 +35,8 @@ class Action
   field :email_addresses,    type: String
   field :customised_message, type: String
   field :created_at,         type: DateTime, default: lambda { Time.now }
+
+  validates_with SafeHtml
 
   def container_class_name(edition)
     edition.container.class.name.underscore.humanize

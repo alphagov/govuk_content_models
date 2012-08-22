@@ -13,6 +13,7 @@ class Contact
   field "contactotron_id", type: Integer
   field "phone_numbers",   type: Array
 
+  validates_with SafeHtml
   validates :name, presence: true
 
   def update_from_contactotron

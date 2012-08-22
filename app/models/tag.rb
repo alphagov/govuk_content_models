@@ -1,3 +1,5 @@
+require "safe_html"
+
 class Tag
   include Mongoid::Document
   field :tag_id,   type: String
@@ -11,6 +13,7 @@ class Tag
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
+  validates_with SafeHtml
 
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually
