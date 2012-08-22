@@ -159,7 +159,7 @@ class SafeHtmlTest < ActiveSupport::TestCase
       end
 
       classes.each do |klass|
-        assert_includes klass.validators.map(&:class), SafeHtml
+        assert_includes klass.validators.map(&:class), SafeHtml, "#{klass} must be validated with SafeHtml"
       end
     end
   end
