@@ -20,7 +20,6 @@ class SafeHtml < ActiveModel::Validator
 
   def check_string(record, field_name, string)
     dirty_html = Govspeak::Document.new(string).to_html
-    dirty_html.strip!
     clean_html = Sanitize.clean(dirty_html, sanitize_config)
     # Trying to make whitespace consistent
     if Nokogiri::HTML.parse(dirty_html).to_s != Nokogiri::HTML.parse(clean_html).to_s
