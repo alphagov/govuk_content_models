@@ -3,6 +3,7 @@ class Part
 
   embedded_in :guide_edition
   embedded_in :programme_edition
+  embedded_in :business_support_edition
 
   field :order,      type: Integer
   field :title,      type: String
