@@ -7,8 +7,6 @@ class GuideEdition < Edition
   field :video_url,     type: String
   field :video_summary, type: String
 
-  validates_with SafeHtml
-
   @fields_to_clone = [:video_url, :video_summary]
 
   def has_video?

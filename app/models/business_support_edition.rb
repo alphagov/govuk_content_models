@@ -11,8 +11,6 @@ class BusinessSupportEdition < Edition
   field :min_value, type: Integer
   field :max_value, type: Integer
 
-  validates_with SafeHtml
-
   DEFAULT_PARTS = [
     {title: "Description", slug: "description"},
     {title: "Eligibility", slug: "eligibility"},
