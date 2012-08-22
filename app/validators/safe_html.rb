@@ -23,13 +23,13 @@ class SafeHtml < ActiveModel::Validator
     clean_html = Sanitize.clean(dirty_html, sanitize_config)
     # Trying to make whitespace consistent
     if Nokogiri::HTML.parse(dirty_html).to_s != Nokogiri::HTML.parse(clean_html).to_s
-      record.errors.add(field_name, "Invalid Govspeak or JavaScript is not allowed in #{field_name}")
+      record.errors.add(field_name, "cannot include invalid Govspeak or JavaScript")
     end
   end
 
   def sanitize_config
-    config = Sanitize::Config::RELAXED.dup 
-    
+    config = Sanitize::Config::RELAXED.dup
+
     config[:attributes][:all] << "id"
     config[:attributes][:all] << "class"
     config[:attributes]["a"]  << "rel"
