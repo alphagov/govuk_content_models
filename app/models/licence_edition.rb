@@ -1,4 +1,3 @@
-require "parted"
 require "edition"
 
 class LicenceEdition < Edition
