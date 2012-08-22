@@ -1,4 +1,5 @@
 require "edition"
+require "safe_html"
 
 class AnswerEdition < Edition
   field :body, type: String

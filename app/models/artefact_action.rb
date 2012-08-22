@@ -7,6 +7,8 @@ class ArtefactAction
 
   embedded_in :artefact
 
+  validates_with SafeHtml
+
   # Ideally we would like to use the UID field here, since that will be the
   # same across all applications, but Mongoid doesn't yet support using a
   # custom primary key on a related field

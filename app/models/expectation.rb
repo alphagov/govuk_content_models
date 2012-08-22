@@ -4,4 +4,6 @@ class Expectation
 
   field :css_class, type: String
   field :text,      type: String
+
+  validates_with SafeHtml
 end

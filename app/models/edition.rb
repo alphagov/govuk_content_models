@@ -43,6 +43,7 @@ class Edition
   validates :title, presence: true
   validates :version_number, presence: true #, uniqueness: {:scope => :panopticon_id}
   validates :panopticon_id, presence: true
+  validates_with SafeHtml
 
   before_destroy :destroy_artefact
 
