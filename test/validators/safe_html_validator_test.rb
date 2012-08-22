@@ -26,7 +26,7 @@ class SafeHtmlTest < ActiveSupport::TestCase
       dummy = Dummy.new(dummy_embedded_single: embedded)
       # Can't invoke embedded.valid? because that would run the validations
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:dummy_embedded_single)
+      assert_includes dummy.errors.keys, :dummy_embedded_single
     end
   end
 
@@ -34,13 +34,13 @@ class SafeHtmlTest < ActiveSupport::TestCase
     should "test declared fields" do
       dummy = Dummy.new(declared: "<script>alert('XSS')</script>")
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:declared)
+      assert_includes dummy.errors.keys, :declared
     end
 
     should "test undeclared fields" do
       dummy = Dummy.new(undeclared: "<script>")
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:undeclared)
+      assert_includes dummy.errors.keys, :undeclared
     end
 
     should "allow clean content in nested fields" do
@@ -51,14 +51,13 @@ class SafeHtmlTest < ActiveSupport::TestCase
     should "disallow dirty content in nested fields" do
       dummy = Dummy.new(undeclared: { "dirty" => ["<script>"] })
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:undeclared)
+      assert_includes dummy.errors.keys, :undeclared
     end
   end
 
   context "validating a field" do
     should "allow plain text" do
       dummy = Dummy.new(declared: "foo bar")
-      dummy.valid?
       assert dummy.valid?
     end
 
@@ -114,7 +113,6 @@ class SafeHtmlTest < ActiveSupport::TestCase
       ]
       values.each do |value|
         dummy = Dummy.new(declared: value)
-        dummy.valid?
         assert dummy.valid?, "This failed validation: #{value}"
       end
     end
@@ -122,25 +120,25 @@ class SafeHtmlTest < ActiveSupport::TestCase
     should "disallow a script tag" do
       dummy = Dummy.new(declared: "<script>alert('XSS')</script>")
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:declared)
+      assert_includes dummy.errors.keys, :declared
     end
 
     should "disallow a javascript protocol in an attribute" do
       dummy = Dummy.new(declared: %q{<a href="javascript:alert(document.location);" title="Title">an example</a>})
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:declared)
+      assert_includes dummy.errors.keys, :declared
     end
 
     should "disallow a javascript protocol in a Markdown link" do
       dummy = Dummy.new(declared: %q{This is [an example](javascript:alert(""); "Title") inline link.})
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:declared)
+      assert_includes dummy.errors.keys, :declared
     end
 
     should "disallow on* attributes" do
       dummy = Dummy.new(declared: %q{<a href="/" onclick="alert('xss');">Link</a>})
       assert ! dummy.valid?
-      assert dummy.errors.has_key?(:declared)
+      assert_includes dummy.errors.keys, :declared
     end
 
     should "allow non-JS HTML content" do
