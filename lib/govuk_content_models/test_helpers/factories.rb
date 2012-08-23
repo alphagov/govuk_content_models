@@ -40,6 +40,9 @@ FactoryGirl.define do
   factory :answer_edition, parent: :edition do
   end
 
+  factory :video_edition, parent: :edition do
+  end
+
   factory :business_support_edition do |edition|
     edition.sequence(:panopticon_id) {|n| n}
     edition.sequence(:title) {|n| "Test business support edition #{n}"}
