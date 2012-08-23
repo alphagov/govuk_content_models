@@ -1,7 +1,7 @@
 require "slug_validator"
 require "tag_repository"
 require "plek"
-require "taggable"
+require "traits/taggable"
 require "artefact_action"  # Require this when running outside Rails
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
