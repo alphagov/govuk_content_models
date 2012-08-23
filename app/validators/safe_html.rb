@@ -19,12 +19,24 @@ class SafeHtml < ActiveModel::Validator
   end
 
   def check_string(record, field_name, string)
-    dirty_html = Govspeak::Document.new(string).to_html
-    clean_html = Sanitize.clean(dirty_html, sanitize_config)
-    # Trying to make whitespace consistent
-    if Nokogiri::HTML.parse(dirty_html).to_s != Nokogiri::HTML.parse(clean_html).to_s
+    dirty_html = govspeak_to_html(string)
+    clean_html = sanitize_html(dirty_html)
+    unless normalise_html(dirty_html) == normalise_html(clean_html)
       record.errors.add(field_name, "cannot include invalid Govspeak or JavaScript")
     end
+  end
+
+  # Make whitespace in html tags consistent
+  def normalise_html(string)
+    Nokogiri::HTML.parse(string).to_s
+  end
+
+  def govspeak_to_html(string)
+    Govspeak::Document.new(string).to_html
+  end
+
+  def sanitize_html(string)
+    Sanitize.clean(string, sanitize_config)
   end
 
   def sanitize_config
