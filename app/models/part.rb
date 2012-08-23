@@ -1,3 +1,5 @@
+require "safe_html"
+
 class Part
   include Mongoid::Document
 
