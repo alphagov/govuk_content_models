@@ -91,6 +91,7 @@ class SafeHtmlTest < ActiveSupport::TestCase
         "{::highlight-answer}",
         "The VAT rate is *20%*",
         "{:/highlight-answer}",
+        "---",
         "*[GDS]: Government Digital Service",
         """
         $P

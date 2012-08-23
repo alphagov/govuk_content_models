@@ -47,6 +47,7 @@ class SafeHtml < ActiveModel::Validator
     config[:attributes]["a"]  << "rel"
 
     config[:elements] << "div"
+    config[:elements] << "hr"
 
     config
   end
