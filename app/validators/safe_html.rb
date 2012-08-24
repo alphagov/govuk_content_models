@@ -1,5 +1,4 @@
-require 'sanitize'
-require 'govspeak'
+require "govuk_content_models/html_validator"
 
 class SafeHtml < ActiveModel::Validator
   def validate(record)
@@ -19,36 +18,9 @@ class SafeHtml < ActiveModel::Validator
   end
 
   def check_string(record, field_name, string)
-    dirty_html = govspeak_to_html(string)
-    clean_html = sanitize_html(dirty_html)
-    unless normalise_html(dirty_html) == normalise_html(clean_html)
-      record.errors.add(field_name, "cannot include invalid Govspeak or JavaScript")
+    if HtmlValidator.new(string).invalid?
+      error = "cannot include invalid Govspeak or JavaScript"
+      record.errors.add(field_name, error)
     end
-  end
-
-  # Make whitespace in html tags consistent
-  def normalise_html(string)
-    Nokogiri::HTML.parse(string).to_s
-  end
-
-  def govspeak_to_html(string)
-    Govspeak::Document.new(string).to_html
-  end
-
-  def sanitize_html(string)
-    Sanitize.clean(string, sanitize_config)
-  end
-
-  def sanitize_config
-    config = Sanitize::Config::RELAXED.dup
-
-    config[:attributes][:all] << "id"
-    config[:attributes][:all] << "class"
-    config[:attributes]["a"]  << "rel"
-
-    config[:elements] << "div"
-    config[:elements] << "hr"
-
-    config
   end
 end
