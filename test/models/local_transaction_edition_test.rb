@@ -1,7 +1,5 @@
 require "test_helper"
 require "govuk_content_models/test_helpers/local_services"
-require "local_transaction_edition"
-require "user"
 
 class LocalTransactionEditionTest < ActiveSupport::TestCase
   include LocalServicesHelper

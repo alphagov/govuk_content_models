@@ -1,5 +1,4 @@
 require "test_helper"
-require "curated_list"
 
 class CuratedListTest < ActiveSupport::TestCase
   test "should validate format of slug" do

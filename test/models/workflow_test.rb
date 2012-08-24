@@ -1,9 +1,4 @@
 require "test_helper"
-require "expectation"
-require "user"
-require "guide_edition"
-require "programme_edition"
-require "transaction_edition"
 
 class WorkflowTest < ActiveSupport::TestCase
   def template_users

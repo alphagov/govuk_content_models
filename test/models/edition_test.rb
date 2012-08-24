@@ -1,12 +1,5 @@
 require "test_helper"
 
-# Load all *edition models
-Dir.glob(File.expand_path("../../../app/models/*edition.rb", __FILE__)).each do |f|
-  require f
-end
-
-require "user"
-
 class Edition
   def update_in_search_index
   end

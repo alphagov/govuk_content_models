@@ -2,15 +2,11 @@ ENV["RACK_ENV"] = "test"
 
 require "bundler/setup"
 
-%w[ app/models app/validators app/repositories app/traits lib ].each do |path|
-  full_path = File.expand_path("../../#{path}", __FILE__)
-  $:.unshift full_path unless $:.include?(full_path)
-end
-
 require "active_support/test_case"
 require "shoulda/context"
 require "minitest/autorun"
 require "mongoid"
+require "govuk_content_models/require_all"
 require "database_cleaner"
 require "gds_api/test_helpers/panopticon"
 require "webmock/test_unit"

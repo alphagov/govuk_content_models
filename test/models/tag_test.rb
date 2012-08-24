@@ -1,5 +1,4 @@
 require "test_helper"
-require "tag"
 
 class TagTest < ActiveSupport::TestCase
   test "should return a hash of the fields" do

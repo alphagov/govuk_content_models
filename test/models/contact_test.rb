@@ -1,5 +1,4 @@
 require "test_helper"
-require "contact"
 
 class ContactTest < ActiveSupport::TestCase
   test "should store multiple phone numbers" do

@@ -1,5 +1,4 @@
 require "test_helper"
-require "artefact"
 
 def merge_attributes(original, *update_hashes)
   # Merge multiple attribute hashes: this also differs from Hash#merge in that

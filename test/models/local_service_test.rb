@@ -1,5 +1,4 @@
 require "test_helper"
-require "local_service"
 require "govuk_content_models/test_helpers/local_services"
 
 class LocalServiceTest < ActiveSupport::TestCase

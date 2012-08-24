@@ -1,3 +1,4 @@
+require "edition"
 require "parted"
 
 class ProgrammeEdition < Edition
