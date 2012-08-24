@@ -1,5 +1,4 @@
 require "test_helper"
-require "business_support_edition"
 
 class BusinessSupportEditionTest < ActiveSupport::TestCase
   should "have correct extra fields" do

@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'taggable'
 
 # This test relies on the fact that artefact uses the taggable module
 class TaggableTest < ActiveSupport::TestCase

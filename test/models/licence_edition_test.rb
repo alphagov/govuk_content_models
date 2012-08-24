@@ -1,7 +1,5 @@
 require 'test_helper'
 
-require 'licence_edition'
-
 class LicenceEditionTest < ActiveSupport::TestCase
   should "have correct extra fields" do
     l = FactoryGirl.build(:licence_edition)

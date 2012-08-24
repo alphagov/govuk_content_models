@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'validators/safe_html'
 
 class SafeHtmlTest < ActiveSupport::TestCase
   class ::Dummy

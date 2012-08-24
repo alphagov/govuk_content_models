@@ -1,5 +1,4 @@
 require "test_helper"
-require "local_authority"
 
 describe LocalAuthority do
   before :each do

@@ -1,5 +1,4 @@
 require_relative "../test_helper"
-require "user"
 
 class WorkflowActorTest < ActiveSupport::TestCase
 

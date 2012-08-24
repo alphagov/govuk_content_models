@@ -1,5 +1,4 @@
 require "test_helper"
-require "overview_dashboard"
 
 class OverviewDashboardTest < ActiveSupport::TestCase
 
