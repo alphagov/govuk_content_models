@@ -40,7 +40,7 @@ FactoryGirl.define do
   factory :answer_edition, parent: :edition do
   end
 
-  factory :video_edition, parent: :edition do
+  factory :video_edition, parent: :edition, :class => 'VideoEdition' do
   end
 
   factory :business_support_edition do |edition|
@@ -90,8 +90,19 @@ FactoryGirl.define do
     more_information { "This is more information" }
   end
 
+  factory :transaction_edition do |te|
+    te.sequence(:panopticon_id)
+    title  { "Test title" }
+    version_number 1
+    introduction { "Test introduction" }
+    more_information { "This is more information" }
+    link "http://continue.com"
+    will_continue_on "To be continued..."
+    alternate_methods "Method A or Method B"
+  end
+
   factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
-    licence_identifier    "AB1234"
+    licence_identifier "AB1234"
   end
 
   factory :local_service do |ls|
@@ -118,6 +129,17 @@ FactoryGirl.define do
     url "http://some.council.gov/do.html"
     sequence(:lgsl_code) {|n| 120 + n }
     lgil_code 0
+  end
+
+  factory :expectation do
+    sequence(:text) {|n| "You will need #{n} of these."}
+  end
+
+  factory :place_edition do
+    title "Far far away"
+    introduction "Test introduction"
+    more_information "More information"
+    place_type "Location location location"
   end
 
 end
