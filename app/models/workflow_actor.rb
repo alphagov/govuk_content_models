@@ -103,6 +103,10 @@ module WorkflowActor
     take_action(edition, __method__, details)
   end
 
+  def suspend(edition)
+    take_action(edition, __method__)
+  end
+
   def can_approve_review?(edition)
     # To accommodate latest_status_action being nil, we'll always return true in those cases
     # This is intended as a v.temporary fix until we can remedy the root cause

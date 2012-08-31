@@ -260,4 +260,12 @@ class WorkflowTest < ActiveSupport::TestCase
       assert_equal "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood.{+\"\\nAlthough no more than 361 cubic centimetres per day.\"}", publish_action.diff
     end
   end
+
+  test "a published edition can be suspended" do
+    user, transaction = template_user_and_published_transaction
+    assert transaction.persisted?
+    assert transaction.published?
+    user.suspend(transaction)
+    assert transaction.suspended?
+  end
 end

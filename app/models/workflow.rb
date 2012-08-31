@@ -75,6 +75,10 @@ module Workflow
       event :archive do
         transition published: :archived
       end
+
+      event :suspend do
+        transition published: :suspended
+      end
     end
 
     # alias_method :created_by, :creator

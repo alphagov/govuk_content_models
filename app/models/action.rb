@@ -16,6 +16,7 @@ class Action
     PUBLISH             = "publish",
     ARCHIVE             = "archive",
     NEW_VERSION         = "new_version",
+    SUSPEND             = "suspend"
   ]
 
   NON_STATUS_ACTIONS = [
