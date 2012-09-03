@@ -19,7 +19,7 @@ class EditionTest < ActiveSupport::TestCase
         # department: "Test dept",
         owning_app: "publisher")
 
-    AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: @artefact.id,
+    AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: artefact.id,
       title: "Child care stuff", body: "Lots of info", version_number: version_number)
   end
 
