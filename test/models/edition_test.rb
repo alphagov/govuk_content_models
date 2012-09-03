@@ -786,4 +786,17 @@ class EditionTest < ActiveSupport::TestCase
 
     assert_equal expected, guide_edition.whole_body
   end
+
+  test "should not allow any changes to an edition with an archived artefact" do
+    artefact = FactoryGirl.create(:artefact)
+    guide_edition = FactoryGirl.create(:guide_edition, state: 'draft', panopticon_id: artefact.id)
+    artefact.state = 'archived'
+    artefact.save
+
+    assert_raise(RuntimeError) do
+      guide_edition.title = "Error this"
+      guide_edition.save!
+    end
+  end
+
 end

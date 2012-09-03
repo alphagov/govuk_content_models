@@ -45,6 +45,7 @@ class Edition
   validates :panopticon_id, presence: true
   validates_with SafeHtml
 
+  before_save :check_for_archived_artefact
   before_destroy :destroy_artefact
 
   index "assigned_to_id"
@@ -209,6 +210,15 @@ class Edition
     self.department = artefact.department
     self.business_proposition = artefact.business_proposition
     self.save!
+  end
+
+  def check_for_archived_artefact
+    if panopticon_id
+      a = Artefact.find(panopticon_id)
+      if a.state == "archived"
+        raise "Editing of an edition with an Archived artefact is not allowed"
+      end
+    end
   end
 
   # When we delete an edition is the only one in its series
