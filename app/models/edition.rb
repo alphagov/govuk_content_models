@@ -221,6 +221,10 @@ class Edition
     end
   end
 
+  def artefact
+    Artefact.find(panopticon_id)
+  end
+
   # When we delete an edition is the only one in its series
   # we delete the associated artefact to remove all trace of the
   # item from the system.

@@ -774,4 +774,8 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
+  test "should return related artefact" do
+    assert_equal "Foo bar", template_published_answer.artefact.name
+  end
+
 end
