@@ -1,8 +1,12 @@
 require 'test_helper'
 
 class LicenceEditionTest < ActiveSupport::TestCase
+  def setup
+    @artefact = FactoryGirl.create(:artefact)
+  end
+
   should "have correct extra fields" do
-    l = FactoryGirl.build(:licence_edition)
+    l = FactoryGirl.build(:licence_edition, panopticon_id: @artefact.id)
     l.licence_identifier = "AB1234"
     l.licence_short_description = "Short description of licence"
     l.licence_overview = "Markdown overview of licence..."
@@ -16,7 +20,7 @@ class LicenceEditionTest < ActiveSupport::TestCase
 
   context "validations" do
     setup do
-      @l = FactoryGirl.build(:licence_edition)
+      @l = FactoryGirl.build(:licence_edition, panopticon_id: @artefact.id)
     end
 
     should "require a licence identifier" do
@@ -25,7 +29,8 @@ class LicenceEditionTest < ActiveSupport::TestCase
     end
 
     should "require a unique licence identifier" do
-      FactoryGirl.create(:licence_edition, :licence_identifier => "wibble")
+      artefact2 = FactoryGirl.create(:artefact)
+      FactoryGirl.create(:licence_edition, :licence_identifier => "wibble", panopticon_id: artefact2.id)
       @l.licence_identifier = "wibble"
       assert ! @l.valid?, "expected licence edition not to be valid"
     end
@@ -43,6 +48,7 @@ class LicenceEditionTest < ActiveSupport::TestCase
 
   should "clone extra fields when cloning edition" do
     licence = FactoryGirl.create(:licence_edition,
+                                 :panopticon_id => @artefact.id,
                                  :state => "published",
                                  :licence_identifier => "1234",
                                  :licence_short_description => "Short description of licence",

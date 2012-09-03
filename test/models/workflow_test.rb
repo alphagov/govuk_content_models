@@ -1,6 +1,10 @@
 require "test_helper"
 
 class WorkflowTest < ActiveSupport::TestCase
+  def setup
+    @artefact = FactoryGirl.create(:artefact)
+  end
+
   def template_users
     user = User.create(name: "Bob")
     other_user = User.create(name: "James")
@@ -8,14 +12,14 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   def template_programme
-    p = ProgrammeEdition.new(slug:"childcare", title:"Children", panopticon_id: 987353)
+    p = ProgrammeEdition.new(slug:"childcare", title:"Children", panopticon_id: @artefact.id)
     p.start_work
     p.save
     p
   end
 
   def template_guide
-    edition = FactoryGirl.create(:guide_edition, slug: "childcare", title: "One", panopticon_id: 1234574)
+    edition = FactoryGirl.create(:guide_edition, slug: "childcare", title: "One", panopticon_id: @artefact.id)
     edition.start_work
     edition.save
     edition
@@ -25,7 +29,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, panopticon_id: 1234574, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
     edition = guide
     user.start_work(edition)
     user.request_review(edition,{comment: "Review this guide please."})
@@ -42,7 +46,7 @@ class WorkflowTest < ActiveSupport::TestCase
     other_user = User.create(name: "James")
     expectation = Expectation.create css_class:"card_payment",  text:"Credit card required"
 
-    transaction = user.create_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: 123)
+    transaction = user.create_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: @artefact.id)
     transaction.expectation_ids = [expectation.id]
     transaction.save
 
@@ -76,12 +80,12 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "a new answer is lined up" do
-    g = AnswerEdition.new(slug: "childcare", panopticon_id: "123", title: "My new answer")
+    g = AnswerEdition.new(slug: "childcare", panopticon_id: @artefact.id, title: "My new answer")
     assert g.lined_up?
   end
 
   test "starting work on an answer removes it from lined up" do
-    g = AnswerEdition.new(slug: "childcare", panopticon_id: "123", title: "My new answer")
+    g = AnswerEdition.new(slug: "childcare", panopticon_id: @artefact.id, title: "My new answer")
     g.save!
     user = User.create(name: "Ben")
     user.start_work(g)
@@ -89,13 +93,13 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "a new guide has lined_up but isn't published" do
-    g = FactoryGirl.create(:guide_edition)
+    g = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id)
     assert g.lined_up?
     refute g.published?
   end
 
   test "when work started a new guide has draft but isn't published" do
-    g = FactoryGirl.create(:guide_edition)
+    g = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id)
     g.start_work
     assert g.draft?
     refute g.published?
@@ -113,7 +117,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -132,7 +136,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    edition = user.create_edition(:guide, panopticon_id: 1234574, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    edition = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
 
     user.start_work(edition)
     user.request_review(edition,{comment: "Review this guide please."})
@@ -149,7 +153,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
 
     assert_equal 0, guide.rejected_count
@@ -169,7 +173,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to review a guide they requested review for" do
     user = User.create(name: "Ben")
 
-    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -180,7 +184,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to okay a guide they requested review for" do
     user = User.create(name: "Ben")
 
-    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: "12345")
+    guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
     user.start_work(edition)
     assert edition.can_request_review?
@@ -206,7 +210,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "programme workflow" do
     user, other_user = template_users
 
-    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: @artefact.id, title: "My title", slug: "my-slug")
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
@@ -223,7 +227,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "user should not be able to okay a programme they requested review for" do
     user, other_user = template_users
 
-    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: @artefact.id, title: "My title", slug: "my-slug")
     user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
@@ -232,15 +236,14 @@ class WorkflowTest < ActiveSupport::TestCase
 
   test "you can only create a new edition from a published edition" do
     user, other_user = template_users
-
-    edition = user.create_edition(:programme, panopticon_id: 123, title: "My title", slug: "my-slug")
+    edition = user.create_edition(:programme, panopticon_id: @artefact.id, title: "My title", slug: "my-slug")
     refute edition.published?
     refute user.new_version(edition)
   end
 
   test "a new edition of an answer creates a diff when published" do
     without_metadata_denormalisation(AnswerEdition) do
-      edition_one = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: 1)
+      edition_one = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
       edition_one.body = "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood."
       edition_one.state = :ready
       edition_one.save!
