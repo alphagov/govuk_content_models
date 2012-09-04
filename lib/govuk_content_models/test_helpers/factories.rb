@@ -29,7 +29,11 @@ FactoryGirl.define do
   end
 
   factory :edition, class: AnswerEdition do
-    sequence(:panopticon_id)
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
+
     sequence(:slug) { |n| "slug-#{n}" }
     sequence(:title) { |n| "A key answer to your question #{n}" }
 
@@ -44,21 +48,30 @@ FactoryGirl.define do
   end
 
   factory :business_support_edition do |edition|
-    edition.sequence(:panopticon_id) {|n| n}
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
     edition.sequence(:title) {|n| "Test business support edition #{n}"}
     edition.sequence(:slug) {|n| "slug-#{n}"}
     section {"test:subsection test"}
   end
 
   factory :guide_edition do |ge|
-    ge.sequence(:panopticon_id)
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
     ge.sequence(:title)  { |n| "Test guide #{n}" }
     ge.sequence(:slug) { |ns| "slug-#{ns}"}
     section { "test:subsection test" }
   end
 
   factory :programme_edition do |edition|
-    edition.sequence(:panopticon_id)
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
     edition.sequence(:title) { |n| "Test programme #{n}" }
     edition.sequence(:slug) { |ns| "slug-#{ns}"}
     section { "test:subsection test" }
@@ -87,7 +100,10 @@ FactoryGirl.define do
   end
 
   factory :local_transaction_edition do |lte|
-    lte.sequence(:panopticon_id)
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
     title  { "Test title" }
     version_number 1
     lte.sequence(:slug) { |ns| "slug-#{ns}"}
@@ -97,7 +113,10 @@ FactoryGirl.define do
   end
 
   factory :transaction_edition do |te|
-    te.sequence(:panopticon_id)
+    panopticon_id { 
+        a = create(:artefact)
+        a.id
+      }
     title  { "Test title" }
     version_number 1
     introduction { "Test introduction" }
