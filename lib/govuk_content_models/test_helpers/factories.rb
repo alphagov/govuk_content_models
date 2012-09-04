@@ -29,7 +29,7 @@ FactoryGirl.define do
   end
 
   factory :edition, class: AnswerEdition do
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
@@ -48,7 +48,7 @@ FactoryGirl.define do
   end
 
   factory :business_support_edition do |edition|
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
@@ -58,7 +58,7 @@ FactoryGirl.define do
   end
 
   factory :guide_edition do |ge|
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
@@ -68,7 +68,7 @@ FactoryGirl.define do
   end
 
   factory :programme_edition do |edition|
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
@@ -100,7 +100,7 @@ FactoryGirl.define do
   end
 
   factory :local_transaction_edition do |lte|
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
@@ -113,7 +113,7 @@ FactoryGirl.define do
   end
 
   factory :transaction_edition do |te|
-    panopticon_id { 
+    panopticon_id {
         a = create(:artefact)
         a.id
       }
