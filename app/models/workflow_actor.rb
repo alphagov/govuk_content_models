@@ -16,10 +16,12 @@ module WorkflowActor
     action
   end
 
-  def take_action(edition, action, details = {})
-    apply_guards = respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
+  def can_take_action(action, edition)
+    respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
+  end
 
-    if apply_guards and transition = edition.send(action)
+  def take_action(edition, action, details = {})
+    if can_take_action(action, edition) and edition.send(action)
       record_action(edition, action, details)
       edition
     else
@@ -74,7 +76,8 @@ module WorkflowActor
     return false if details[:email_addresses].blank?
 
     details[:comment] ||= "Fact check requested"
-    details[:comment] += "\n\nResponses should be sent to: " + edition.fact_check_email_address
+    details[:comment] += "\n\nResponses should be sent to: " +
+                         edition.fact_check_email_address
 
     take_action(edition, __method__, details)
   end
@@ -98,13 +101,16 @@ module WorkflowActor
   end
 
   def publish(edition, details)
-    details.merge!({ diff: edition.edition_changes }) if edition.published_edition
+    if edition.published_edition
+      details.merge!({ diff: edition.edition_changes })
+    end
 
     take_action(edition, __method__, details)
   end
 
   def can_approve_review?(edition)
-    # To accommodate latest_status_action being nil, we'll always return true in those cases
+    # To accommodate latest_status_action being nil, we'll always return true in
+    # those cases
     # This is intended as a v.temporary fix until we can remedy the root cause
     if edition.latest_status_action
       edition.latest_status_action.requester_id != self.id
@@ -117,7 +123,8 @@ module WorkflowActor
   def assign(edition, recipient)
     edition.assigned_to_id = recipient.id
 
-    # We're saving the edition here as the controller treats assignment as a special case.
+    # We're saving the edition here as the controller treats assignment as a
+    # special case.
     # The controller saves the publication, then updates assignment.
     edition.save! and edition.reload
     record_action edition, __method__, recipient: recipient

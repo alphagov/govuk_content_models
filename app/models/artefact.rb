@@ -17,7 +17,8 @@ class Artefact
   include Mongoid::Timestamps
 
   include Taggable
-  stores_tags_for :sections, :writing_teams, :propositions, :keywords, :legacy_sources
+  stores_tags_for :sections, :writing_teams, :propositions,
+                  :keywords, :legacy_sources
   has_primary_tag_for :section
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
@@ -117,7 +118,9 @@ class Artefact
       include: {contact: {}}
     )).tap { |hash|
       if hash["tag_ids"]
-        hash["tags"] = hash["tag_ids"].map { |tag_id| TagRepository.load(tag_id).as_json }
+        hash["tags"] = hash["tag_ids"].map do |tag_id|
+          TagRepository.load(tag_id).as_json
+        end
       else
         hash["tag_ids"] = []
         hash["tags"] = []
@@ -128,7 +131,9 @@ class Artefact
       end
 
       unless options[:ignore_related_artefacts]
-        hash["related_items"] = published_related_artefacts.map { |a| {"artefact" => a.as_json(ignore_related_artefacts: true)} }
+        hash["related_items"] = published_related_artefacts.map do |a|
+          {"artefact" => a.as_json(ignore_related_artefacts: true)}
+        end
       end
       hash.delete("related_artefacts")
       hash.delete("related_artefact_ids")
@@ -155,11 +160,13 @@ class Artefact
   end
 
   def any_editions_ever_published?
-    Edition.where(panopticon_id: self.id, :state.in => ['published', 'archived']).any?
+    Edition.where(panopticon_id: self.id,
+                  :state.in => ['published', 'archived']).any?
   end
 
   def update_editions
-    Edition.where(:state.nin => ["archived"], panopticon_id: self.id).each do |edition|
+    Edition.where(:state.nin => ["archived"],
+                  panopticon_id: self.id).each do |edition|
       edition.update_from_artefact(self)
     end
   end

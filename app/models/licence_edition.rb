@@ -9,7 +9,8 @@ class LicenceEdition < Edition
   validates :licence_identifier, :presence => true
   validate :licence_identifier_unique
 
-  @fields_to_clone = [:licence_identifier, :licence_short_description, :licence_overview]
+  @fields_to_clone = [:licence_identifier, :licence_short_description,
+                      :licence_overview]
 
   def whole_body
     [licence_short_description, licence_overview].join("\n\n")
@@ -17,7 +18,8 @@ class LicenceEdition < Edition
 
   private
   def licence_identifier_unique
-    if self.class.where(:licence_identifier => licence_identifier, :panopticon_id.ne => panopticon_id).any?
+    if self.class.where(:licence_identifier => licence_identifier,
+                        :panopticon_id.ne => panopticon_id).any?
       errors.add(:licence_identifier, :taken)
     end
   end

@@ -10,7 +10,9 @@ class LocalService
 
   validates_presence_of :lgsl_code, :providing_tier
   validates_uniqueness_of :lgsl_code
-  validates :providing_tier, inclusion: { in: [%w{county unitary}, %w{district unitary}, %w{district unitary county}] }
+  validates :providing_tier, inclusion: {
+    in: [%w{county unitary}, %w{district unitary}, %w{district unitary county}]
+  }
   validates_with SafeHtml
 
   def self.find_by_lgsl_code(lgsl_code)
@@ -29,7 +31,8 @@ class LocalService
   end
 
   def provided_by
-    LocalAuthority.where("local_interactions.lgsl_code" => lgsl_code).any_in(tier: providing_tier)
+    LocalAuthority.where("local_interactions.lgsl_code" => lgsl_code)
+                  .any_in(tier: providing_tier)
   end
 
 private

@@ -10,8 +10,11 @@ class User
   include GDS::SSO::User
   include WorkflowActor
 
-  # Let an app configure the collection name to use, e.g. set a constant in an initializer
-  self.collection_name = defined?(USER_COLLECTION_NAME) ? USER_COLLECTION_NAME : "users"
+  # Let an app configure the collection name to use, e.g. set a constant in an
+  # initializer
+  def self.collection_name
+    defined?(USER_COLLECTION_NAME) ? USER_COLLECTION_NAME : "users"
+  end
 
   field "name",                type: String
   field "uid",                 type: String
