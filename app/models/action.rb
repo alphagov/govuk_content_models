@@ -52,6 +52,6 @@ class Action
 
   def is_fact_check_request?
     # SEND_FACT_CHECK is now a state - in older publications it isn't
-    request_type == SEND_FACT_CHECK || request_type == "fact_check_requested" ? true : false
+    request_type == SEND_FACT_CHECK || request_type == "fact_check_requested"
   end
 end

@@ -33,7 +33,8 @@ class Contact
 
   private
     def contactotron_uri
-      URI.join(Plek.current.find("contactotron"), "/contacts/#{contactotron_id}").to_s
+      URI.join(Plek.current.find("contactotron"),
+               "/contacts/#{contactotron_id}").to_s
     end
 
     def api_adapter
