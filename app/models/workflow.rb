@@ -91,20 +91,29 @@ module Workflow
   end
 
   def denormalise_users
-    create_action = actions.where(:request_type.in => [Action::CREATE, Action::NEW_VERSION]).first
+    new_or_create = [Action::CREATE, Action::NEW_VERSION]
+    create_action = actions.where(:request_type.in => new_or_create).first
     publish_action = actions.where(request_type: Action::PUBLISH).first
     archive_action = actions.where(request_type: Action::ARCHIVE).first
 
     self.assignee = assigned_to.name if assigned_to
-    self.creator = create_action.requester.name if create_action and create_action.requester
-    self.publisher = publish_action.requester.name if publish_action and publish_action.requester
-    self.archiver = archive_action.requester.name if archive_action and archive_action.requester
+    if create_action and create_action.requester
+      self.creator = create_action.requester.name
+    end
+    if publish_action and publish_action.requester
+      self.publisher = publish_action.requester.name
+    end
+    if archive_action and archive_action.requester
+      self.archiver = archive_action.requester.name
+    end
 
     return self
   end
 
   def created_by
-    creation = actions.detect { |a| a.request_type == Action::CREATE || a.request_type == Action::NEW_VERSION }
+    creation = actions.detect do |a|
+      a.request_type == Action::CREATE || a.request_type == Action::NEW_VERSION
+    end
     creation.requester if creation
   end
 
@@ -145,7 +154,8 @@ module Workflow
         errors.add(:base, "Archived editions can't be edited")
       end
       if published?
-        changes_allowed_when_published = ["slug", "section", "department", "business_proposition"]
+        changes_allowed_when_published = ["slug", "section",
+                                          "department", "business_proposition"]
         illegal_changes = changes.keys - changes_allowed_when_published
         if illegal_changes.empty?
           # Allow it
@@ -173,7 +183,11 @@ module Workflow
   end
 
   def edition_changes
-    self.whole_body.empty? ? false : Differ.diff_by_line( self.whole_body, self.published_edition.whole_body )
+    if self.whole_body.empty?
+      false
+    else
+      Differ.diff_by_line(self.whole_body, self.published_edition.whole_body)
+    end
   end
 
   def notify_siblings_of_new_edition

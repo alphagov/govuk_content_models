@@ -38,10 +38,16 @@ class Edition
   scope :published,           where(state: "published")
   scope :archived,            where(state: "archived")
   scope :in_progress,         where(:state.nin => ["archived", "published"])
-  scope :assigned_to,         lambda { |user| user.nil? ? where(:assigned_to_id.exists => false) : where(assigned_to_id: user.id) }
+  scope :assigned_to,         lambda { |user|
+    if user
+      where(assigned_to_id: user.id)
+    else
+      where(:assigned_to_id.exists => false)
+    end
+  }
 
   validates :title, presence: true
-  validates :version_number, presence: true #, uniqueness: {:scope => :panopticon_id}
+  validates :version_number, presence: true
   validates :panopticon_id, presence: true
   validates_with SafeHtml
 
@@ -110,11 +116,17 @@ class Edition
   end
 
   def build_clone(edition_class=nil)
-    raise "Cloning of non published edition not allowed" if self.state != "published"
-    raise "Cloning of a published edition when an in-progress edition exists is not allowed" if ! can_create_new_edition?
+    if self.state != "published"
+      raise "Cloning of non published edition not allowed"
+    end
+    if ! can_create_new_edition?
+      raise "Cloning of a published edition when an in-progress edition exists
+             is not allowed"
+    end
 
     edition_class = self.class if edition_class.nil?
-    new_edition = edition_class.new(title: self.title, version_number: get_next_version_number)
+    new_edition = edition_class.new(title: self.title,
+                                    version_number: get_next_version_number)
 
     # If the new clone is of the same type, we can copy all its fields over; if
     # we are changing the type of the edition, any fields other than the base
@@ -125,7 +137,9 @@ class Edition
       fields_to_clone = []
     end
 
-    real_fields_to_merge = fields_to_clone + [:panopticon_id, :overview, :alternative_title, :slug, :section, :department]
+    real_fields_to_merge = fields_to_clone + [:panopticon_id, :overview,
+                                              :alternative_title, :slug,
+                                              :section, :department]
     real_fields_to_merge.each do |attr|
       new_edition.send("#{attr}=", read_attribute(attr))
     end
@@ -135,14 +149,17 @@ class Edition
     end
 
     if edition_class == GuideEdition and self.class == AnswerEdition
-      new_edition.parts.build(title: "Part One", body: self.whole_body, slug: "part-one")
+      new_edition.parts.build(title: "Part One", body: self.whole_body,
+                              slug: "part-one")
     end
 
     new_edition
   end
 
-  def self.find_or_create_from_panopticon_data(panopticon_id, importing_user, api_credentials)
-    existing_publication = Edition.where(panopticon_id: panopticon_id).order_by([:version_number, :desc]).first
+  def self.find_or_create_from_panopticon_data(panopticon_id,
+                                               importing_user, api_credentials)
+    existing_publication = Edition.where(panopticon_id: panopticon_id)
+                                  .order_by([:version_number, :desc]).first
     return existing_publication if existing_publication
 
     raise "Artefact not found" unless metadata = Artefact.find(panopticon_id)
@@ -153,7 +170,7 @@ class Edition
       title: metadata.name,
       section: metadata.section,
       department: metadata.department,
-      business_proposition: metadata.business_proposition ? metadata.business_proposition : false)
+      business_proposition: metadata.business_proposition)
   end
 
   def self.find_and_identify(slug, edition)
@@ -194,7 +211,9 @@ class Edition
 
   # Stop broadcasting a delete message unless there are no siblings.
   def broadcast_action(callback_action)
-    super(callback_action) unless (callback_action == "destroyed" and self.siblings.any?)
+    unless callback_action == "destroyed" and self.siblings.any?
+      super(callback_action)
+    end
   end
 
   def was_published
