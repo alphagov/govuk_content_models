@@ -165,9 +165,11 @@ class Artefact
   end
 
   def update_editions
-    Edition.where(:state.nin => ["archived"],
-                  panopticon_id: self.id).each do |edition|
-      edition.update_from_artefact(self)
+    if state != 'archived'
+      Edition.where(:state.nin => ["archived"],
+                    panopticon_id: self.id).each do |edition|
+        edition.update_from_artefact(self)
+      end
     end
   end
 

@@ -1,8 +1,12 @@
 require "test_helper"
 
 class BusinessSupportEditionTest < ActiveSupport::TestCase
+  def setup
+    @artefact = FactoryGirl.create(:artefact)
+  end
+
   should "have correct extra fields" do
-    support = FactoryGirl.create(:business_support_edition)
+    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
     support.short_description = "The short description"
     support.parts[0].body = "The description"
     support.parts[1].body = "The eligibility"
@@ -27,7 +31,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "not allow max_value to be less than min_value" do
-    support = FactoryGirl.create(:business_support_edition)
+    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
     support.min_value = 100
     support.max_value = 50
 
