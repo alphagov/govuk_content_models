@@ -116,41 +116,40 @@ class Edition
     latest_version + 1
   end
 
+  # If the new clone is of the same type, we can copy all its fields over; if
+  # we are changing the type of the edition, any fields other than the base
+  # fields will likely be meaningless.
+  def fields_to_copy(edition_class)
+    edition_class == self.class ? self.class.fields_to_clone : []
+  end
+
   def build_clone(edition_class=nil)
-    if self.state != "published"
+    unless state == "published"
       raise "Cloning of non published edition not allowed"
     end
-    if ! can_create_new_edition?
+    unless can_create_new_edition?
       raise "Cloning of a published edition when an in-progress edition exists
              is not allowed"
     end
 
-    edition_class = self.class if edition_class.nil?
+    edition_class = self.class unless edition_class
     new_edition = edition_class.new(title: self.title,
                                     version_number: get_next_version_number)
 
-    # If the new clone is of the same type, we can copy all its fields over; if
-    # we are changing the type of the edition, any fields other than the base
-    # fields will likely be meaningless.
-    if edition_class == self.class
-      fields_to_clone = self.class.fields_to_clone
-    else
-      fields_to_clone = []
-    end
+    real_fields_to_merge = fields_to_copy(edition_class) +
+                           [:panopticon_id, :overview, :alternative_title,
+                            :slug, :section, :department]
 
-    real_fields_to_merge = fields_to_clone + [:panopticon_id, :overview,
-                                              :alternative_title, :slug,
-                                              :section, :department]
     real_fields_to_merge.each do |attr|
-      new_edition.send("#{attr}=", read_attribute(attr))
+      new_edition[attr] = read_attribute(attr)
     end
 
     if edition_class == AnswerEdition and self.class == GuideEdition
-      new_edition.body = self.whole_body
+      new_edition.body = whole_body
     end
 
     if edition_class == GuideEdition and self.class == AnswerEdition
-      new_edition.parts.build(title: "Part One", body: self.whole_body,
+      new_edition.parts.build(title: "Part One", body: whole_body,
                               slug: "part-one")
     end
 
