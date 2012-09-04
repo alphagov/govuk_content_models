@@ -19,6 +19,18 @@ class ArtefactTest < ActiveSupport::TestCase
     assert a.errors[:slug].any?
   end
 
+  test "it allows slashes in slugs when the namespace is 'done'" do
+    a = Artefact.new(slug: "done/its-a-nice-day")
+    refute a.valid?
+    assert a.errors[:slug].empty?
+  end
+
+  test "it doesn't allow slashes in slugs when the namespace is not 'done'" do
+    a = Artefact.new(slug: "something-else/its-a-nice-day")
+    refute a.valid?
+    assert a.errors[:slug].any?
+  end
+
   test "should translate kind into internally normalised form" do
     a = Artefact.new(kind: "benefit / scheme")
     a.normalise
