@@ -16,10 +16,12 @@ module WorkflowActor
     action
   end
 
-  def take_action(edition, action, details = {})
-    apply_guards = respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
+  def can_take_action(action, edition)
+    respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
+  end
 
-    if apply_guards and transition = edition.send(action)
+  def take_action(edition, action, details = {})
+    if can_take_action(action, edition) and edition.send(action)
       record_action(edition, action, details)
       edition
     else
