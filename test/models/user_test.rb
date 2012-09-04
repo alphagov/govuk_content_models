@@ -1,6 +1,10 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  def setup
+    @artefact = FactoryGirl.create(:artefact)
+  end
+
   test "should convert to string using name by preference" do
     user = User.new(name: "Bob", email: "user@example.com")
     assert_equal "Bob", user.to_s
@@ -84,14 +88,14 @@ class UserTest < ActiveSupport::TestCase
 
   test "creating a transaction with the initial details creates a valid transaction" do
     user = User.create(:name => "bob")
-    trans = user.create_edition(:transaction, title: "test", slug: "test", panopticon_id: 1234)
+    trans = user.create_edition(:transaction, title: "test", slug: "test", panopticon_id: @artefact.id)
     assert trans.valid?
   end
 
   test "user can't okay a publication they've sent for review" do
     user = User.create(:name => "bob")
 
-    trans = user.create_edition(:transaction, title: "test answer", slug: "test", panopticon_id: 123)
+    trans = user.create_edition(:transaction, title: "test answer", slug: "test", panopticon_id: @artefact.id)
     user.request_review(trans, {comment: "Hello"})
     assert ! user.approve_review(trans, {comment: "Hello"})
   end
@@ -100,7 +104,7 @@ class UserTest < ActiveSupport::TestCase
     boss_user = User.create(:name => "Mat")
     worker_user = User.create(:name => "Grunt")
 
-    publication = boss_user.create_edition(:answer, title: "test answer", slug: "test", panopticon_id: 123)
+    publication = boss_user.create_edition(:answer, title: "test answer", slug: "test", panopticon_id: @artefact.id)
     boss_user.assign(publication, worker_user)
     publication.save
     publication.reload

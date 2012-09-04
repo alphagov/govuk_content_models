@@ -6,6 +6,9 @@ class Edition
 end
 
 class EditionTest < ActiveSupport::TestCase
+  def setup
+    @artefact = FactoryGirl.create(:artefact)
+  end
 
   def template_answer(version_number = 1)
     artefact = FactoryGirl.create(:artefact,
@@ -28,8 +31,9 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   def template_transaction
+    artefact = FactoryGirl.create(:artefact)
     TransactionEdition.create(title: "One", introduction: "introduction",
-      more_information: "more info", panopticon_id: 2, slug: "childcare")
+      more_information: "more info", panopticon_id: @artefact.id, slug: "childcare")
   end
 
   def template_unpublished_answer(version_number = 1)
@@ -48,31 +52,33 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "it should be able to find its siblings" do
-    g1 = FactoryGirl.create(:guide_edition, panopticon_id: 1, version_number: 1)
-    g2 = FactoryGirl.create(:guide_edition, panopticon_id: 2, version_number: 1)
-    g3 = FactoryGirl.create(:guide_edition, panopticon_id: 1, version_number: 2)
+    @artefact2 = FactoryGirl.create(:artefact)
+    g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
+    g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
     assert_equal [], g2.siblings.to_a
     assert_equal [g3], g1.siblings.to_a
   end
 
   test "it should be able to find its previous siblings" do
-    g1 = FactoryGirl.create(:guide_edition, panopticon_id: 1, version_number: 1)
-    g2 = FactoryGirl.create(:guide_edition, panopticon_id: 2, version_number: 1)
-    g3 = FactoryGirl.create(:guide_edition, panopticon_id: 1, version_number: 2)
+    @artefact2 = FactoryGirl.create(:artefact)    
+    g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
+    g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
 
     assert_equal [], g1.previous_siblings.to_a
     assert_equal [g1], g3.previous_siblings.to_a
   end
 
   test "A programme should have default parts" do
-    programme = FactoryGirl.create(:programme_edition)
+    programme = FactoryGirl.create(:programme_edition, panopticon_id: @artefact.id)
     assert_equal programme.parts.count, ProgrammeEdition::DEFAULT_PARTS.length
   end
 
   test "it should build a clone" do
     edition = FactoryGirl.create(:guide_edition,
                                   state: "published",
-                                  panopticon_id: 1,
+                                  panopticon_id: @artefact.id,
                                   version_number: 1,
                                   department: "Test dept",
                                   overview: "I am a test overview",
@@ -87,7 +93,7 @@ class EditionTest < ActiveSupport::TestCase
 
   test "cloning can only occur from a published edition" do
     edition = FactoryGirl.create(:guide_edition,
-                                  panopticon_id: 1,
+                                  panopticon_id: @artefact.id,
                                   version_number: 1)
     assert_raise(RuntimeError) do
       edition.build_clone
@@ -96,12 +102,12 @@ class EditionTest < ActiveSupport::TestCase
 
   test "cloning can only occur from a published edition with no subsequent in progress siblings" do
     edition = FactoryGirl.create(:guide_edition,
-                                  panopticon_id: 1,
+                                  panopticon_id: @artefact.id,
                                   state: "published",
                                   version_number: 1)
 
     FactoryGirl.create(:guide_edition,
-                        panopticon_id: 1,
+                        panopticon_id: @artefact.id,
                         state: "draft",
                         version_number: 2)
 
@@ -113,11 +119,11 @@ class EditionTest < ActiveSupport::TestCase
   test "cloning from an earlier edition should give you a safe version number" do
     edition = FactoryGirl.create(:guide_edition,
                                   state: "published",
-                                  panopticon_id: 1,
+                                  panopticon_id: @artefact.id,
                                   version_number: 1)
     edition_two = FactoryGirl.create(:guide_edition,
                                   state: "published",
-                                  panopticon_id: 1,
+                                  panopticon_id: @artefact.id,
                                   version_number: 2)
 
     clone1 = edition.build_clone
@@ -128,7 +134,7 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(
         :guide_edition,
         state: "published",
-        panopticon_id: "1234",
+        panopticon_id: @artefact.id,
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
@@ -139,7 +145,7 @@ class EditionTest < ActiveSupport::TestCase
 
     assert_equal new_edition.class, AnswerEdition
     assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, "1234"
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
     assert_equal new_edition.state, "lined_up"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
@@ -148,6 +154,7 @@ class EditionTest < ActiveSupport::TestCase
 
   test "Cloning between types with parts" do
     edition = FactoryGirl.create(:programme_edition,
+                                 panopticon_id: @artefact.id,
                                  state: "published",
                                  version_number: 1,
                                  overview: "I am a shiny programme")
@@ -261,7 +268,7 @@ class EditionTest < ActiveSupport::TestCase
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})
 
-    a, b = 2.times.map { FactoryGirl.create(:guide_edition) }
+    a, b = 2.times.map { FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id) }
 
     alice, bob, charlie = %w[ alice bob charlie ].map { |s|
       FactoryGirl.create(:user, name: s)
@@ -305,19 +312,11 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should also delete associated artefact" do
+    
     FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
-        department: "Test dept",
-        owning_app: "publisher",
-    )
 
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
 
     assert_difference "Artefact.count", -1 do
       edition.destroy
@@ -325,19 +324,10 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should not delete associated artefact if there are other editions of this publication" do
+    
     FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
-        department: "Test dept",
-        owning_app: "publisher",
-    )
-
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
     edition.update_attribute(:state, "published")
 
     edition.reload
@@ -353,7 +343,7 @@ class EditionTest < ActiveSupport::TestCase
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})
 
-    a, b = 2.times.map { |i| GuideEdition.create!(panopticon_id: i, title: "Guide #{i}", slug: "guide-#{i}") }
+    a, b = 2.times.map { |i| GuideEdition.create!(panopticon_id: @artefact.id, title: "Guide #{i}", slug: "guide-#{i}") }
 
     alice, bob, charlie = %w[ alice bob charlie ].map { |s|
       FactoryGirl.create(:user, name: s)
@@ -374,7 +364,8 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "given multiple editions, can return the most recent published edition" do
-    edition = FactoryGirl.create(:guide_edition, slug: "hedgehog-topiary", state: "published")
+    
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, slug: "hedgehog-topiary", state: "published")
 
     second_edition = edition.build_clone
     edition.update_attribute(:state, "archived")
@@ -387,19 +378,19 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "editions, by default, return their title for use in the admin-interface lists of publications" do
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     assert_equal edition.title, edition.admin_list_title
   end
 
   test "editions can have notes stored for the history tab" do
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     user = User.new
     assert edition.new_action(user, "note", comment: "Something important")
   end
 
   test "status should not be affected by notes" do
     user = User.create(name: "bob")
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     edition.new_action(user, Action::APPROVE_REVIEW)
     edition.new_action(user, Action::NOTE, comment: "Something important")
 
@@ -407,32 +398,32 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should have no assignee by default" do
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     assert_nil edition.assigned_to
   end
 
   test "should be assigned to the last assigned recipient" do
     alice = User.create(name: "alice")
     bob = User.create(name: "bob")
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     alice.assign(edition, bob)
     assert_equal bob, edition.assigned_to
   end
 
   test "new edition should have an incremented version number" do
-    edition = FactoryGirl.create(:guide_edition, state: "published")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     new_edition = edition.build_clone
     assert_equal edition.version_number + 1, new_edition.version_number
   end
 
   test "new edition should have an empty list of actions" do
-    edition = FactoryGirl.create(:guide_edition, state: "published")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     new_edition = edition.build_clone
     assert_equal [], new_edition.actions
   end
 
   test "new editions should have the same text when created" do
-    edition = FactoryGirl.create(:guide_edition_with_two_parts, state: "published")
+    edition = FactoryGirl.create(:guide_edition_with_two_parts, panopticon_id: @artefact.id, state: "published")
     new_edition = edition.build_clone
     original_text = edition.parts.map {|p| p.body }.join(" ")
     new_text = new_edition.parts.map {|p| p.body }.join(" ")
@@ -440,7 +431,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "changing text in a new edition should not change text in old edition" do
-    edition = FactoryGirl.create(:guide_edition_with_two_parts, state: "published")
+    edition = FactoryGirl.create(:guide_edition_with_two_parts, panopticon_id: @artefact.id, state: "published")
     new_edition = edition.build_clone
     new_edition.parts.first.body = "Some other version text"
     original_text = edition.parts.map {|p| p.body }.join(" ")
@@ -449,45 +440,43 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "a new guide has no published edition" do
-    guide = FactoryGirl.create(:guide_edition, state: "ready")
+    guide = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     assert_nil GuideEdition.where(state: "published", panopticon_id: guide.panopticon_id).first
   end
 
   test "an edition of a guide can be published" do
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     edition.publish
     assert_not_nil GuideEdition.where(state: "published", panopticon_id: edition.panopticon_id).first
   end
 
   test "when an edition of a guide is published, all other published editions are archived" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
 
-      user = User.create name: "bob"
-      user.publish edition, comment: "First publication"
+    user = User.create name: "bob"
+    user.publish edition, comment: "First publication"
 
-      second_edition = edition.build_clone
-      second_edition.update_attribute(:state, "ready")
-      second_edition.save!
-      user.publish second_edition, comment: "Second publication"
+    second_edition = edition.build_clone
+    second_edition.update_attribute(:state, "ready")
+    second_edition.save!
+    user.publish second_edition, comment: "Second publication"
 
-      third_edition = second_edition.build_clone
-      third_edition.update_attribute(:state, "ready")
-      third_edition.save!
-      user.publish third_edition, comment: "Third publication"
+    third_edition = second_edition.build_clone
+    third_edition.update_attribute(:state, "ready")
+    third_edition.save!
+    user.publish third_edition, comment: "Third publication"
 
-      edition.reload
-      assert edition.archived?
+    edition.reload
+    assert edition.archived?
 
-      second_edition.reload
-      assert second_edition.archived?
+    second_edition.reload
+    assert second_edition.archived?
 
-      assert_equal 2, GuideEdition.where(panopticon_id: edition.panopticon_id, state: "archived").count
-    end
+    assert_equal 2, GuideEdition.where(panopticon_id: edition.panopticon_id, state: "archived").count
   end
 
   test "edition can return latest status action of a specified request type" do
-    edition = FactoryGirl.create(:guide_edition, state: "draft")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     user = User.create(name: "George")
     user.request_review edition, comment: "Requesting review"
 
@@ -496,7 +485,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "a published edition can't be edited" do
-    edition = FactoryGirl.create(:guide_edition, state: "published")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     edition.title = "My New Title"
 
     assert ! edition.save
@@ -504,144 +493,130 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "edition's publish history is recorded" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
 
-      user = User.create name: "bob"
-      user.publish edition, comment: "First publication"
+    user = User.create name: "bob"
+    user.publish edition, comment: "First publication"
 
-      second_edition = edition.build_clone
-      second_edition.update_attribute(:state, "ready")
-      second_edition.save!
-      user.publish second_edition, comment: "Second publication"
+    second_edition = edition.build_clone
+    second_edition.update_attribute(:state, "ready")
+    second_edition.save!
+    user.publish second_edition, comment: "Second publication"
 
-      third_edition = second_edition.build_clone
-      third_edition.update_attribute(:state, "ready")
-      third_edition.save!
-      user.publish third_edition, comment: "Third publication"
+    third_edition = second_edition.build_clone
+    third_edition.update_attribute(:state, "ready")
+    third_edition.save!
+    user.publish third_edition, comment: "Third publication"
 
-      edition.reload
-      assert edition.actions.where("request_type" => "publish")
+    edition.reload
+    assert edition.actions.where("request_type" => "publish")
 
-      second_edition.reload
-      assert second_edition.actions.where("request_type" => "publish")
+    second_edition.reload
+    assert second_edition.actions.where("request_type" => "publish")
 
-      third_edition.reload
-      assert third_edition.actions.where("request_type" => "publish")
-      assert third_edition.published?
-    end
+    third_edition.reload
+    assert third_edition.actions.where("request_type" => "publish")
+    assert third_edition.published?
   end
 
 
  test "a series with all editions published should not have siblings in progress" do
-   without_metadata_denormalisation(GuideEdition) do
-     edition = FactoryGirl.create(:guide_edition, state: "ready")
+   edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
 
-     user = User.create name: "bob"
-     user.publish edition, comment: "First publication"
+   user = User.create name: "bob"
+   user.publish edition, comment: "First publication"
 
-     new_edition = edition.build_clone
-     new_edition.state = "ready"
-     new_edition.save!
-     user.publish new_edition, comment: "Second publication"
+   new_edition = edition.build_clone
+   new_edition.state = "ready"
+   new_edition.save!
+   user.publish new_edition, comment: "Second publication"
 
-     edition = edition.reload
+   edition = edition.reload
 
-     assert_nil edition.sibling_in_progress
-   end
+   assert_nil edition.sibling_in_progress
   end
 
   test "a series with one published and one draft edition should have a sibling in progress" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition = FactoryGirl.create(:guide_edition, state: "ready")
-      edition.save!
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    edition.save!
 
-      user = User.create name: "bob"
-      user.publish edition, comment: "First publication"
+    user = User.create name: "bob"
+    user.publish edition, comment: "First publication"
 
-      new_edition = edition.build_clone
-      new_edition.save!
+    new_edition = edition.build_clone
+    new_edition.save!
 
-      edition = edition.reload
+    edition = edition.reload
 
-      assert_not_nil edition.sibling_in_progress
-      assert_equal new_edition.version_number, edition.sibling_in_progress
-    end
+    assert_not_nil edition.sibling_in_progress
+    assert_equal new_edition.version_number, edition.sibling_in_progress
   end
 
   test "a new guide edition with multiple parts creates a full diff when published" do
-    without_metadata_denormalisation(GuideEdition) do
-      user = User.create name: "Roland"
+    user = User.create name: "Roland"
 
-      edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: 1)
-      edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-one"
-      edition_one.parts.build title: "Part Two", body:"NYAN NYAN NYAN NYAN", slug: "part-two"
-      edition_one.save!
+    edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: @artefact.id)
+    edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-one"
+    edition_one.parts.build title: "Part Two", body:"NYAN NYAN NYAN NYAN", slug: "part-two"
+    edition_one.save!
 
-      edition_one.state = :ready
-      user.publish edition_one, comment: "First edition"
+    edition_one.state = :ready
+    user.publish edition_one, comment: "First edition"
 
-      edition_two = edition_one.build_clone
-      edition_two.save!
-      edition_two.parts.first.update_attribute :title, "Changed Title"
-      edition_two.parts.first.update_attribute :body, "Never gonna let you down"
+    edition_two = edition_one.build_clone
+    edition_two.save!
+    edition_two.parts.first.update_attribute :title, "Changed Title"
+    edition_two.parts.first.update_attribute :body, "Never gonna let you down"
 
-      edition_two.state = :ready
-      user.publish edition_two, comment: "Second edition"
+    edition_two.state = :ready
+    user.publish edition_two, comment: "Second edition"
 
-      publish_action = edition_two.actions.where(request_type: "publish").last
+    publish_action = edition_two.actions.where(request_type: "publish").last
 
-      assert_equal "{\"# Part One\" >> \"# Changed Title\"}\n\n{\"Never gonna give you up\" >> \"Never gonna let you down\"}\n\n# Part Two\n\nNYAN NYAN NYAN NYAN", publish_action.diff
-    end
+    assert_equal "{\"# Part One\" >> \"# Changed Title\"}\n\n{\"Never gonna give you up\" >> \"Never gonna let you down\"}\n\n# Part Two\n\nNYAN NYAN NYAN NYAN", publish_action.diff
   end
 
   test "a part's slug must be of the correct format" do
-    without_metadata_denormalisation(GuideEdition) do
-      edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: 1)
-      edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-One-1"
-      edition_one.save!
+    edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: @artefact.id)
+    edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-One-1"
+    edition_one.save!
 
-      edition_one.parts[0].slug = "part one"
-      assert_raise (Mongoid::Errors::Validations) do
-        edition_one.save!
-      end
+    edition_one.parts[0].slug = "part one"
+    assert_raise (Mongoid::Errors::Validations) do
+      edition_one.save!
     end
   end
 
   test "user should not be able to review an edition they requested review for" do
-    without_metadata_denormalisation(ProgrammeEdition) do
-      user = User.create(name: "Mary")
+    user = User.create(name: "Mary")
 
-      edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: 1)
-      user.start_work(edition)
-      assert edition.can_request_review?
-      user.request_review(edition,{comment: "Review this programme please."})
-      assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
-    end
+    edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
+    user.start_work(edition)
+    assert edition.can_request_review?
+    user.request_review(edition,{comment: "Review this programme please."})
+    assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
   end
 
   test "a new programme edition with multiple parts creates a full diff when published" do
-    without_metadata_denormalisation(ProgrammeEdition) do
-      user = User.create name: "Mazz"
+    user = User.create name: "Mazz"
 
-      edition_one = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: 1)
-      edition_one.parts.build title: "Part One", body:"Content for part one", slug: "part-one"
-      edition_one.parts.build title: "Part Two", body:"Content for part two", slug: "part-two"
-      edition_one.save!
+    edition_one = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
+    edition_one.parts.build title: "Part One", body:"Content for part one", slug: "part-one"
+    edition_one.parts.build title: "Part Two", body:"Content for part two", slug: "part-two"
+    edition_one.save!
 
-      edition_one.state = :ready
-      user.publish edition_one, comment: "First edition"
+    edition_one.state = :ready
+    user.publish edition_one, comment: "First edition"
 
-      edition_two = edition_one.build_clone
-      edition_two.save!
-      edition_two.parts.first.update_attribute :body, "Some other content"
-      edition_two.state = :ready
-      user.publish edition_two, comment: "Second edition"
+    edition_two = edition_one.build_clone
+    edition_two.save!
+    edition_two.parts.first.update_attribute :body, "Some other content"
+    edition_two.state = :ready
+    user.publish edition_two, comment: "Second edition"
 
-      publish_action = edition_two.actions.where(request_type: "publish").last
+    publish_action = edition_two.actions.where(request_type: "publish").last
 
-      assert_equal "# Part One\n\n{\"Content for part one\" >> \"Some other content\"}\n\n# Part Two\n\nContent for part two", publish_action.diff
-    end
+    assert_equal "# Part One\n\n{\"Content for part one\" >> \"Some other content\"}\n\n# Part Two\n\nContent for part two", publish_action.diff
   end
 
   test "a published publication with a draft edition is in progress" do
@@ -656,13 +631,13 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "a draft edition cannot be published" do
-    edition = FactoryGirl.create(:guide_edition, state: "draft")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     edition.start_work
     refute edition.can_publish?
   end
 
   test "a draft edition can be emergency published" do
-    edition = FactoryGirl.create(:guide_edition, state: "draft")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     edition.start_work
     assert edition.can_emergency_publish?
   end
@@ -675,9 +650,9 @@ class EditionTest < ActiveSupport::TestCase
     @user2 = FactoryGirl.create(:user, name: "John")
     @user3 = FactoryGirl.create(:user, name: "Nick")
 
-    edition = FactoryGirl.create(:guide_edition, state: "archived")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
 
-    edition = FactoryGirl.create(:guide_edition, state: "archived", assigned_to_id: @user1.id)
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived", assigned_to_id: @user1.id)
     edition.actions.create request_type: Action::CREATE, requester: @user2
     edition.actions.create request_type: Action::PUBLISH, requester: @user3
     edition.actions.create request_type: Action::ARCHIVE, requester: @user1
@@ -693,7 +668,7 @@ class EditionTest < ActiveSupport::TestCase
     @user1 = FactoryGirl.create(:user)
     @user2 = FactoryGirl.create(:user)
 
-    edition = FactoryGirl.create(:guide_edition, state: "lined_up")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "lined_up")
     @user1.assign edition, @user2
 
     assert_equal @user2, edition.assigned_to
@@ -721,7 +696,7 @@ class EditionTest < ActiveSupport::TestCase
   test "should denormalise a publishing user's name when an edition is published" do
     @user = FactoryGirl.create(:user)
 
-    edition = FactoryGirl.create(:guide_edition, state: "ready")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     @user.publish edition, { }
 
     assert_equal @user.name, edition.publisher
@@ -729,16 +704,16 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should set siblings in progress to nil for new editions" do
     @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
+    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     assert_equal 1, @edition.version_number
     assert_nil @edition.sibling_in_progress
   end
 
   test "should update previous editions when new edition is added" do
     @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
+    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     @new_edition = @published_edition.build_clone
     @new_edition.save
     @published_edition.reload
@@ -749,8 +724,8 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should update previous editions when new edition is published" do
     @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, state: "published")
+    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     @new_edition = @published_edition.build_clone
     @new_edition.save
     @new_edition.update_attribute(:state, "ready")
@@ -772,7 +747,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should convert a GuideEdition to an AnswerEdition" do
-    guide_edition = FactoryGirl.create(:guide_edition, state: "published")
+    guide_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     answer_edition = guide_edition.build_clone(AnswerEdition)
 
     assert_equal guide_edition.whole_body, answer_edition.whole_body
@@ -787,7 +762,20 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal expected, guide_edition.whole_body
   end
 
+  test "should not allow any changes to an edition with an archived artefact" do
+    artefact = FactoryGirl.create(:artefact)
+    guide_edition = FactoryGirl.create(:guide_edition, state: 'draft', panopticon_id: artefact.id)
+    artefact.state = 'archived'
+    artefact.save
+
+    assert_raise(RuntimeError) do
+      guide_edition.title = "Error this"
+      guide_edition.save!
+    end
+  end
+
   test "should return related artefact" do
     assert_equal "Foo bar", template_published_answer.artefact.name
   end
+
 end
