@@ -90,24 +90,18 @@ module Workflow
     self.human_state_name.capitalize
   end
 
+  def update_user_action(property, statuses)
+    actions.where(:request_type.in => statuses).limit(1).each do |action|
+      self[property] = action.requester.name
+    end
+  end
+
   def denormalise_users
-    new_or_create = [Action::CREATE, Action::NEW_VERSION]
-    create_action = actions.where(:request_type.in => new_or_create).first
-    publish_action = actions.where(request_type: Action::PUBLISH).first
-    archive_action = actions.where(request_type: Action::ARCHIVE).first
-
     self.assignee = assigned_to.name if assigned_to
-    if create_action and create_action.requester
-      self.creator = create_action.requester.name
-    end
-    if publish_action and publish_action.requester
-      self.publisher = publish_action.requester.name
-    end
-    if archive_action and archive_action.requester
-      self.archiver = archive_action.requester.name
-    end
-
-    return self
+    update_user_action("creator",   [Action::CREATE, Action::NEW_VERSION])
+    update_user_action("publisher", [Action::PUBLISH])
+    update_user_action("archiver",  [Action::ARCHIVE])
+    self
   end
 
   def created_by
