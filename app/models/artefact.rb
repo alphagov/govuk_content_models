@@ -52,6 +52,7 @@ class Artefact
     "programme",
     "local_transaction",
     "transaction",
+    "completed_transaction",
     "place",
     "smart-answer",
     "custom-application",
@@ -63,6 +64,7 @@ class Artefact
   KIND_TRANSLATIONS = {
     "standard transaction link"        => "transaction",
     "local authority transaction link" => "local_transaction",
+    "completed/done transaction" => "completed_transaction",
     "benefit / scheme"                 => "programme",
     "find my nearest"                  => "place",
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
