@@ -223,10 +223,6 @@ class Artefact
     self.state == "live"
   end
 
-  def indexable?
-    self.kind != "completed_transaction"
-  end
-
   def snapshot
     reconcile_tag_ids
     attributes.except "_id", "created_at", "updated_at", "actions"
