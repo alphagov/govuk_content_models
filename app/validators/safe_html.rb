@@ -1,4 +1,4 @@
-require "govuk_content_models/html_validator"
+require "govspeak"
 
 class SafeHtml < ActiveModel::Validator
   def validate(record)
@@ -18,7 +18,7 @@ class SafeHtml < ActiveModel::Validator
   end
 
   def check_string(record, field_name, string)
-    if HtmlValidator.new(string).invalid?
+    unless Govspeak::Document.new(string).valid?
       error = "cannot include invalid Govspeak or JavaScript"
       record.errors.add(field_name, error)
     end
