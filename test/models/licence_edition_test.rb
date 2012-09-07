@@ -49,11 +49,15 @@ class LicenceEditionTest < ActiveSupport::TestCase
       assert new_version.valid?, "Expected clone to be valid"
     end
     
-    should "validate the continuation link if not blank" do
+    should "not validate the continuation link when blank" do
       @l.continuation_link = ""
-      assert @l.valid?, "continuation_link validation should not be triggered when the field is blank"
+      assert @l.valid?, "continuation link validation should not be triggered when the field is blank"
+    end
+    should "fail validation when the continuation link has an invalid url" do
       @l.continuation_link = "not&a+valid_url"
-      assert !@l.valid?, "continuation_link validation should fail with a invalid url"
+      assert !@l.valid?, "continuation link validation should fail with a invalid url"
+    end
+    should "pass validation with a valid continuation link url" do
       @l.continuation_link = "http://www.hmrc.gov.uk"
       assert @l.valid?, "continuation_link validation should pass with a valid url"
     end
