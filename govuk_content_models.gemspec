@@ -18,7 +18,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "differ"
   gem.add_dependency "gds-api-adapters"
-  gem.add_dependency "gds-sso",          ">= 0.7", "< 2.0"
+
+  gem.add_dependency "gds-sso",          ">= 0.7", "< 3.0"
   gem.add_dependency "govspeak",         ">= 1.0.1", "< 2.0.0"
   gem.add_dependency "omniauth-oauth2",  "~> 1.0" # Specify as a dependency here to get Jenkins to build
   gem.add_dependency "mongoid",          "~> 2.4.10"
