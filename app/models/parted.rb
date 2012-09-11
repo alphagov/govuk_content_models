@@ -29,4 +29,12 @@ module Parted
   def whole_body
     self.parts.map {|i| %Q{\# #{i.title}\n\n#{i.body}} }.join("\n\n")
   end
+
+  def setup_default_parts(default_parts)
+    if self.parts.empty?
+      default_parts.each { |part|
+        self.parts.build(title: part[:title], slug: part[:slug], body: "")
+      }
+    end
+  end
 end

@@ -3,9 +3,8 @@ require "parted"
 
 class BusinessSupportEdition < Edition
   include Parted
-  validate :min_must_be_less_than_max
 
-  before_save :setup_default_parts, on: :create
+  validate :min_must_be_less_than_max
 
   field :short_description, type: String
   field :min_value, type: Integer
@@ -18,12 +17,8 @@ class BusinessSupportEdition < Edition
     {title: "Additional information", slug: "additional-information"}
   ]
 
-  def setup_default_parts
-    if parts.empty?
-      DEFAULT_PARTS.each do |part|
-        parts.build(title: part[:title], slug: part[:slug], body: "")
-      end
-    end
+  set_callback(:create, :before) do |document|
+    setup_default_parts(DEFAULT_PARTS)
   end
 
   private
