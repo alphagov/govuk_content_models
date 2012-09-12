@@ -14,6 +14,12 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.parts[3].body = "The additional information"
     support.min_value = 1000
     support.max_value = 3000
+    support.max_employees = 2000
+    support.organiser = "The business support people"
+    support.continuation_link = "http://www.gov.uk"
+    support.will_continue_on = "The GOVUK website"
+    support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
+    support.business_support_identifier = "123-4-5"
     support.safely.save!
 
     support = BusinessSupportEdition.first
@@ -28,6 +34,12 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal "The additional information", support.parts[3].body
     assert_equal 1000, support.min_value
     assert_equal 3000, support.max_value
+    assert_equal 2000, support.max_employees
+    assert_equal "The business support people", support.organiser
+    assert_equal "http://www.gov.uk", support.continuation_link
+    assert_equal "The GOVUK website", support.will_continue_on
+    assert_equal "123 The Street, Townsville, UK. 07324 123456", support.contact_details
+    assert_equal "123-4-5", support.business_support_identifier
   end
 
   should "not allow max_value to be less than min_value" do
@@ -36,5 +48,26 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.max_value = 50
 
     refute support.valid?
+  end
+  
+  context "continuation_link validation" do 
+  
+    setup do
+      @bs = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
+    end
+    
+    should "not validate the continuation link when blank" do
+      @bs.continuation_link = ""
+      assert @bs.valid?, "continuation link validation should not be triggered when the field is blank"
+    end
+    should "fail validation when the continuation link has an invalid url" do
+      @bs.continuation_link = "not&a+valid_url"
+      assert !@bs.valid?, "continuation link validation should fail with a invalid url"
+    end
+    should "pass validation with a valid continuation link url" do
+      @bs.continuation_link = "http://www.hmrc.gov.uk"
+      assert @bs.valid?, "continuation_link validation should pass with a valid url"
+    end
+  
   end
 end
