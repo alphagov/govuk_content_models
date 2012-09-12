@@ -4,12 +4,19 @@ require "parted"
 class BusinessSupportEdition < Edition
   include Parted
   validate :min_must_be_less_than_max
+  validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
   before_save :setup_default_parts, on: :create
 
   field :short_description, type: String
   field :min_value, type: Integer
   field :max_value, type: Integer
+  field :max_employees, type: Integer
+  field :organiser, type: String
+  field :continuation_link, type: String
+  field :will_continue_on, type: String
+  field :contact_details, type: String
+  field :business_support_identifier, type: String
 
   DEFAULT_PARTS = [
     {title: "Description", slug: "description"},
