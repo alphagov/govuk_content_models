@@ -50,6 +50,17 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     refute support.valid?
   end
   
+  should "have a unique business support identifier" do
+    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id,
+      business_support_identifier: "this-should-be-unique")
+    another_artefact = FactoryGirl.create(:artefact)
+    another_support = FactoryGirl.create(:business_support_edition, panopticon_id: another_artefact.id)
+    another_support.business_support_identifier = "this-should-be-unique"
+    assert !another_support.valid?, "business_support_identifier should be unique"
+    another_support.business_support_identifier = "this-is-different"
+    assert another_support.valid?, "business_support_identifier should be unique"
+  end
+  
   context "continuation_link validation" do 
   
     setup do
