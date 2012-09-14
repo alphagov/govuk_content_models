@@ -30,6 +30,7 @@ class Action
   field :approver_id,        type: Integer
   field :approved,           type: DateTime
   field :comment,            type: String
+  field :comment_sanitized,  type: Boolean, default: false
   field :diff,               type: String
   field :request_type,       type: String
   field :email_addresses,    type: String
