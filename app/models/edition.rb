@@ -186,7 +186,7 @@ class Edition
   end
 
   def panopticon_uri
-    Plek.current.find("arbiter") + "/artefacts/" + (panopticon_id || slug).to_s
+    Plek.current.find("panopticon") + "/artefacts/" + (panopticon_id || slug).to_s
   end
 
   def format
