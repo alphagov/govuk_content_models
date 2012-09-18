@@ -167,4 +167,8 @@ FactoryGirl.define do
     place_type "Location location location"
   end
 
+  factory :curated_list do
+    sequence(:slug) { |n| "slug-#{n}" }
+  end
+
 end

@@ -4,6 +4,9 @@ class CuratedList
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  include Taggable
+  stores_tags_for :sections
+
   field "slug", type: String
   field "artefact_ids", type: Array, default: [] # order is important
 
