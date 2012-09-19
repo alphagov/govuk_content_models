@@ -1,37 +1,62 @@
 require "test_helper"
 
 class VideoEditionTest < ActiveSupport::TestCase
-  test "should not be nil when initialized" do
-    video = VideoEdition.new
-    refute video.nil?
+  setup do
+    @artefact = FactoryGirl.create(:artefact)
   end
 
-  test "should give a friendly (legacy supporting) description of its format" do
+  should "have correct extra fields" do
+    v = FactoryGirl.build(:video_edition, panopticon_id: @artefact.id)
+    v.video_url = "http://www.youtube.com/watch?v=qySFp3qnVmM"
+    v.video_summary = "Coke smoothie"
+    v.description = "Description of video"
+    v.safely.save!
+
+    v = VideoEdition.first
+    assert_equal "http://www.youtube.com/watch?v=qySFp3qnVmM", v.video_url
+    assert_equal "Coke smoothie", v.video_summary
+    assert_equal "Description of video", v.description
+  end
+
+  should "give a friendly (legacy supporting) description of its format" do
     video = VideoEdition.new
     assert_equal "Video", video.format
   end
 
-  test "should have a whole_body method which is nil if video URL and video summary aren't present" do
-    video = VideoEdition.new
-    assert_nil video.whole_body
+  context "whole_body" do
+    should "combine the video_summary, video_url and description" do
+      v = FactoryGirl.build(:video_edition,
+                            :panopticon_id => @artefact.id,
+                            :video_summary => "Coke smoothie",
+                            :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
+                            :description => "Make a smoothie from a whole can of coke")
+      expected = ["Coke smoothie", "http://www.youtube.com/watch?v=qySFp3qnVmM", "Make a smoothie from a whole can of coke"].join("\n\n")
+      assert_equal expected, v.whole_body
+    end
+
+    should "cope with a field being nil" do
+      v = FactoryGirl.build(:video_edition,
+                            :panopticon_id => @artefact.id,
+                            :video_summary => nil,
+                            :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
+                            :description => "Make a smoothie from a whole can of coke")
+      expected = ["", "http://www.youtube.com/watch?v=qySFp3qnVmM", "Make a smoothie from a whole can of coke"].join("\n\n")
+      assert_equal expected, v.whole_body
+    end
   end
 
-  test "should have a whole_body method which just has the video URL if no summary is present" do
-    video = VideoEdition.new
-    video.video_url = "http://www.youtube.com/watch?v=tDkVS-AN4NU"
-    assert_equal "http://www.youtube.com/watch?v=tDkVS-AN4NU", video.whole_body
-  end
+  should "clone extra fields when cloning edition" do
+    video = FactoryGirl.create(:video_edition,
+                               :panopticon_id => @artefact.id,
+                               :state => "published",
+                               :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
+                               :video_summary => "Coke smoothie",
+                               :description => "Description of video")
 
-  test "should have a whole_body method which just has the video summary if no URL is present" do
-    video = VideoEdition.new
-    video.video_summary = "This is a summary"
-    assert_equal "This is a summary", video.whole_body
-  end
+    new_video = video.build_clone
 
-  test "should have a whole_body method which has both the video URL and the video summary" do
-    video = VideoEdition.new
-    video.video_summary = "This is a summary"
-    video.video_url = "https://www.gov.uk"
-    assert_equal "https://www.gov.uk\n\nThis is a summary", video.whole_body
+    assert_equal video.video_url, new_video.video_url
+    assert_equal video.video_summary, new_video.video_summary
+    assert_equal video.description, new_video.description
   end
 end
