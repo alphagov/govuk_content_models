@@ -9,13 +9,13 @@ class VideoEditionTest < ActiveSupport::TestCase
     v = FactoryGirl.build(:video_edition, panopticon_id: @artefact.id)
     v.video_url = "http://www.youtube.com/watch?v=qySFp3qnVmM"
     v.video_summary = "Coke smoothie"
-    v.description = "Description of video"
+    v.body = "Description of video"
     v.safely.save!
 
     v = VideoEdition.first
     assert_equal "http://www.youtube.com/watch?v=qySFp3qnVmM", v.video_url
     assert_equal "Coke smoothie", v.video_summary
-    assert_equal "Description of video", v.description
+    assert_equal "Description of video", v.body
   end
 
   should "give a friendly (legacy supporting) description of its format" do
@@ -24,12 +24,12 @@ class VideoEditionTest < ActiveSupport::TestCase
   end
 
   context "whole_body" do
-    should "combine the video_summary, video_url and description" do
+    should "combine the video_summary, video_url and body" do
       v = FactoryGirl.build(:video_edition,
                             :panopticon_id => @artefact.id,
                             :video_summary => "Coke smoothie",
                             :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
-                            :description => "Make a smoothie from a whole can of coke")
+                            :body => "Make a smoothie from a whole can of coke")
       expected = ["Coke smoothie", "http://www.youtube.com/watch?v=qySFp3qnVmM", "Make a smoothie from a whole can of coke"].join("\n\n")
       assert_equal expected, v.whole_body
     end
@@ -39,7 +39,7 @@ class VideoEditionTest < ActiveSupport::TestCase
                             :panopticon_id => @artefact.id,
                             :video_summary => nil,
                             :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
-                            :description => "Make a smoothie from a whole can of coke")
+                            :body => "Make a smoothie from a whole can of coke")
       expected = ["", "http://www.youtube.com/watch?v=qySFp3qnVmM", "Make a smoothie from a whole can of coke"].join("\n\n")
       assert_equal expected, v.whole_body
     end
@@ -51,12 +51,12 @@ class VideoEditionTest < ActiveSupport::TestCase
                                :state => "published",
                                :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
                                :video_summary => "Coke smoothie",
-                               :description => "Description of video")
+                               :body => "Description of video")
 
     new_video = video.build_clone
 
     assert_equal video.video_url, new_video.video_url
     assert_equal video.video_summary, new_video.video_summary
-    assert_equal video.description, new_video.description
+    assert_equal video.body, new_video.body
   end
 end
