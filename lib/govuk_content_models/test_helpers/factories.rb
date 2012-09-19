@@ -28,6 +28,13 @@ FactoryGirl.define do
     owning_app      'publisher'
   end
 
+  factory :non_publisher_artefact, class: 'Artefact' do
+    sequence(:name) { |n| "Artefact #{n}" }
+    sequence(:slug) { |n| "slug-#{n}" }
+    kind            'smart-answer'
+    owning_app      'smart-answers'
+  end
+
   factory :edition, class: AnswerEdition do
     panopticon_id {
         a = create(:artefact)
