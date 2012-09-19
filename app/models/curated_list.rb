@@ -1,4 +1,5 @@
 require "slug_validator"
+require "traits/taggable"
 
 class CuratedList
   include Mongoid::Document
