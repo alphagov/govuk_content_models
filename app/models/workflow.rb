@@ -139,8 +139,9 @@ module Workflow
   end
 
   def new_action_without_validation(user, type, options={})
-    actions.build(options.merge(requester_id: user.id, request_type: type))
+    action = actions.build(options.merge(requester_id: user.id, request_type: type))
     save(validate: false)
+    action
   end
 
   def most_recent_action(&blk)
