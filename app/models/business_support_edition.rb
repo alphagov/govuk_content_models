@@ -1,41 +1,31 @@
 require "edition"
-require "parted"
 
 class BusinessSupportEdition < Edition
-  include Parted
 
   field :short_description, type: String
+  field :body, type: String
   field :min_value, type: Integer
   field :max_value, type: Integer
   field :max_employees, type: Integer
   field :organiser, type: String
+  field :eligibility, type: String
+  field :evaluation, type: String
+  field :additional_information, type: String
   field :continuation_link, type: String
   field :will_continue_on, type: String
   field :contact_details, type: String
   field :business_support_identifier, type: String
+  index :business_support_identifier
 
   validate :min_must_be_less_than_max
   validates :business_support_identifier, :presence => true
   validate :business_support_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
-  before_save :setup_default_parts, on: :create
-
-  DEFAULT_PARTS = [
-    {title: "Description", slug: "description"},
-    {title: "Eligibility", slug: "eligibility"},
-    {title: "Evaluation", slug: "evaluation"},
-    {title: "Additional information", slug: "additional-information"}
-  ]
-
-  def setup_default_parts
-    if parts.empty?
-      DEFAULT_PARTS.each do |part|
-        parts.build(title: part[:title], slug: part[:slug], body: "")
-      end
-    end
-  end
-
+  def whole_body
+    [short_description, body].join("\n\n")
+  end 
+  
   private
 
   def min_must_be_less_than_max
