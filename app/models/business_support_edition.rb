@@ -15,6 +15,7 @@ class BusinessSupportEdition < Edition
   field :will_continue_on, type: String
   field :contact_details, type: String
   field :business_support_identifier, type: String
+  index :business_support_identifier
 
   validate :min_must_be_less_than_max
   validates :business_support_identifier, :presence => true
