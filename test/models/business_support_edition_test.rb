@@ -50,6 +50,11 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     refute support.valid?
   end
   
+  should "require a business_support_identifier" do
+    support = FactoryGirl.build(:business_support_edition, :business_support_identifier => '')
+    assert ! support.valid?, "expected business support edition not to be valid"
+  end
+
   should "have a unique business support identifier" do
     support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id,
       business_support_identifier: "this-should-be-unique")
