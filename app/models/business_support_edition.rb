@@ -15,6 +15,7 @@ class BusinessSupportEdition < Edition
   field :business_support_identifier, type: String
 
   validate :min_must_be_less_than_max
+  validates :business_support_identifier, :presence => true
   validate :business_support_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
