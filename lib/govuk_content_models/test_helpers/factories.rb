@@ -54,14 +54,8 @@ FactoryGirl.define do
   factory :video_edition, parent: :edition, :class => 'VideoEdition' do
   end
 
-  factory :business_support_edition do |edition|
-    panopticon_id {
-        a = create(:artefact)
-        a.id
-      }
-    edition.sequence(:title) {|n| "Test business support edition #{n}"}
-    edition.sequence(:slug) {|n| "slug-#{n}"}
-    section {"test:subsection test"}
+  factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
+    sequence(:business_support_identifier) {|n| "identifier-#{n}" }
   end
 
   factory :guide_edition do |ge|
