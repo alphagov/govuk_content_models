@@ -3,11 +3,6 @@ require "parted"
 
 class BusinessSupportEdition < Edition
   include Parted
-  validate :min_must_be_less_than_max
-  validate :business_support_identifier_unique
-  validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
-  
-  before_save :setup_default_parts, on: :create
 
   field :short_description, type: String
   field :min_value, type: Integer
@@ -18,6 +13,12 @@ class BusinessSupportEdition < Edition
   field :will_continue_on, type: String
   field :contact_details, type: String
   field :business_support_identifier, type: String
+
+  validate :min_must_be_less_than_max
+  validate :business_support_identifier_unique
+  validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
+
+  before_save :setup_default_parts, on: :create
 
   DEFAULT_PARTS = [
     {title: "Description", slug: "description"},
