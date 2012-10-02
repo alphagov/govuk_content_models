@@ -82,4 +82,38 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     end
   
   end
+
+  should "clone extra fields when cloning edition" do
+    support = FactoryGirl.create(:business_support_edition,
+                                 :panopticon_id => @artefact.id,
+                                 :state => "published",
+                                 :business_support_identifier => "1234",
+                                 :short_description => "Short description of support format",
+                                 :body => "Body to be cloned",
+                                 :min_value => 1,
+                                 :max_value => 2,
+                                 :max_employees => 3,
+                                 :organiser => "Organiser to be cloned",
+                                 :eligibility => "Eligibility to be cloned",
+                                 :evaluation => "Evaluation to be cloned",
+                                 :additional_information => "Additional info to be cloned",
+                                 :will_continue_on => "Continuation text to be cloned",
+                                 :continuation_link => "http://www.gov.uk",
+                                 :contact_details => "Contact details to be cloned")
+    new_support = support.build_clone
+
+    assert_equal support.business_support_identifier, new_support.business_support_identifier
+    assert_equal support.short_description, new_support.short_description
+    assert_equal support.body, new_support.body
+    assert_equal support.min_value, new_support.min_value
+    assert_equal support.max_value, new_support.max_value
+    assert_equal support.max_employees, new_support.max_employees
+    assert_equal support.organiser, new_support.organiser
+    assert_equal support.eligibility, new_support.eligibility
+    assert_equal support.evaluation, new_support.evaluation
+    assert_equal support.additional_information, new_support.additional_information
+    assert_equal support.will_continue_on, new_support.will_continue_on
+    assert_equal support.continuation_link, new_support.continuation_link
+    assert_equal support.contact_details, new_support.contact_details
+  end
 end
