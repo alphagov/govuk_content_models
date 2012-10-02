@@ -22,10 +22,14 @@ class BusinessSupportEdition < Edition
   validate :business_support_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
+  @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
+      :eligibility, :evaluation, :additional_information, :continuation_link,
+      :will_continue_on, :contact_details, :business_support_identifier]
+
   def whole_body
     [short_description, body].join("\n\n")
   end 
-  
+
   private
 
   def min_must_be_less_than_max
