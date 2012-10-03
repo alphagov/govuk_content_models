@@ -44,7 +44,7 @@ class WorkflowTest < ActiveSupport::TestCase
   def template_user_and_published_transaction
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
-    expectation = Expectation.create css_class:"card_payment",  text:"Credit card required"
+    expectation = Expectation.create text:"Credit card required"
 
     transaction = user.create_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: @artefact.id)
     transaction.expectation_ids = [expectation.id]
