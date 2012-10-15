@@ -33,6 +33,6 @@ class SafeHtml < ActiveModel::Validator
 
   private
     def govspeak_fields
-      options[:govspeak_fields] || {}
+      options[:govspeak_fields] || []
     end
 end
