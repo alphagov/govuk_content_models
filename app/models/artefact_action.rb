@@ -7,7 +7,7 @@ class ArtefactAction
 
   embedded_in :artefact
 
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: []
 
   # Ideally we would like to use the UID field here, since that will be the
   # same across all applications, but Mongoid doesn't yet support using a

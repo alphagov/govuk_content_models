@@ -5,8 +5,9 @@ class SafeHtmlTest < ActiveSupport::TestCase
     include Mongoid::Document
 
     field "declared", type: String
+    field "i_am_govspeak", type: String
 
-    validates_with SafeHtml
+    validates_with SafeHtml, govspeak_fields: [:i_am_govspeak]
 
     embeds_one :dummy_embedded_single
   end
@@ -14,7 +15,7 @@ class SafeHtmlTest < ActiveSupport::TestCase
   class ::DummyEmbeddedSingle
     include Mongoid::Document
 
-    validates_with SafeHtml
+    validates_with SafeHtml, govspeak_fields: []
 
     embedded_in :dummy
   end
@@ -56,6 +57,13 @@ class SafeHtmlTest < ActiveSupport::TestCase
     should "allow plain text" do
       dummy = Dummy.new(declared: "foo bar")
       assert dummy.valid?
+    end
+
+    should "check only specified fields as Govspeak" do
+      nasty_govspeak = %q{[Numberwang](script:nasty(); "Wangernum")}
+      assert ! Govspeak::Document.new(nasty_govspeak).valid?, "expected this to be identified as bad"
+      dummy = Dummy.new(i_am_govspeak: nasty_govspeak)
+      assert dummy.invalid?
     end
 
     should "all models should use this validator" do

@@ -13,7 +13,7 @@ class LocalService
   validates :providing_tier, inclusion: {
     in: [%w{county unitary}, %w{district unitary}, %w{district unitary county}]
   }
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: []
 
   def self.find_by_lgsl_code(lgsl_code)
     LocalService.where(lgsl_code: lgsl_code).first

@@ -42,7 +42,7 @@ class Artefact
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
 
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: []
 
   MAXIMUM_RELATED_ITEMS = 8
 

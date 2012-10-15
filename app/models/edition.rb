@@ -49,7 +49,7 @@ class Edition
   validates :title, presence: true
   validates :version_number, presence: true
   validates :panopticon_id, presence: true
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: [:body, :licence_overview]
 
   before_save :check_for_archived_artefact
   before_destroy :destroy_artefact

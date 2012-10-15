@@ -18,7 +18,7 @@ class LocalAuthority
 
   validates_uniqueness_of :snac, :local_directgov_id
   validates_presence_of   :snac, :local_directgov_id, :name, :tier
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: []
 
   scope :for_snacs, ->(snacs) { any_in(snac: snacs) }
 

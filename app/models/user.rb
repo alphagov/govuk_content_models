@@ -29,7 +29,7 @@ class User
 
   scope :alphabetized, order_by(name: :asc)
 
-  validates_with SafeHtml
+  validates_with SafeHtml, govspeak_fields: []
 
   # GDS::SSO specifically looks for find_by_uid within warden
   # when loading authentication user from session
