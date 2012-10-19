@@ -188,6 +188,20 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal "video", artefact.kind
   end
 
+  test "should archive all editions when archived" do
+    artefact = FactoryGirl.create(:artefact, state: "live")
+    editions = ["draft", "ready", "published", "archived"].map { |state|
+      FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: state)
+    }
+    artefact.state = "archived"
+    artefact.save!
+
+    editions.each &:reload
+    editions.each do |edition|
+      assert_equal "archived", edition.state
+    end
+  end
+
   context "returning json representation" do
     context "returning tags" do
       setup do

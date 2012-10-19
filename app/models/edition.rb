@@ -233,8 +233,12 @@ class Edition
   def check_for_archived_artefact
     if panopticon_id
       a = Artefact.find(panopticon_id)
-      if a.state == "archived"
-        raise "Editing of an edition with an Archived artefact is not allowed"
+      if a.state == "archived" and changed_attributes.any?
+        # If we're only changing the state to archived, that's ok
+        # Any other changes are not allowed
+        unless changed_attributes.keys == ["state"] and state == "archived"
+          raise "Editing of an edition with an Archived artefact is not allowed"
+        end
       end
     end
   end
