@@ -73,7 +73,7 @@ module Workflow
       end
 
       event :archive do
-        transition published: :archived
+        transition all => :archived
       end
     end
 
