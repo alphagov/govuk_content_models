@@ -202,6 +202,11 @@ class ArtefactTest < ActiveSupport::TestCase
     editions.each do |edition|
       assert_equal "archived", edition.state
     end
+    # remove the previously already archived edition, as no note will have been added
+    editions.pop
+    editions.each do |edition|
+      assert_equal "Artefact has been archived. Archiving this edition.", edition.actions.first.comment
+    end
   end
 
   context "returning json representation" do

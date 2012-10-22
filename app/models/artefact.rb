@@ -180,6 +180,7 @@ class Artefact
   def archive_editions
     if state == 'archived'
       Edition.where(panopticon_id: self.id, :state.nin => ["archived"]).each do |edition|
+        edition.new_action(self, "note", comment: "Artefact has been archived. Archiving this edition.")
         edition.archive!
       end
     end
