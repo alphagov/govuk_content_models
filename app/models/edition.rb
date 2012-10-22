@@ -236,7 +236,8 @@ class Edition
       if a.state == "archived" and changed_attributes.any?
         # If we're only changing the state to archived, that's ok
         # Any other changes are not allowed
-        unless (changed_attributes.keys.include?("state") and changed_attributes.keys.length <= 2) and state == "archived"
+        allowed_keys = (["state", "updated_at"] - changed_attributes.keys)
+        unless (allowed_keys.empty? or allowed_keys == ["updated_at"]) and state == "archived"
           raise "Editing of an edition with an Archived artefact is not allowed"
         end
       end
