@@ -179,9 +179,8 @@ class Artefact
 
   def archive_editions
     if state == 'archived'
-      Edition.where(panopticon_id: self.id).each do |edition|
-        edition.state = "archived"
-        edition.save!
+      Edition.where(panopticon_id: self.id, :state.nin => ["archived"]).each do |edition|
+        edition.archive!
       end
     end
   end
