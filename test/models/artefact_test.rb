@@ -193,7 +193,9 @@ class ArtefactTest < ActiveSupport::TestCase
     editions = ["draft", "ready", "published", "archived"].map { |state|
       FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: state)
     }
-    artefact.state = "archived"
+    user1 = FactoryGirl.create(:user)
+
+    artefact.update_attributes_as(user1, state: "archived")
     artefact.save!
 
     editions.each &:reload
