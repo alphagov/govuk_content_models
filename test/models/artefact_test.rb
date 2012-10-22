@@ -209,6 +209,16 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  test "should restrict what attributes can be updated on an edition that has an archived artefact" do
+    artefact = FactoryGirl.create(:artefact, state: "live")
+    edition = FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: "published")
+    artefact.state = "archived"
+    artefact.save
+    assert_raise RuntimeError do
+      edition.update_attributes({state: "archived", title: "Shabba", slug: "do-not-allow"})
+    end
+  end
+
   context "returning json representation" do
     context "returning tags" do
       setup do
