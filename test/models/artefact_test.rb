@@ -188,6 +188,37 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal "video", artefact.kind
   end
 
+  test "should archive all editions when archived" do
+    artefact = FactoryGirl.create(:artefact, state: "live")
+    editions = ["draft", "ready", "published", "archived"].map { |state|
+      FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: state)
+    }
+    user1 = FactoryGirl.create(:user)
+
+    artefact.update_attributes_as(user1, state: "archived")
+    artefact.save!
+
+    editions.each &:reload
+    editions.each do |edition|
+      assert_equal "archived", edition.state
+    end
+    # remove the previously already archived edition, as no note will have been added
+    editions.pop
+    editions.each do |edition|
+      assert_equal "Artefact has been archived. Archiving this edition.", edition.actions.first.comment
+    end
+  end
+
+  test "should restrict what attributes can be updated on an edition that has an archived artefact" do
+    artefact = FactoryGirl.create(:artefact, state: "live")
+    edition = FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: "published")
+    artefact.state = "archived"
+    artefact.save
+    assert_raise RuntimeError do
+      edition.update_attributes({state: "archived", title: "Shabba", slug: "do-not-allow"})
+    end
+  end
+
   context "returning json representation" do
     context "returning tags" do
       setup do

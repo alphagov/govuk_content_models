@@ -279,4 +279,12 @@ class WorkflowTest < ActiveSupport::TestCase
       assert_equal "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood.{+\"\\nAlthough no more than 361 cubic centimetres per day.\"}", publish_action.diff
     end
   end
+
+  test "an edition can be moved into archive state" do
+    user, other_user = template_users
+
+    edition = user.create_edition(:programme, panopticon_id: @artefact.id, title: "My title", slug: "my-slug")
+    user.take_action!(edition, "archive")
+    assert_equal "archived", edition.state
+  end
 end
