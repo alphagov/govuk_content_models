@@ -6,6 +6,7 @@ class Tag
   field :title,    type: String
   field :tag_type, type: String #TODO: list of accepted types?
   field :description, type: String
+  field :short_description, type: String
 
   field :parent_id, type: String
 
@@ -24,7 +25,8 @@ class Tag
       id: self.tag_id,
       title: self.title,
       type: self.tag_type,
-      description: self.description
+      description: self.description,
+      short_description: self.short_description
     }
   end
 

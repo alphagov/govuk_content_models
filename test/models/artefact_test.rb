@@ -258,13 +258,15 @@ class ArtefactTest < ActiveSupport::TestCase
               :id => 'justice',
               :title => 'Justice',
               :type => 'section',
-              :description => 'All about justice'
+              :description => 'All about justice',
+              :short_description => nil
             },
             {
               :id => 'businesslink',
               :title => 'Business Link',
               :type => 'legacy_source',
-              :description => nil
+              :description => nil,
+              :short_description => nil
             }
           ]
           assert_equal expected, hash['tags']
