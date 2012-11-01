@@ -11,7 +11,8 @@ class TagTest < ActiveSupport::TestCase
       id: "crime",
       title: "Crime",
       type: "section",
-      description: nil
+      description: nil,
+      short_description: nil
     }
     assert_equal expected_hash, tag.as_json
   end
