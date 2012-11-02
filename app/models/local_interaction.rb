@@ -9,6 +9,8 @@ class LocalInteraction
   field :lgil_code, type: Integer
   field :url,       type: String
 
+  GOVSPEAK_FIELDS = []
+
   embedded_in :local_authority
 
   validates_presence_of :url, :lgil_code, :lgsl_code

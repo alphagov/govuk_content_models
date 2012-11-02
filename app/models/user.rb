@@ -22,6 +22,8 @@ class User
   field "email",               type: String
   field "permissions",         type: Hash
   field "remotely_signed_out", type: Boolean, default: false
+  
+  GOVSPEAK_FIELDS = []
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :name, :uid

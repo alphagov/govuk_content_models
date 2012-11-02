@@ -13,6 +13,8 @@ class CuratedList
 
   index "slug"
 
+  GOVSPEAK_FIELDS = []
+
   validates :slug, presence: true, uniqueness: true, slug: true
   validates_with SafeHtml
 

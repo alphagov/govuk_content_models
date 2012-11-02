@@ -16,6 +16,8 @@ class LocalAuthority
   field :contact_phone,      type: String
   field :contact_email,      type: String
 
+  GOVSPEAK_FIELDS = []
+
   validates_uniqueness_of :snac, :local_directgov_id
   validates_presence_of   :snac, :local_directgov_id, :name, :tier
   validates_with SafeHtml

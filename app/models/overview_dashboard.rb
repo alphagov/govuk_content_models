@@ -17,5 +17,7 @@ class OverviewDashboard
   field :published,           type: Integer
   field :archived,            type: Integer
 
+  GOVSPEAK_FIELDS = []
+
   validates_with SafeHtml
 end
