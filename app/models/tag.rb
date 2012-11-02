@@ -9,11 +9,13 @@ class Tag
 
   field :parent_id, type: String
 
+  GOVSPEAK_FIELDS = []
+
   index :tag_id, unique: true
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
-  validates_with SafeHtml, govspeak_fields: []
+  validates_with SafeHtml
 
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually

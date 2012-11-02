@@ -37,7 +37,8 @@ class Action
   field :customised_message, type: String
   field :created_at,         type: DateTime, default: lambda { Time.now }
 
-  validates_with SafeHtml, govspeak_fields: []
+  GOVSPEAK_FIELDS = []
+  validates_with SafeHtml
 
   def container_class_name(edition)
     edition.container.class.name.underscore.humanize

@@ -22,6 +22,8 @@ class User
   field "email",               type: String
   field "permissions",         type: Hash
   field "remotely_signed_out", type: Boolean, default: false
+  
+  GOVSPEAK_FIELDS = []
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :name, :uid
@@ -29,7 +31,7 @@ class User
 
   scope :alphabetized, order_by(name: :asc)
 
-  validates_with SafeHtml, govspeak_fields: []
+  validates_with SafeHtml
 
   # GDS::SSO specifically looks for find_by_uid within warden
   # when loading authentication user from session

@@ -7,7 +7,9 @@ class SafeHtmlTest < ActiveSupport::TestCase
     field "declared", type: String
     field "i_am_govspeak", type: String
 
-    validates_with SafeHtml, govspeak_fields: [:i_am_govspeak]
+    GOVSPEAK_FIELDS = [:i_am_govspeak]
+
+    validates_with SafeHtml
 
     embeds_one :dummy_embedded_single
   end
@@ -15,7 +17,9 @@ class SafeHtmlTest < ActiveSupport::TestCase
   class ::DummyEmbeddedSingle
     include Mongoid::Document
 
-    validates_with SafeHtml, govspeak_fields: []
+    GOVSPEAK_FIELDS = []
+
+    validates_with SafeHtml
 
     embedded_in :dummy
   end

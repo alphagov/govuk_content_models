@@ -4,5 +4,7 @@ class Expectation
 
   field :text,      type: String
 
-  validates_with SafeHtml, govspeak_fields: []
+  GOVSPEAK_FIELDS = []
+
+  validates_with SafeHtml
 end

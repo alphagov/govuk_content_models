@@ -13,8 +13,10 @@ class CuratedList
 
   index "slug"
 
+  GOVSPEAK_FIELDS = []
+
   validates :slug, presence: true, uniqueness: true, slug: true
-  validates_with SafeHtml, govspeak_fields: []
+  validates_with SafeHtml
 
   def self.find_by_slug(slug)
     where(slug: slug).first

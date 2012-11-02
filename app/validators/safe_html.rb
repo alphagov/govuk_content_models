@@ -18,7 +18,7 @@ class SafeHtml < ActiveModel::Validator
   end
 
   def check_string(record, field_name, string)
-    if govspeak_fields.include?(field_name)
+    if record.class::GOVSPEAK_FIELDS.include?(field_name)
       unless Govspeak::Document.new(string).valid?
         error = "cannot include invalid Govspeak or JavaScript"
         record.errors.add(field_name, error)
@@ -30,9 +30,4 @@ class SafeHtml < ActiveModel::Validator
       end
     end
   end
-
-  private
-    def govspeak_fields
-      options[:govspeak_fields] || []
-    end
 end
