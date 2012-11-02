@@ -5,6 +5,8 @@ class ArtefactAction
   field "action_type", type: String
   field "snapshot", type: Hash
 
+  GOVSPEAK_FIELDS = []
+
   embedded_in :artefact
 
   validates_with SafeHtml

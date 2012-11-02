@@ -13,6 +13,8 @@ class Contact
   field "contactotron_id", type: Integer
   field "phone_numbers",   type: Array
 
+  GOVSPEAK_FIELDS = []
+  
   validates_with SafeHtml
   validates :name, presence: true
 

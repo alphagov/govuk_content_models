@@ -26,6 +26,10 @@ class Edition
   field :publisher,            type: String
   field :archiver,             type: String
 
+  GOVSPEAK_FIELDS = [:body, :overview, :more_information, :short_description, :introduction, 
+      :licence_short_description, :licence_overview, :eligibility, 
+      :evaluation, :additional_information]
+
   belongs_to :assigned_to, class_name: "User"
 
   scope :lined_up,            where(state: "lined_up")

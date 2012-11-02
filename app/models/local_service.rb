@@ -8,6 +8,8 @@ class LocalService
   field :lgsl_code,      type: Integer
   field :providing_tier, type: Array
 
+  GOVSPEAK_FIELDS = []
+
   validates_presence_of :lgsl_code, :providing_tier
   validates_uniqueness_of :lgsl_code
   validates :providing_tier, inclusion: {

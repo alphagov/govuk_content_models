@@ -10,6 +10,8 @@ class Tag
 
   field :parent_id, type: String
 
+  GOVSPEAK_FIELDS = []
+
   index :tag_id, unique: true
   index :tag_type
 
