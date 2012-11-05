@@ -16,13 +16,6 @@ module WorkflowActor
     action
   end
 
-  def record_action_without_validation(edition, type, options={})
-    type = Action.const_get(type.to_s.upcase)
-    action = edition.new_action_without_validation(self, type, options)
-    edition.save! # force callbacks for denormalisation
-    action
-  end
-
   def can_take_action(action, edition)
     respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
   end
@@ -93,9 +86,7 @@ module WorkflowActor
   # Always records the action.
   def receive_fact_check(edition, details)
     edition.receive_fact_check
-    # Fact checks are processed async, so the user doesn't get an opportunity
-    # to retry without the content that (inadvertantly) fails validation, which happens frequently.
-    record_action_without_validation(edition, :receive_fact_check, details)
+    record_action(edition, :receive_fact_check, details)
   end
 
   def skip_fact_check(edition, details)

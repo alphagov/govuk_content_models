@@ -138,12 +138,6 @@ module Workflow
     actions.create!(options.merge(requester_id: user.id, request_type: type))
   end
 
-  def new_action_without_validation(user, type, options={})
-    action = actions.build(options.merge(requester_id: user.id, request_type: type))
-    save(validate: false)
-    action
-  end
-
   def most_recent_action(&blk)
     self.actions.sort_by(&:created_at).reverse.find(&blk)
   end
