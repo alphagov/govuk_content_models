@@ -10,6 +10,8 @@ class LocalTransactionEdition < Edition
   field :introduction,      type: String
   field :more_information,  type: String
 
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information]
+
   @fields_to_clone = [
     :lgsl_code, :introduction, :more_information,
     :minutes_to_complete, :expectation_ids
