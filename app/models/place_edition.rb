@@ -8,6 +8,8 @@ class PlaceEdition < Edition
   field :more_information,  type: String
   field :place_type,        type: String
 
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information]
+
   @fields_to_clone = [:introduction, :more_information, :place_type,
                       :expectation_ids]
 
