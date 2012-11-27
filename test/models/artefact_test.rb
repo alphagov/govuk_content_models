@@ -222,10 +222,10 @@ class ArtefactTest < ActiveSupport::TestCase
   context "returning json representation" do
     context "returning tags" do
       setup do
-        TagRepository.put :tag_type => 'section', :tag_id => 'crime', :title => 'Crime'
-        TagRepository.put :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice"
-        TagRepository.put :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov'
-        TagRepository.put :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link'
+        FactoryGirl.create(:tag, :tag_type => 'section', :tag_id => 'crime', :title => 'Crime')
+        FactoryGirl.create(:tag, :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice")
+        FactoryGirl.create(:tag, :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov')
+        FactoryGirl.create(:tag, :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link')
 
         @a = FactoryGirl.create(:artefact, :slug => 'fooey')
       end
