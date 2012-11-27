@@ -72,7 +72,6 @@ class Artefact
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
-  belongs_to :contact
   embeds_many :actions, class_name: "ArtefactAction", order: :created_at
 
   before_validation :normalise, on: :create
