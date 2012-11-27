@@ -1,5 +1,4 @@
 require "slug_validator"
-require "tag_repository"
 require "plek"
 require "traits/taggable"
 require "artefact_action"  # Require this when running outside Rails
@@ -127,7 +126,7 @@ class Artefact
     super.tap { |hash|
       if hash["tag_ids"]
         hash["tags"] = hash["tag_ids"].map do |tag_id|
-          TagRepository.load(tag_id).as_json
+          Tag.where(tag_id: tag_id).first.as_json
         end
       else
         hash["tag_ids"] = []

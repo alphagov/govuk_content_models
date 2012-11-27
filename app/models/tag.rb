@@ -38,7 +38,7 @@ class Tag
 
   def parent
     if has_parent?
-      TagRepository.load(parent_id)
+      Tag.where(tag_id: parent_id, tag_type: self.tag_type).first
     end
   end
 
@@ -46,7 +46,7 @@ class Tag
     if value.is_a?(Tag)
       return value.name, value
     else
-      return value, TagRepository.load(value)
+      return value, Tag.where(tag_id: value, tag_type: self.tag_type).first
     end
   end
 
