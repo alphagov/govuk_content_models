@@ -1,4 +1,5 @@
 require "safe_html"
+require "patches/mongoid"
 
 class Tag
   include Mongoid::Document
@@ -21,6 +22,8 @@ class Tag
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually
   attr_accessor :uniquely_named
+
+  self.inheritance_column= :tag_type
 
   def as_json(options = {})
     {
