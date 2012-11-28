@@ -117,9 +117,7 @@ class Artefact
 
   # TODO: Replace this nonsense with a proper API layer.
   def as_json(options={})
-    super(options.merge(
-      include: {contact: {}}
-    )).tap { |hash|
+    super.tap { |hash|
       if hash["tag_ids"]
         hash["tags"] = hash["tag_ids"].map do |tag_id|
           TagRepository.load(tag_id).as_json
@@ -141,7 +139,6 @@ class Artefact
       hash.delete("related_artefacts")
       hash.delete("related_artefact_ids")
       hash["id"] = hash.delete("_id")
-      hash["contact"]["id"] = hash["contact"].delete("_id") if hash["contact"]
 
       # Add a section identifier if needed
       hash["section"] ||= section
