@@ -25,7 +25,8 @@ class ArtefactActionTest < ActiveSupport::TestCase
     "state" => "draft",
     "related_artefact_ids" => [],
     "paths" => [],
-    "prefixes" => []
+    "prefixes" => [],
+    "language" => "en"
   }
 
   def base_fields
