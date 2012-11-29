@@ -219,6 +219,30 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  context "artefact language" do
+    should "return english by default" do
+      a = FactoryGirl.create(:artefact)
+
+      assert_equal 'en', a.language
+    end
+
+    should "accept welsh language" do
+      a = FactoryGirl.build(:artefact)
+      a.language = 'cy'
+      a.save
+
+      a = Artefact.first
+      assert_equal 'cy', a.language
+    end
+
+    should "reject a language which is not english or welsh" do
+      a = FactoryGirl.build(:artefact)
+      a.language = 'pirate'
+
+      assert ! a.valid?
+    end
+  end
+
   context "returning json representation" do
     context "returning tags" do
       setup do

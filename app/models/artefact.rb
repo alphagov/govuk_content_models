@@ -41,6 +41,7 @@ class Artefact
   field "description",          type: String
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
+  field "language",             type: String,  default: "en"
 
   GOVSPEAK_FIELDS = []
   
@@ -84,6 +85,7 @@ class Artefact
   validates :kind, inclusion: { in: FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
+  validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
 
   def self.in_alphabetical_order
@@ -102,6 +104,11 @@ class Artefact
     else
       primary_section.title
     end
+  end
+
+  # Fallback to english if no language is present
+  def language
+    attributes['language'] || "en"
   end
 
   def normalise
