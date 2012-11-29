@@ -41,7 +41,7 @@ class Artefact
   field "description",          type: String
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
-  field "language",             type: String
+  field "language",             type: String,  default: "en"
 
   GOVSPEAK_FIELDS = []
   
@@ -107,6 +107,7 @@ class Artefact
     end
   end
 
+  # Fallback to english if no language is present
   def language
     attributes['language'] || "en"
   end
