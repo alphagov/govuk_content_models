@@ -11,6 +11,11 @@ class FactCheckAddress
     regexp.match(address)
   end
 
+  def edition_from_address(address)
+    match = valid_address?(address)
+    match && match[0]
+  end
+
   private
   def regexp
     /#{prefix}(.+?)@#{DOMAIN}/
