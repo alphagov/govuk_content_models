@@ -7,11 +7,15 @@ class FactCheckAddress
     "#{prefix}#{edition.id}@#{DOMAIN}"
   end
 
+  def valid_address?(address)
+    regexp.match(address)
+  end
+
+  private
   def regexp
     /#{prefix}(.+?)@#{DOMAIN}/
   end
 
-  private
   def prefix
     "factcheck+#{environment}-"
   end
