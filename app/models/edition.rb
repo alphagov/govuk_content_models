@@ -1,5 +1,5 @@
-require "plek"
 require "workflow"
+require "fact_check_address"
 
 class Edition
   include Mongoid::Document
@@ -110,7 +110,7 @@ class Edition
   end
 
   def fact_check_email_address
-    "factcheck+#{Plek.current.environment}-#{id}@alphagov.co.uk"
+    FactCheckAddress.new.for_edition(self)
   end
 
   def get_next_version_number
