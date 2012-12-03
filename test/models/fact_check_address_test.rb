@@ -13,4 +13,16 @@ class FactCheckAddressTest < ActiveSupport::TestCase
     address = "factcheck+staging-abde@alphagov.co.uk"
     refute service.valid_address?(address), "Address should be invalid but isn't"
   end
+
+  test "can extract edition ID from an address" do
+    service = FactCheckAddress.new
+    address = "factcheck+test-abde@alphagov.co.uk"
+    assert_equal "abde", service.edition_id_from_address(address)
+  end
+
+  test "can generate an address from an edition" do
+    service = FactCheckAddress.new
+    e = Edition.new
+    assert_match /#{e.id}/, service.for_edition(e)
+  end
 end

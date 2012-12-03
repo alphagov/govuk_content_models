@@ -11,9 +11,9 @@ class FactCheckAddress
     regexp.match(address)
   end
 
-  def edition_from_address(address)
+  def edition_id_from_address(address)
     match = valid_address?(address)
-    match && match[0]
+    match && match[1]
   end
 
   private
