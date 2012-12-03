@@ -18,7 +18,7 @@ class FactCheckAddress
 
   private
   def regexp
-    /#{prefix}(.+?)@#{DOMAIN}/
+    /#{Regexp.escape(prefix)}(.+?)@#{DOMAIN}/
   end
 
   def prefix
