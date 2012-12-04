@@ -17,6 +17,8 @@ class BusinessSupportEdition < Edition
   field :business_support_identifier, type: String
   index :business_support_identifier
 
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
+
   validate :min_must_be_less_than_max
   validates :business_support_identifier, :presence => true
   validate :business_support_identifier_unique

@@ -41,6 +41,7 @@ class Artefact
   field "description",          type: String
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
+  field "language",             type: String,  default: "en"
 
   GOVSPEAK_FIELDS = []
   
@@ -72,7 +73,6 @@ class Artefact
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
-  belongs_to :contact
   embeds_many :actions, class_name: "ArtefactAction", order: :created_at
 
   before_validation :normalise, on: :create
@@ -85,6 +85,7 @@ class Artefact
   validates :kind, inclusion: { in: FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
+  validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
 
   def self.in_alphabetical_order
@@ -105,6 +106,11 @@ class Artefact
     end
   end
 
+  # Fallback to english if no language is present
+  def language
+    attributes['language'] || "en"
+  end
+
   def normalise
     return unless kind.present?
     self.kind = KIND_TRANSLATIONS[kind.to_s.downcase.strip]
@@ -118,9 +124,7 @@ class Artefact
 
   # TODO: Replace this nonsense with a proper API layer.
   def as_json(options={})
-    super(options.merge(
-      include: {contact: {}}
-    )).tap { |hash|
+    super.tap { |hash|
       if hash["tag_ids"]
         hash["tags"] = hash["tag_ids"].map do |tag_id|
           TagRepository.load(tag_id).as_json
@@ -142,7 +146,6 @@ class Artefact
       hash.delete("related_artefacts")
       hash.delete("related_artefact_ids")
       hash["id"] = hash.delete("_id")
-      hash["contact"]["id"] = hash["contact"].delete("_id") if hash["contact"]
 
       # Add a section identifier if needed
       hash["section"] ||= section

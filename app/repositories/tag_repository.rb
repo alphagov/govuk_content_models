@@ -32,5 +32,6 @@ module TagRepository
     else
       t.update_attributes! tag
     end
+    t
   end
 end

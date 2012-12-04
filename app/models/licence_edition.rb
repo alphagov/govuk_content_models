@@ -8,6 +8,8 @@ class LicenceEdition < Edition
   field :will_continue_on, :type => String
   field :continuation_link, :type => String
 
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:licence_overview]
+
   validates :licence_identifier, :presence => true
   validate :licence_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
