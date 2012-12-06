@@ -16,7 +16,7 @@ class FactCheckAddressTest < ActiveSupport::TestCase
 
   test "can extract edition ID from an address" do
     service = FactCheckAddress.new
-    address = "factcheck+test-abde@alphagov.co.uk"
+    address = "factcheck+dev-abde@alphagov.co.uk"
     assert_equal "abde", service.edition_id_from_address(address)
   end
 
