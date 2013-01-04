@@ -23,10 +23,10 @@ class TravelAdviceEdition
   private
 
   def state_for_slug_unique
-    existing = self.class.where(:state.ne => "archived",
-                                :state => state,
-                                :country_slug => country_slug)
-    if existing.any? and existing != [self]
+    if %w(published draft).include?(self.state) and 
+        self.class.where(:id.ne => _id,
+                         :country_slug => country_slug, 
+                         :state => state).any?  
       errors.add(:state, :taken)
     end
   end
