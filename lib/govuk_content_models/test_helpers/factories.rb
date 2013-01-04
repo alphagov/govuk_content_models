@@ -172,4 +172,9 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
   end
 
+  factory :travel_advice_edition do
+    country_slug 'aruba'
+    state 'archived'
+    sequence(:version_number)
+  end
 end
