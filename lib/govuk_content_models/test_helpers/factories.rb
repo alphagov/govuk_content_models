@@ -173,8 +173,7 @@ FactoryGirl.define do
   end
 
   factory :travel_advice_edition do
-    country_slug 'aruba'
-    state 'archived'
+    sequence(:country_slug) {|n| "test-country-#{n}" }
     sequence(:version_number)
   end
 end
