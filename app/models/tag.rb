@@ -42,14 +42,6 @@ class Tag
     end
   end
 
-  def self.id_and_entity(value)
-    if value.is_a?(Tag)
-      return value.name, value
-    else
-      return value, Tag.where(tag_id: value, tag_type: self.tag_type).first
-    end
-  end
-
   def unique_title
     self.uniquely_named ? self.title : "#{self.title} [#{self.tag_id}]"
   end
