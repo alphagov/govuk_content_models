@@ -93,7 +93,7 @@ module Taggable
   end
 
   def tags
-    @tags ||= load_all_tags_with_ids(tag_ids).to_a
+    @tags ||= Tag.by_tag_ids(tag_ids).compact.to_a
   end
 
   def reload
@@ -109,9 +109,5 @@ module Taggable
   def save!(options={})
     reconcile_tag_ids
     super(options)
-  end
-
-  def load_all_tags_with_ids(ids)
-    Tag.any_in(tag_id: ids).to_a.sort_by! { |tag| ids.index(tag.tag_id) }
   end
 end
