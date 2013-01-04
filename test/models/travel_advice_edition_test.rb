@@ -40,6 +40,33 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         assert @ta.valid?
       end
     end
+
+    context "on version_number" do
+      should "resuire a version_number" do
+        @ta.version_number = ''
+        refute @ta.valid?
+        assert_includes @ta.errors.messages[:version_number], "can't be blank"
+      end
+
+      should "require a unique version_number per slug" do
+        another_edition = FactoryGirl.create(:travel_advice_edition,
+                                             :country_slug => @ta.country_slug,
+                                             :version_number => 3,
+                                             :state => 'archived')
+        @ta.version_number = 3
+        refute @ta.valid?
+        assert_includes @ta.errors.messages[:version_number], "is already taken"
+      end
+
+      should "allow matching version_numbers for different slugs" do
+        another_edition = FactoryGirl.create(:travel_advice_edition,
+                                             :country_slug => 'wibble',
+                                             :version_number => 3,
+                                             :state => 'archived')
+        @ta.version_number = 3
+        assert @ta.valid?
+      end
+    end
   end
 
   context "construction a new edition" do

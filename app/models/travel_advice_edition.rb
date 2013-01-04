@@ -9,8 +9,11 @@ class TravelAdviceEdition
   field :version_number,       type: Integer,   default: 1
   field :state,                type: String,    default: "draft"
 
+  index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
+
   validates_presence_of :country_slug
   validate :state_for_slug_unique
+  validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
 
   state_machine initial: :draft do
     event :publish do
