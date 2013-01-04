@@ -125,9 +125,7 @@ class Artefact
   def as_json(options={})
     super.tap { |hash|
       if hash["tag_ids"]
-        hash["tags"] = hash["tag_ids"].map do |tag_id|
-          Tag.where(tag_id: tag_id).first.as_json
-        end
+        hash["tags"] = Tag.by_tag_ids!(hash["tag_ids"]).map(&:as_json)
       else
         hash["tag_ids"] = []
         hash["tags"] = []

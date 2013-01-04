@@ -26,8 +26,8 @@ class ArtefactTagTest < ActiveSupport::TestCase
   end
 
   test "returns title of parent and child tags when its primary section has a parent" do
-    parent = Tag.where(tag_id: 'crime', tag_type: 'section').first
-    child = Tag.where(tag_id: 'crime/batman', tag_type: 'section').first
+    parent = Tag.by_tag_id('crime', 'section')
+    child = Tag.by_tag_id('crime/batman', 'section')
     child.update_attributes parent_id: parent.tag_id
 
     a = FactoryGirl.create(:artefact)

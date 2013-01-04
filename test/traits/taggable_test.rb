@@ -47,13 +47,13 @@ class TaggableTest < ActiveSupport::TestCase
   end
 
   test "cannot set non-existent sections" do
-    assert_raise RuntimeError do
+    assert_raise Tag::MissingTags do
       @item.sections = ['weevils']
     end
   end
 
   test "cannot set non-section tags" do
-    assert_raise RuntimeError do
+    assert_raise Tag::MissingTags do
       @item.sections = ['crime', 'bacon']
     end
   end
