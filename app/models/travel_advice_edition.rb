@@ -1,3 +1,5 @@
+require 'state_machine'
+
 class TravelAdviceEdition
   include Mongoid::Document
   include Mongoid::Timestamps
