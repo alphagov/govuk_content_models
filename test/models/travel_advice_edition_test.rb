@@ -2,7 +2,9 @@ require "test_helper"
 
 class TravelAdviceEditionTest < ActiveSupport::TestCase
   setup do
-    @ta = TravelAdviceEdition.new(:country_slug => "narnia")
+    @ta = FactoryGirl.create(:travel_advice_edition,
+                             :country_slug => "narnia",
+                             :state => "draft")
   end
 
   test "country slug must be present" do
@@ -12,7 +14,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
   end
 
   test "country slug must be unique for state" do
-    @ta.save!
     another_edition = FactoryGirl.create(:travel_advice_edition, 
                                          :country_slug => "liliputt", 
                                          :state => "draft")
@@ -24,7 +25,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
   end
 
   test "a new travel advice edition is a draft" do
-    assert @ta.draft?
+    assert TravelAdviceEdition.new.draft?
   end
 
   test "publishing a draft travel advice edition" do
