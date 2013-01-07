@@ -123,7 +123,7 @@ class Edition
   end
 
   def indexable_content_without_parts
-    published? ? alternative_title : ""
+    alternative_title
   end
 
   def indexable_content_with_parts
