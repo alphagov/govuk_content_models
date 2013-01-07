@@ -9,9 +9,7 @@ class AnswerEdition < Edition
   @fields_to_clone = [:body]
 
   def indexable_content
-    content = super
-    return content unless latest_edition?
-    "#{content} #{body}".strip
+    "#{super} #{body}".strip
   end
 
   def whole_body

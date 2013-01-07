@@ -19,9 +19,7 @@ class TransactionEdition < Edition
                       :expectation_ids]
 
   def indexable_content
-    content = super
-    return content unless latest_edition?
-    "#{content} #{introduction} #{more_information}".strip
+    "#{super} #{introduction} #{more_information}".strip
   end
 
   def whole_body
