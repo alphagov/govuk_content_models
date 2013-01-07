@@ -31,7 +31,7 @@ class TravelAdviceEdition
 
   def state_for_slug_unique
     if %w(published draft).include?(self.state) and 
-        self.class.where(:id.ne => _id,
+        self.class.where(:_id.ne => id,
                          :country_slug => country_slug, 
                          :state => state).any?  
       errors.add(:state, :taken)

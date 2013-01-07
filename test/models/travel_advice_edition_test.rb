@@ -39,6 +39,12 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         @ta.state = 'archived'
         assert @ta.valid?
       end
+
+      should "not conflict with itself when validating uniqueness" do
+        @ta.state = 'draft'
+        @ta.save!
+        assert @ta.valid?
+      end
     end
 
     context "on version_number" do
