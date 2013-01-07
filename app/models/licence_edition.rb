@@ -21,6 +21,10 @@ class LicenceEdition < Edition
     [licence_short_description, licence_overview].join("\n\n")
   end
 
+  def indexable_content
+    "#{super} #{licence_short_description} #{licence_overview}".strip
+  end
+
   private
   def licence_identifier_unique
     if self.class.where(:licence_identifier => licence_identifier,
