@@ -8,10 +8,6 @@ class AnswerEdition < Edition
 
   @fields_to_clone = [:body]
 
-  def indexable_content
-    "#{super} #{body}".strip
-  end
-
   def whole_body
     self.body
   end

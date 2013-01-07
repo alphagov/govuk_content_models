@@ -779,6 +779,13 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   context "indexable_content" do
+    context "editions with a 'body'" do
+      should "include the body with markup removed" do
+        edition = FactoryGirl.create(:answer_edition, body: "## Title", panopticon_id: FactoryGirl.create(:artefact).id)
+        assert_equal "Title", edition.indexable_content
+      end
+    end
+
     context "for a single part thing" do
       should "have the normalised content of that part" do
         edition = FactoryGirl.create(:guide_edition, :state => 'ready', :title => 'one part thing', :alternative_title => 'alternative one part thing', panopticon_id: FactoryGirl.create(:artefact).id)

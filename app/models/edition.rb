@@ -123,7 +123,11 @@ class Edition
   end
 
   def indexable_content_without_parts
-    alternative_title
+    if respond_to?(:body)
+      "#{alternative_title} #{Govspeak::Document.new(body).to_text}".strip
+    else
+      alternative_title
+    end
   end
 
   def indexable_content_with_parts
