@@ -43,6 +43,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
 
     context "on version_number" do
       should "resuire a version_number" do
+        @ta.save # version_number is automatically populated on create, so save it first.
         @ta.version_number = ''
         refute @ta.valid?
         assert_includes @ta.errors.messages[:version_number], "can't be blank"
@@ -69,13 +70,39 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
   end
 
-  context "construction a new edition" do
+  context "fields on a new edition" do
     should "be in draft state" do
       assert TravelAdviceEdition.new.draft?
     end
 
     context "populating version_number" do
+      should "set version_number to 1 if there are no existing versions for the country" do
+        ed = TravelAdviceEdition.new(:country_slug => 'foo')
+        ed.valid?
+        assert_equal 1, ed.version_number
+      end
 
+      should "set version_number to the next available version" do
+        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 1, :state => 'archived')
+        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 2, :state => 'archived')
+        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 4, :state => 'published')
+
+        ed = TravelAdviceEdition.new(:country_slug => 'foo')
+        ed.valid?
+        assert_equal 5, ed.version_number
+      end
+
+      should "do nothing if version_number is already set" do
+        ed = TravelAdviceEdition.new(:country_slug => 'foo', :version_number => 42)
+        ed.valid?
+        assert_equal 42, ed.version_number
+      end
+
+      should "do nothing if country_slug is not set" do
+        ed = TravelAdviceEdition.new(:country_slug => '')
+        ed.valid?
+        assert_equal nil, ed.version_number
+      end
     end
   end
 end
