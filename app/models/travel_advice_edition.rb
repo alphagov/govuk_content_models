@@ -27,6 +27,12 @@ class TravelAdviceEdition
     end
   end
 
+  def build_clone
+    new_edition = self.class.new(:country_slug => self.country_slug)
+    new_edition.parts = self.parts.map(&:dup)
+    new_edition
+  end
+
   private
 
   def state_for_slug_unique

@@ -111,4 +111,25 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "building a new version" do
+    setup do
+      @ed = FactoryGirl.create(:travel_advice_edition, :state => 'published')
+    end
+
+    should "build a new instance with the same slug" do
+      new_ed = @ed.build_clone
+      assert new_ed.new_record?
+      assert_equal @ed.country_slug, new_ed.country_slug
+    end
+
+    should "copy the edition's parts" do
+      @ed.parts.build(:title => "Fooey", :slug => 'fooey', :body => "It's all about Fooey")
+      @ed.parts.build(:title => "Gooey", :slug => 'gooey', :body => "It's all about Gooey")
+      @ed.save!
+
+      new_ed = @ed.build_clone
+      assert_equal ['Fooey', 'Gooey'], new_ed.parts.map(&:title)
+    end
+  end
 end
