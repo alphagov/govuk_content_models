@@ -17,5 +17,4 @@ class AnswerEdition < Edition
   def whole_body
     self.body
   end
-
 end
