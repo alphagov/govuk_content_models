@@ -80,4 +80,16 @@ class LicenceEditionTest < ActiveSupport::TestCase
     assert_equal licence.will_continue_on, new_licence.will_continue_on
     assert_equal licence.continuation_link, new_licence.continuation_link
   end
+
+  context "indexable_content" do
+    should "include the licence_overview, removing markup" do
+      licence = FactoryGirl.create(:licence_edition, licence_overview: "## Overview")
+      assert_equal "Overview", licence.indexable_content
+    end
+
+    should "include the licence_short_description" do
+      licence = FactoryGirl.create(:licence_edition, licence_short_description: "Short desc")
+      assert_equal "Short desc", licence.indexable_content
+    end
+  end
 end
