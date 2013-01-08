@@ -82,10 +82,14 @@ class LicenceEditionTest < ActiveSupport::TestCase
   end
 
   context "indexable_content" do
-    should "include the licence_overview and licence_short_description" do
-      licence = FactoryGirl.create(:licence_edition, licence_short_description: "Short desc", licence_overview: "Overview")
-      assert_match /Short desc/, licence.indexable_content
-      assert_match /Overview/, licence.indexable_content
+    should "include the licence_overview, removing markup" do
+      licence = FactoryGirl.create(:licence_edition, licence_overview: "## Overview")
+      assert_equal "Overview", licence.indexable_content
+    end
+
+    should "include the licence_short_description" do
+      licence = FactoryGirl.create(:licence_edition, licence_short_description: "Short desc")
+      assert_equal "Short desc", licence.indexable_content
     end
   end
 end

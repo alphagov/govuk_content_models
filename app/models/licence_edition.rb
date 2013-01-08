@@ -22,7 +22,7 @@ class LicenceEdition < Edition
   end
 
   def indexable_content
-    "#{super} #{licence_short_description} #{licence_overview}".strip
+    "#{super} #{licence_short_description} #{Govspeak::Document.new(licence_overview).to_text}".strip
   end
 
   private
