@@ -19,7 +19,7 @@ class TransactionEdition < Edition
                       :expectation_ids]
 
   def indexable_content
-    "#{super} #{introduction} #{more_information}".strip
+    "#{super} #{Govspeak::Document.new(introduction).to_text} #{Govspeak::Document.new(more_information).to_text}".strip
   end
 
   def whole_body
