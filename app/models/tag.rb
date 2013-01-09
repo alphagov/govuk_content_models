@@ -12,6 +12,7 @@ class Tag
 
   GOVSPEAK_FIELDS = []
 
+  index :tag_id
   index [ [:tag_id, Mongo::ASCENDING], [:tag_type, Mongo::ASCENDING] ], unique: true
   index :tag_type
 
