@@ -12,11 +12,21 @@ class Tag
 
   GOVSPEAK_FIELDS = []
 
+  index :tag_id
   index [ [:tag_id, Mongo::ASCENDING], [:tag_type, Mongo::ASCENDING] ], unique: true
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
   validates_with SafeHtml
+
+  class MissingTags < RuntimeError
+    attr_reader :tag_ids
+
+    def initialize(tag_ids)
+      super("Missing tags: #{tag_ids.join(", ")}")
+      @tag_ids = tag_ids
+    end
+  end
 
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually
@@ -37,17 +47,7 @@ class Tag
   end
 
   def parent
-    if has_parent?
-      TagRepository.load(parent_id)
-    end
-  end
-
-  def self.id_and_entity(value)
-    if value.is_a?(Tag)
-      return value.name, value
-    else
-      return value, TagRepository.load(value)
-    end
+    Tag.by_tag_id(parent_id, self.tag_type) if has_parent?
   end
 
   def unique_title
@@ -56,5 +56,33 @@ class Tag
 
   def to_s
     title
+  end
+
+  def self.by_tag_id(tag_id, tag_type = nil)
+    scope = tag_type ? Tag.where(tag_type: tag_type) : Tag
+    scope.where(tag_id: tag_id).first
+  end
+
+  # Retrieve a list of tags by tag ID. Any missing tags become `nil`.
+  def self.by_tag_ids(tag_id_list, tag_type = nil)
+    scope = tag_type ? Tag.where(tag_type: tag_type) : Tag
+
+    # Load up all the tags in a single query
+    tags = scope.any_in(tag_id: tag_id_list).to_a
+    tag_id_list.map { |tag_id| tags.find { |t| t.tag_id == tag_id } }
+  end
+
+  # Retrieve a list of tags by tag ID. Any missing tags raise an exception.
+  def self.by_tag_ids!(tag_id_list, tag_type = nil)
+    tags = by_tag_ids(tag_id_list, tag_type)
+    if tags.any?(&:nil?)
+      # Find the tag IDs for which the resulting tag is nil
+      missing_ids = tag_id_list.zip(tags).select { |tag_id, tag|
+        tag.nil?
+      }.map(&:first)
+      raise MissingTags, missing_ids
+    else
+      tags
+    end
   end
 end

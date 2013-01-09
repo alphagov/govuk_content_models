@@ -57,11 +57,8 @@ module Taggable
     # as documented on http://mongoid.org/en/mongoid/docs/documents.html
     tags
 
-    new_tags = values.map { |v| TagRepository.load(v) }.compact
-    unless new_tags.size == values.size
-      raise "Missing tags #{tag_type} got: #{values}"
-    end
-    raise "Wrong tag type" unless new_tags.all? { |t| t.tag_type == tag_type }
+    # This will raise a Tag::MissingTags exception unless all the tags exist
+    new_tags = Tag.by_tag_ids!(values, tag_type)
 
     @tags.reject! { |t| t.tag_type == tag_type }
     @tags += new_tags
@@ -74,7 +71,7 @@ module Taggable
   def set_primary_tag_of_type(tag_type, value)
     tags
 
-    tag = TagRepository.load(value)
+    tag = Tag.by_tag_id(value, tag_type)
     raise "Missing tag" unless tag
     raise "Wrong tag type" unless tag.tag_type == tag_type
 
@@ -96,7 +93,7 @@ module Taggable
   end
 
   def tags
-    @tags ||= TagRepository.load_all_with_ids(tag_ids).to_a
+    @tags ||= Tag.by_tag_ids(tag_ids).compact.to_a
   end
 
   def reload

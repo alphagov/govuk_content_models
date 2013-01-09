@@ -118,6 +118,26 @@ class Edition
     latest_version + 1
   end
 
+  def indexable_content
+    respond_to?(:parts) ? indexable_content_with_parts : indexable_content_without_parts
+  end
+
+  def indexable_content_without_parts
+    if respond_to?(:body)
+      "#{alternative_title} #{Govspeak::Document.new(body).to_text}".strip
+    else
+      alternative_title
+    end
+  end
+
+  def indexable_content_with_parts
+    content = indexable_content_without_parts
+    return content unless published_edition
+    parts.inject([content]) { |acc, part|
+      acc.concat([part.title, Govspeak::Document.new(part.body).to_text])
+    }.compact.join(" ").strip
+  end
+
   # If the new clone is of the same type, we can copy all its fields over; if
   # we are changing the type of the edition, any fields other than the base
   # fields will likely be meaningless.

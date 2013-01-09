@@ -9,10 +9,10 @@ class ArtefactTagTest < ActiveSupport::TestCase
 
   setup do
     TEST_SECTIONS.each do |tag_id, title|
-      TagRepository.put(:tag_id => tag_id, :tag_type => 'section', :title => title)
+      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'section', :title => title)
     end
     TEST_KEYWORDS.each do |tag_id, title|
-      TagRepository.put(:tag_id => tag_id, :tag_type => 'keyword', :title => title)
+      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
     end
   end
 
@@ -26,8 +26,8 @@ class ArtefactTagTest < ActiveSupport::TestCase
   end
 
   test "returns title of parent and child tags when its primary section has a parent" do
-    parent = TagRepository.load('crime')
-    child = TagRepository.load('crime/batman')
+    parent = Tag.by_tag_id('crime', 'section')
+    child = Tag.by_tag_id('crime/batman', 'section')
     child.update_attributes parent_id: parent.tag_id
 
     a = FactoryGirl.create(:artefact)
