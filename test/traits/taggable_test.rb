@@ -9,10 +9,10 @@ class TaggableTest < ActiveSupport::TestCase
 
   setup do
     TEST_SECTIONS.each do |tag_id, title|
-      TagRepository.put(:tag_id => tag_id, :tag_type => 'section', :title => title)
+      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'section', :title => title)
     end
     TEST_KEYWORDS.each do |tag_id, title|
-      TagRepository.put(:tag_id => tag_id, :tag_type => 'keyword', :title => title)
+      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
     end
 
     @item = FactoryGirl.create(:artefact)
@@ -47,13 +47,13 @@ class TaggableTest < ActiveSupport::TestCase
   end
 
   test "cannot set non-existent sections" do
-    assert_raise RuntimeError do
+    assert_raise Tag::MissingTags do
       @item.sections = ['weevils']
     end
   end
 
   test "cannot set non-section tags" do
-    assert_raise RuntimeError do
+    assert_raise Tag::MissingTags do
       @item.sections = ['crime', 'bacon']
     end
   end
