@@ -17,6 +17,8 @@ class TravelAdviceEdition
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
 
+  scope :published, where(:state => "published")
+
   state_machine initial: :draft do
     event :publish do
       transition draft: :published 

@@ -76,6 +76,15 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
   end
 
+  should "have a published scope" do
+    e1 = FactoryGirl.create(:travel_advice_edition, :state => 'draft')
+    e2 = FactoryGirl.create(:travel_advice_edition, :state => 'published')
+    e3 = FactoryGirl.create(:travel_advice_edition, :state => 'archived')
+    e4 = FactoryGirl.create(:travel_advice_edition, :state => 'published')
+
+    assert_equal [e2, e4].sort, TravelAdviceEdition.published.to_a.sort
+  end
+
   context "fields on a new edition" do
     should "be in draft state" do
       assert TravelAdviceEdition.new.draft?
