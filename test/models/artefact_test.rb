@@ -30,6 +30,16 @@ class ArtefactTest < ActiveSupport::TestCase
       assert a.errors[:slug].any?
     end
 
+    should "allow travel-advice to have a slug prefixed with 'travel-advice/'" do
+      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "travel-advice")
+      assert a.valid?
+    end
+
+    should "not allow a travel-advice prefix for non-travel-advice artefacts" do
+      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "answer")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
   end
 
   test "should translate kind into internally normalised form" do
