@@ -172,4 +172,7 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
   end
 
+  factory :travel_advice_edition do
+    sequence(:country_slug) {|n| "test-country-#{n}" }
+  end
 end
