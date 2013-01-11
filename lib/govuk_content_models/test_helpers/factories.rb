@@ -11,7 +11,7 @@ FactoryGirl.define do
     sequence(:email) { |n| "joe#{n}@bloggs.com" }
     if defined?(GDS::SSO::Config)
       # Grant permission to signin to the app using the gem
-      permissions { Hash[GDS::SSO::Config.default_scope => ["signin"]] }
+      permissions { ["signin"] }
     end
   end
 

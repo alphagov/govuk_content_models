@@ -30,9 +30,7 @@ class UserTest < ActiveSupport::TestCase
       },
       "extra" => {
         "user" => {
-          "permissions" => {
-            "dummy-app" => ["signin"]
-          }
+          "permissions" => ["signin"]
         }
       }
     }
@@ -40,12 +38,12 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "1234abcd", user.uid
     assert_equal "user@example.com", user.email
     assert_equal "Luther Blisset", user.name
-    assert_equal({ "dummy-app" => ["signin"] }, user.permissions)
+    assert_equal(["signin"], user.permissions)
   end
 
   test "should find and update the user with oauth params" do
     attributes = {uid: "1234abcd", name: "Old", email: "old@m.com",
-        permissions: { "dummy-app" => ["everything"]}}
+        permissions: ["everything"]}
     User.create!(attributes, without_protection: true)
     auth_hash = {
       "uid" => "1234abcd",
@@ -55,9 +53,7 @@ class UserTest < ActiveSupport::TestCase
       },
       "extra" => {
         "user" => {
-          "permissions" => {
-            "dummy-app" => []
-          }
+          "permissions" => []
         }
       }
     }
@@ -65,7 +61,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "1234abcd", user.uid
     assert_equal "new@m.com", user.email
     assert_equal "New", user.name
-    assert_equal({ "dummy-app" => [] }, user.permissions)
+    assert_equal([], user.permissions)
   end
 
   test "should create insecure gravatar URL" do
