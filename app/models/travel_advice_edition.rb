@@ -1,3 +1,4 @@
+require 'parted'
 require 'state_machine'
 
 class TravelAdviceEdition
