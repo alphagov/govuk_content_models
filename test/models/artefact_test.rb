@@ -1,34 +1,45 @@
 require "test_helper"
 
 class ArtefactTest < ActiveSupport::TestCase
-  test "it allows nice clean slugs" do
-    a = Artefact.new(slug: "its-a-nice-day")
-    refute a.valid?
-    assert a.errors[:slug].empty?
-  end
+  context "validating slug" do
+    should "allow nice clean slugs" do
+      a = FactoryGirl.build(:artefact, slug: "its-a-nice-day")
+      assert a.valid?
+    end
 
-  test "it doesn't allow apostrophes in slugs" do
-    a = Artefact.new(slug: "it's-a-nice-day")
-    refute a.valid?
-    assert a.errors[:slug].any?
-  end
+    should "not allow apostrophes in slugs" do
+      a = FactoryGirl.build(:artefact, slug: "it's-a-nice-day")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
 
-  test "it doesn't allow spaces in slugs" do
-    a = Artefact.new(slug: "it is-a-nice-day")
-    refute a.valid?
-    assert a.errors[:slug].any?
-  end
+    should "not allow spaces in slugs" do
+      a = FactoryGirl.build(:artefact, slug: "it is-a-nice-day")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
 
-  test "it allows slashes in slugs when the namespace is 'done'" do
-    a = Artefact.new(slug: "done/its-a-nice-day")
-    refute a.valid?
-    assert a.errors[:slug].empty?
-  end
+    should "allow slashes in slugs when the namespace is 'done'" do
+      a = FactoryGirl.build(:artefact, slug: "done/its-a-nice-day")
+      assert a.valid?
+    end
 
-  test "it doesn't allow slashes in slugs when the namespace is not 'done'" do
-    a = Artefact.new(slug: "something-else/its-a-nice-day")
-    refute a.valid?
-    assert a.errors[:slug].any?
+    should "not allow slashes in slugs when the namespace is not 'done'" do
+      a = FactoryGirl.build(:artefact, slug: "something-else/its-a-nice-day")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
+
+    should "allow travel-advice to have a slug prefixed with 'travel-advice/'" do
+      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "travel-advice")
+      assert a.valid?
+    end
+
+    should "not allow a travel-advice prefix for non-travel-advice artefacts" do
+      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "answer")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
   end
 
   test "should translate kind into internally normalised form" do

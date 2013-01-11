@@ -60,6 +60,7 @@ class Artefact
     "custom-application",
     "licence",
     "business_support",
+    "travel-advice",
     "video"
   ].freeze
 
