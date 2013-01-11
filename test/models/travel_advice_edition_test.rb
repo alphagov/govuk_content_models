@@ -2,6 +2,23 @@ require "test_helper"
 
 class TravelAdviceEditionTest < ActiveSupport::TestCase
 
+  should "have correct fields" do
+    ed = TravelAdviceEdition.new
+    ed.title = "Travel advice for Aruba"
+    ed.overview = "This gives travel advice for Aruba"
+    ed.country_slug = 'aruba'
+    ed.version_number = 4
+    ed.parts.build(:title => "Part One", :slug => "one")
+    ed.safely.save!
+
+    ed = TravelAdviceEdition.first
+    assert_equal "Travel advice for Aruba", ed.title
+    assert_equal "This gives travel advice for Aruba", ed.overview
+    assert_equal 'aruba', ed.country_slug
+    assert_equal 4, ed.version_number
+    assert_equal "Part One", ed.parts.first.title
+  end
+
   context "validations" do
     setup do
       @ta = FactoryGirl.build(:travel_advice_edition)

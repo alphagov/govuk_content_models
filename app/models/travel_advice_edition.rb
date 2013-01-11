@@ -7,6 +7,8 @@ class TravelAdviceEdition
   include Parted
 
   field :country_slug,         type: String
+  field :title,                type: String
+  field :overview,             type: String
   field :version_number,       type: Integer
   field :state,                type: String,    default: "draft"
 
