@@ -48,7 +48,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
 
     context "on version_number" do
-      should "resuire a version_number" do
+      should "require a version_number" do
         @ta.save # version_number is automatically populated on create, so save it first.
         @ta.version_number = ''
         refute @ta.valid?
