@@ -26,6 +26,13 @@ class TravelAdviceEdition
   scope :published, where(:state => "published")
 
   state_machine initial: :draft do
+
+    before_transition :draft => :published do |edition, transition|
+      edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
+        ed.archive
+      end
+    end
+
     event :publish do
       transition draft: :published 
     end

@@ -158,4 +158,18 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal ['Fooey', 'Gooey'], new_ed.parts.map(&:title)
     end
   end
+
+  context "publishing" do
+    setup do
+      @published = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba', :state => 'published')
+      @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
+    end
+
+    should "publish the edition and archive related editions" do
+      @ed.publish
+      @published.reload
+      assert @ed.published?
+      assert @published.archived?
+    end
+  end
 end
