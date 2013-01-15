@@ -21,11 +21,22 @@ class TravelAdviceEdition
   validates_presence_of :country_slug
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
+  validate :state_if_modified
   validates_with SafeHtml
 
   scope :published, where(:state => "published")
 
+  class << self; attr_accessor :fields_to_clone end
+  @fields_to_clone = [:title, :country_slug, :overview]
+  
   state_machine initial: :draft do
+
+    before_transition :draft => :published do |edition, transition|
+      edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
+        ed.archive
+      end
+    end
+
     event :publish do
       transition draft: :published 
     end
@@ -36,7 +47,10 @@ class TravelAdviceEdition
   end
 
   def build_clone
-    new_edition = self.class.new(:country_slug => self.country_slug)
+    new_edition = self.class.new
+    self.class.fields_to_clone.each do |attr|
+      new_edition[attr] = self.read_attribute(attr)
+    end
     new_edition.parts = self.parts.map(&:dup)
     new_edition
   end
@@ -61,4 +75,11 @@ class TravelAdviceEdition
       end
     end
   end
+
+  def state_if_modified 
+    unless self.draft? or self.new_record? or self.changed == ['state']
+      errors.add(:state, "must be draft to modify")
+    end
+  end
+
 end
