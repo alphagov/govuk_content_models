@@ -62,6 +62,23 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         @ta.save!
         assert @ta.valid?
       end
+
+      should "not be modifiable when published" do
+        @ta.state = 'published'
+        @ta.save!
+        @ta.title = 'Foo'
+        assert ! @ta.valid?
+        assert_includes @ta.errors.messages[:state], "must be draft to modify"
+      end
+
+      should "not be modifiable when archived" do
+        @ta.state = 'archived'
+        @ta.save!
+        @ta.country_slug = 'foo-bar-land'
+        assert ! @ta.valid?
+        assert_includes @ta.errors.messages[:state], "must be draft to modify"
+      end
+
     end
 
     context "on version_number" do
@@ -140,20 +157,25 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
 
   context "building a new version" do
     setup do
-      @ed = FactoryGirl.create(:travel_advice_edition, :state => 'published')
-    end
-
-    should "build a new instance with the same slug" do
-      new_ed = @ed.build_clone
-      assert new_ed.new_record?
-      assert_equal @ed.country_slug, new_ed.country_slug
-    end
-
-    should "copy the edition's parts" do
+      @ed = FactoryGirl.create(:travel_advice_edition, 
+                               :title => "Aruba",
+                               :overview => "Aruba is not near Wales",
+                               :country_slug => "aruba")
       @ed.parts.build(:title => "Fooey", :slug => 'fooey', :body => "It's all about Fooey")
       @ed.parts.build(:title => "Gooey", :slug => 'gooey', :body => "It's all about Gooey")
       @ed.save!
+      @ed.publish!
+    end
 
+    should "build a new instance with the same fields" do
+      new_ed = @ed.build_clone
+      assert new_ed.new_record?
+      assert_equal @ed.title, new_ed.title
+      assert_equal @ed.country_slug, new_ed.country_slug
+      assert_equal @ed.overview, new_ed.overview
+    end
+
+    should "copy the edition's parts" do
       new_ed = @ed.build_clone
       assert_equal ['Fooey', 'Gooey'], new_ed.parts.map(&:title)
     end
@@ -166,7 +188,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
 
     should "publish the edition and archive related editions" do
-      @ed.publish
+      @ed.publish!
       @published.reload
       assert @ed.published?
       assert @published.archived?
