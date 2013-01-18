@@ -1,5 +1,6 @@
 require 'parted'
 require 'state_machine'
+require 'safe_html'
 
 class TravelAdviceEdition
   include Mongoid::Document
@@ -44,6 +45,12 @@ class TravelAdviceEdition
     event :archive do
       transition all => :archived, :unless => :archived?
     end
+  end
+
+  def indexable_content
+    parts.map do |part|
+      [part.title, Govspeak::Document.new(part.body).to_text]
+    end.flatten.join(" ").strip
   end
 
   def build_clone

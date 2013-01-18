@@ -1,3 +1,5 @@
+require "safe_html"
+
 class Expectation
   include Mongoid::Document
   cache

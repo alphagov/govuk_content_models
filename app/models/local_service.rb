@@ -1,5 +1,6 @@
 require "csv"
 require "local_authority"
+require "safe_html"
 
 class LocalService
   include Mongoid::Document
