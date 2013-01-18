@@ -47,6 +47,12 @@ class TravelAdviceEdition
     end
   end
 
+  def indexable_content
+    parts.map do |part|
+      [part.title, Govspeak::Document.new(part.body).to_text]
+    end.flatten.join(" ").strip
+  end
+
   def build_clone
     new_edition = self.class.new
     self.class.fields_to_clone.each do |attr|
