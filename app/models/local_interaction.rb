@@ -1,4 +1,5 @@
 require "csv"
+require "safe_html"
 
 class LocalInteraction
   include Mongoid::Document

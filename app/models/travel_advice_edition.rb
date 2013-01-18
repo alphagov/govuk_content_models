@@ -1,5 +1,6 @@
 require 'parted'
 require 'state_machine'
+require 'safe_html'
 
 class TravelAdviceEdition
   include Mongoid::Document

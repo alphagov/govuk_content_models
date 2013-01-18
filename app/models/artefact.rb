@@ -2,6 +2,7 @@ require "slug_validator"
 require "plek"
 require "traits/taggable"
 require "artefact_action"  # Require this when running outside Rails
+require "safe_html"
 
 class CannotEditSlugIfEverPublished < ActiveModel::Validator
   def validate(record)

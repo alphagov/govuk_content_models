@@ -1,3 +1,5 @@
+require "safe_html"
+
 class ArtefactAction
   include Mongoid::Document
   include Mongoid::Timestamps::Created
