@@ -1,5 +1,4 @@
 require "edition"
-require "safe_html"
 
 class CompletedTransactionEdition < Edition
   field :body, type: String

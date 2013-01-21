@@ -1,3 +1,5 @@
+require "safe_html"
+
 class OverviewDashboard
   include Mongoid::Document
 

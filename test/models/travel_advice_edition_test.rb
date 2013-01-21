@@ -194,4 +194,21 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert @published.archived?
     end
   end
+
+  context "indexable content" do
+    setup do
+      @edition = FactoryGirl.build(:travel_advice_edition)
+    end
+
+    should "return all part titles and bodies" do
+      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff")
+      @edition.parts << Part.new(:title => "More info", :body => "Some more information")
+      assert_equal "Summary A summary of stuff More info Some more information", @edition.indexable_content
+    end
+
+    should "convert govspeak to plain text" do
+      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff\n------")
+      assert_equal "Summary A summary of stuff", @edition.indexable_content
+    end
+  end
 end
