@@ -29,7 +29,7 @@ class TravelAdviceEdition
 
   class << self; attr_accessor :fields_to_clone end
   @fields_to_clone = [:title, :country_slug, :overview]
-  
+
   state_machine initial: :draft do
 
     before_transition :draft => :published do |edition, transition|
@@ -39,7 +39,7 @@ class TravelAdviceEdition
     end
 
     event :publish do
-      transition draft: :published 
+      transition draft: :published
     end
 
     event :archive do
@@ -65,10 +65,10 @@ class TravelAdviceEdition
   private
 
   def state_for_slug_unique
-    if %w(published draft).include?(self.state) and 
+    if %w(published draft).include?(self.state) and
         self.class.where(:_id.ne => id,
-                         :country_slug => country_slug, 
-                         :state => state).any?  
+                         :country_slug => country_slug,
+                         :state => state).any?
       errors.add(:state, :taken)
     end
   end
@@ -83,7 +83,7 @@ class TravelAdviceEdition
     end
   end
 
-  def state_if_modified 
+  def state_if_modified
     unless self.draft? or self.new_record? or self.changed == ['state']
       errors.add(:state, "must be draft to modify")
     end
