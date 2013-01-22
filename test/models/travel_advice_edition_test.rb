@@ -214,18 +214,19 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
 
   context "actions" do
     setup do
-      @edition = FactoryGirl.build(:travel_advice_edition)
       @user = FactoryGirl.create(:user)
+      @edition = FactoryGirl.create(:travel_advice_edition)
     end
 
-    should "allow creation of actions" do
+    should "not have any actions by default" do
       assert_equal 0, @edition.actions.size
+    end
 
-      @edition.actions.create(request_type: Action::CREATE, requester: @user)
-
+    should "add a create action" do
+      @edition.create_action_as(@user, Action::CREATE)
       assert_equal 1, @edition.actions.size
-      assert_equal @user, @edition.actions.first.requester
       assert_equal Action::CREATE, @edition.actions.first.request_type
+      assert_equal @user, @edition.actions.first.requester
     end
   end
 end

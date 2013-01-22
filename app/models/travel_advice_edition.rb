@@ -33,7 +33,6 @@ class TravelAdviceEdition
   @fields_to_clone = [:title, :country_slug, :overview]
 
   state_machine initial: :draft do
-
     before_transition :draft => :published do |edition, transition|
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive
@@ -62,6 +61,10 @@ class TravelAdviceEdition
     end
     new_edition.parts = self.parts.map(&:dup)
     new_edition
+  end
+
+  def create_action_as(user, action_type)
+    actions.create(:requester => user, :request_type => action_type)
   end
 
   private
