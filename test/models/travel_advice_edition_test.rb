@@ -211,4 +211,21 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal "Summary A summary of stuff", @edition.indexable_content
     end
   end
+
+  context "actions" do
+    setup do
+      @edition = FactoryGirl.build(:travel_advice_edition)
+      @user = FactoryGirl.create(:user)
+    end
+
+    should "allow creation of actions" do
+      assert_equal 0, @edition.actions.size
+
+      @edition.actions.create(request_type: Action::CREATE, requester: @user)
+
+      assert_equal 1, @edition.actions.size
+      assert_equal @user, @edition.actions.first.requester
+      assert_equal Action::CREATE, @edition.actions.first.request_type
+    end
+  end
 end

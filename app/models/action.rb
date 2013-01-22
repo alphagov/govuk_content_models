@@ -24,6 +24,8 @@ class Action
   ]
 
   embedded_in :edition
+  embedded_in :travel_advice_edition
+
   belongs_to :recipient, class_name: "User"
   belongs_to :requester, class_name: "User"
 

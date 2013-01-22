@@ -13,6 +13,8 @@ class TravelAdviceEdition
   field :version_number,       type: Integer
   field :state,                type: String,    default: "draft"
 
+  embeds_many :actions
+
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
   GOVSPEAK_FIELDS = []
