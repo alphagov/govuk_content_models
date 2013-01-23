@@ -63,8 +63,8 @@ class TravelAdviceEdition
     new_edition
   end
 
-  def create_action_as(user, action_type)
-    actions.create(:requester => user, :request_type => action_type)
+  def create_action_as(user, action_type, comment = nil)
+    actions.create(:requester => user, :request_type => action_type, :comment => comment)
   end
 
   private

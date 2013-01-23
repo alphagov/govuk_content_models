@@ -228,5 +228,11 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal Action::CREATE, @edition.actions.first.request_type
       assert_equal @user, @edition.actions.first.requester
     end
+
+    should "add a X action with a comment" do
+      @edition.create_action_as(@user, Action::NEW_VERSION, "a comment for the new version")
+      assert_equal 1, @edition.actions.size
+      assert_equal "a comment for the new version", @edition.actions.first.comment
+    end
   end
 end
