@@ -67,6 +67,10 @@ class TravelAdviceEdition
     actions.create(:requester => user, :request_type => action_type, :comment => comment)
   end
 
+  def publish_as(user)
+    publish && create_action_as(user, Action::PUBLISH)
+  end
+
   private
 
   def state_for_slug_unique
