@@ -223,14 +223,14 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
 
     should "add a 'create' action" do
-      @edition.create_action_as(@user, Action::CREATE)
+      @edition.build_action_as(@user, Action::CREATE)
       assert_equal 1, @edition.actions.size
       assert_equal Action::CREATE, @edition.actions.first.request_type
       assert_equal @user, @edition.actions.first.requester
     end
 
     should "add a 'new' action with a comment" do
-      @edition.create_action_as(@user, Action::NEW_VERSION, "a comment for the new version")
+      @edition.build_action_as(@user, Action::NEW_VERSION, "a comment for the new version")
       assert_equal 1, @edition.actions.size
       assert_equal "a comment for the new version", @edition.actions.first.comment
     end
