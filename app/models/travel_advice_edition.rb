@@ -13,6 +13,8 @@ class TravelAdviceEdition
   field :version_number,       type: Integer
   field :state,                type: String,    default: "draft"
 
+  embeds_many :actions
+
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
   GOVSPEAK_FIELDS = []
@@ -29,9 +31,8 @@ class TravelAdviceEdition
 
   class << self; attr_accessor :fields_to_clone end
   @fields_to_clone = [:title, :country_slug, :overview]
-  
-  state_machine initial: :draft do
 
+  state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive
@@ -39,7 +40,7 @@ class TravelAdviceEdition
     end
 
     event :publish do
-      transition draft: :published 
+      transition draft: :published
     end
 
     event :archive do
@@ -62,13 +63,21 @@ class TravelAdviceEdition
     new_edition
   end
 
+  def build_action_as(user, action_type, comment = nil)
+    actions.build(:requester => user, :request_type => action_type, :comment => comment)
+  end
+
+  def publish_as(user)
+    build_action_as(user, Action::PUBLISH) && publish
+  end
+
   private
 
   def state_for_slug_unique
-    if %w(published draft).include?(self.state) and 
+    if %w(published draft).include?(self.state) and
         self.class.where(:_id.ne => id,
-                         :country_slug => country_slug, 
-                         :state => state).any?  
+                         :country_slug => country_slug,
+                         :state => state).any?
       errors.add(:state, :taken)
     end
   end
@@ -83,7 +92,7 @@ class TravelAdviceEdition
     end
   end
 
-  def state_if_modified 
+  def state_if_modified
     unless self.draft? or self.new_record? or self.changed == ['state']
       errors.add(:state, "must be draft to modify")
     end
