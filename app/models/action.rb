@@ -24,6 +24,7 @@ class Action
   ]
 
   embedded_in :edition
+
   belongs_to :recipient, class_name: "User"
   belongs_to :requester, class_name: "User"
 
