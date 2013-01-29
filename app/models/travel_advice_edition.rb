@@ -12,12 +12,20 @@ class TravelAdviceEdition
   field :overview,             type: String
   field :version_number,       type: Integer
   field :state,                type: String,    default: "draft"
+  field :alert_status,         type: Array,     default: [ ]
 
   embeds_many :actions
 
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
   GOVSPEAK_FIELDS = []
+  ALERT_STATUSES = [
+    "no_restrictions",
+    "avoid_all_but_essential_travel_to_parts",
+    "avoid_all_but_essential_travel_to_whole_country",
+    "avoid_all_travel_to_parts",
+    "avoid_all_travel_to_whole_country",
+  ]
 
   before_validation :populate_version_number, :on => :create
 
@@ -25,6 +33,7 @@ class TravelAdviceEdition
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
   validate :state_if_modified
+  validate :alert_status_contains_valid_values
   validates_with SafeHtml
 
   scope :published, where(:state => "published")
@@ -95,6 +104,12 @@ class TravelAdviceEdition
   def state_if_modified
     unless self.draft? or self.new_record? or self.changed == ['state']
       errors.add(:state, "must be draft to modify")
+    end
+  end
+
+  def alert_status_contains_valid_values
+    self.alert_status.each do |status|
+      errors.add(:alert_status, "is not in the list") unless ALERT_STATUSES.include?(status)
     end
   end
 

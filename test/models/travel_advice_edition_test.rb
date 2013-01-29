@@ -7,6 +7,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.title = "Travel advice for Aruba"
     ed.overview = "This gives travel advice for Aruba"
     ed.country_slug = 'aruba'
+    ed.alert_status = [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ]
     ed.version_number = 4
     ed.parts.build(:title => "Part One", :slug => "one")
     ed.safely.save!
@@ -78,7 +79,19 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         assert ! @ta.valid?
         assert_includes @ta.errors.messages[:state], "must be draft to modify"
       end
+    end
 
+    context "on alert status" do
+      should "not permit invalid values in the array" do
+        @ta.alert_status = [ 'avoid_all_but_essential_travel_to_parts', 'something_else', 'blah' ]
+        assert ! @ta.valid?
+        assert_includes @ta.errors.messages[:alert_status], "is not in the list"
+      end
+
+      should "permit an empty array" do
+        @ta.alert_status = [ ]
+        assert @ta.valid?
+      end
     end
 
     context "on version_number" do
@@ -157,7 +170,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
 
   context "building a new version" do
     setup do
-      @ed = FactoryGirl.create(:travel_advice_edition, 
+      @ed = FactoryGirl.create(:travel_advice_edition,
                                :title => "Aruba",
                                :overview => "Aruba is not near Wales",
                                :country_slug => "aruba")
