@@ -8,6 +8,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.overview = "This gives travel advice for Aruba"
     ed.country_slug = 'aruba'
     ed.alert_status = [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ]
+    ed.summary = "This is the summary of stuff going on in Aruba"
     ed.version_number = 4
     ed.parts.build(:title => "Part One", :slug => "one")
     ed.safely.save!
@@ -17,6 +18,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal "This gives travel advice for Aruba", ed.overview
     assert_equal 'aruba', ed.country_slug
     assert_equal [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ], ed.alert_status
+    assert_equal "This is the summary of stuff going on in Aruba", ed.summary
     assert_equal 4, ed.version_number
     assert_equal "Part One", ed.parts.first.title
   end

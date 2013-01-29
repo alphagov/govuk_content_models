@@ -13,6 +13,7 @@ class TravelAdviceEdition
   field :version_number,       type: Integer
   field :state,                type: String,    default: "draft"
   field :alert_status,         type: Array,     default: [ ]
+  field :summary,              type: String
 
   embeds_many :actions
 
