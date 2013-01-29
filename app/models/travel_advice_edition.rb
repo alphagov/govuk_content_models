@@ -29,7 +29,7 @@ class TravelAdviceEdition
 
   before_validation :populate_version_number, :on => :create
 
-  validates_presence_of :country_slug
+  validates_presence_of :country_slug, :title
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
   validate :state_if_modified
