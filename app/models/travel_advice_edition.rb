@@ -20,7 +20,6 @@ class TravelAdviceEdition
 
   GOVSPEAK_FIELDS = []
   ALERT_STATUSES = [
-    "no_restrictions",
     "avoid_all_but_essential_travel_to_parts",
     "avoid_all_but_essential_travel_to_whole_country",
     "avoid_all_travel_to_parts",
