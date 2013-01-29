@@ -16,6 +16,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal "Travel advice for Aruba", ed.title
     assert_equal "This gives travel advice for Aruba", ed.overview
     assert_equal 'aruba', ed.country_slug
+    assert_equal [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ], ed.alert_status
     assert_equal 4, ed.version_number
     assert_equal "Part One", ed.parts.first.title
   end
