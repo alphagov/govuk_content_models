@@ -19,7 +19,7 @@ class TravelAdviceEdition
 
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
-  GOVSPEAK_FIELDS = []
+  GOVSPEAK_FIELDS = [:summary]
   ALERT_STATUSES = [
     "avoid_all_but_essential_travel_to_parts",
     "avoid_all_but_essential_travel_to_whole_country",
@@ -29,7 +29,7 @@ class TravelAdviceEdition
 
   before_validation :populate_version_number, :on => :create
 
-  validates_presence_of :country_slug
+  validates_presence_of :country_slug, :title
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
   validate :state_if_modified
