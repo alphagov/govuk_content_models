@@ -34,6 +34,12 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_includes @ta.errors.messages[:country_slug], "can't be blank"
     end
 
+    should "require a title" do
+      @ta.title = ''
+      assert ! @ta.valid?
+      assert_includes @ta.errors.messages[:title], "can't be blank"
+    end
+
     context "on state" do
       should "only allow one edition in draft per slug" do
         another_edition = FactoryGirl.create(:travel_advice_edition,
