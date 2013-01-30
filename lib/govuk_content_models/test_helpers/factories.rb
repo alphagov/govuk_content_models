@@ -182,7 +182,8 @@ FactoryGirl.define do
   end
   factory :published_travel_advice_edition, :parent => :travel_advice_edition do
     after :create do |tae|
-      tae.publish!
+      tae.state = 'published'
+      tae.save!
     end
   end
   factory :archived_travel_advice_edition, :parent => :travel_advice_edition do
