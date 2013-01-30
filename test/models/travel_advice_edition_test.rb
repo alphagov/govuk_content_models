@@ -43,26 +43,24 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     context "on state" do
       should "only allow one edition in draft per slug" do
         another_edition = FactoryGirl.create(:travel_advice_edition,
-                                             :country_slug => @ta.country_slug,
-                                             :state => 'draft')
+                                             :country_slug => @ta.country_slug)
         @ta.state = 'draft'
         assert ! @ta.valid?
         assert_includes @ta.errors.messages[:state], "is already taken"
       end
 
       should "only allow one edition in published per slug" do
-        another_edition = FactoryGirl.create(:travel_advice_edition,
-                                             :country_slug => @ta.country_slug,
-                                             :state => 'published')
+        another_edition = FactoryGirl.create(:published_travel_advice_edition,
+                                             :country_slug => @ta.country_slug)
         @ta.state = 'published'
         assert ! @ta.valid?
         assert_includes @ta.errors.messages[:state], "is already taken"
       end
 
       should "allow multiple editions in archived per slug" do
-        another_edition = FactoryGirl.create(:travel_advice_edition,
-                                             :country_slug => @ta.country_slug,
-                                             :state => 'archived')
+        another_edition = FactoryGirl.create(:archived_travel_advice_edition,
+                                             :country_slug => @ta.country_slug)
+        @ta.save!
         @ta.state = 'archived'
         assert @ta.valid?
       end
@@ -72,21 +70,44 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         @ta.save!
         assert @ta.valid?
       end
+    end
 
-      should "not be modifiable when published" do
-        @ta.state = 'published'
-        @ta.save!
-        @ta.title = 'Foo'
-        assert ! @ta.valid?
-        assert_includes @ta.errors.messages[:state], "must be draft to modify"
+    context "preventing editing of non-draft" do
+      should "not allow published editions to be edited" do
+        ta = FactoryGirl.create(:published_travel_advice_edition)
+        ta.title = "Fooey"
+        assert ! ta.valid?
+        assert_includes ta.errors.messages[:state], "must be draft to modify"
       end
 
-      should "not be modifiable when archived" do
-        @ta.state = 'archived'
-        @ta.save!
-        @ta.country_slug = 'foo-bar-land'
-        assert ! @ta.valid?
-        assert_includes @ta.errors.messages[:state], "must be draft to modify"
+      should "not allow archived editions to be edited" do
+        ta = FactoryGirl.create(:archived_travel_advice_edition)
+        ta.title = "Fooey"
+        assert ! ta.valid?
+        assert_includes ta.errors.messages[:state], "must be draft to modify"
+      end
+
+      should "allow publishing draft editions" do
+        ta = FactoryGirl.create(:travel_advice_edition)
+        assert ta.publish
+      end
+
+      should "allow 'save & publish'" do
+        ta = FactoryGirl.create(:travel_advice_edition)
+        ta.title = 'Foo'
+        assert ta.publish
+      end
+
+      should "allow archiving published editions" do
+        ta = FactoryGirl.create(:published_travel_advice_edition)
+        assert ta.archive
+      end
+
+      should "NOT allow 'save & archive'" do
+        ta = FactoryGirl.create(:published_travel_advice_edition)
+        ta.title = 'Foo'
+        assert ! ta.archive
+        assert_includes ta.errors.messages[:state], "must be draft to modify"
       end
     end
 
@@ -112,20 +133,18 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       end
 
       should "require a unique version_number per slug" do
-        another_edition = FactoryGirl.create(:travel_advice_edition,
+        another_edition = FactoryGirl.create(:archived_travel_advice_edition,
                                              :country_slug => @ta.country_slug,
-                                             :version_number => 3,
-                                             :state => 'archived')
+                                             :version_number => 3)
         @ta.version_number = 3
         refute @ta.valid?
         assert_includes @ta.errors.messages[:version_number], "is already taken"
       end
 
       should "allow matching version_numbers for different slugs" do
-        another_edition = FactoryGirl.create(:travel_advice_edition,
+        another_edition = FactoryGirl.create(:archived_travel_advice_edition,
                                              :country_slug => 'wibble',
-                                             :version_number => 3,
-                                             :state => 'archived')
+                                             :version_number => 3)
         @ta.version_number = 3
         assert @ta.valid?
       end
@@ -133,10 +152,10 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
   end
 
   should "have a published scope" do
-    e1 = FactoryGirl.create(:travel_advice_edition, :state => 'draft')
-    e2 = FactoryGirl.create(:travel_advice_edition, :state => 'published')
-    e3 = FactoryGirl.create(:travel_advice_edition, :state => 'archived')
-    e4 = FactoryGirl.create(:travel_advice_edition, :state => 'published')
+    e1 = FactoryGirl.create(:draft_travel_advice_edition)
+    e2 = FactoryGirl.create(:published_travel_advice_edition)
+    e3 = FactoryGirl.create(:archived_travel_advice_edition)
+    e4 = FactoryGirl.create(:published_travel_advice_edition)
 
     assert_equal [e2, e4].sort, TravelAdviceEdition.published.to_a.sort
   end
@@ -154,9 +173,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       end
 
       should "set version_number to the next available version" do
-        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 1, :state => 'archived')
-        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 2, :state => 'archived')
-        FactoryGirl.create(:travel_advice_edition, :country_slug => 'foo', :version_number => 4, :state => 'published')
+        FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo', :version_number => 1)
+        FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo', :version_number => 2)
+        FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'foo', :version_number => 4)
 
         ed = TravelAdviceEdition.new(:country_slug => 'foo')
         ed.valid?
@@ -205,7 +224,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
 
   context "publishing" do
     setup do
-      @published = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba', :state => 'published')
+      @published = FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'aruba')
       @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
     end
 
