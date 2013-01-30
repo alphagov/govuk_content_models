@@ -32,7 +32,6 @@ class TravelAdviceEdition
   validates_presence_of :country_slug, :title
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
-  validate :state_if_modified
   validate :alert_status_contains_valid_values
   validates_with SafeHtml
 
@@ -54,6 +53,13 @@ class TravelAdviceEdition
 
     event :archive do
       transition all => :archived, :unless => :archived?
+    end
+
+    state :published do
+      validate :cannot_edit_published
+    end
+    state :archived do
+      validate :cannot_edit_archived
     end
   end
 
@@ -101,10 +107,23 @@ class TravelAdviceEdition
     end
   end
 
-  def state_if_modified
-    unless self.draft? or self.new_record? or self.changed == ['state']
+  def cannot_edit_published
+    if anything_other_than_state_changed? and self.state_was != 'draft'
       errors.add(:state, "must be draft to modify")
     end
+  end
+
+  def cannot_edit_archived
+    if anything_other_than_state_changed?
+      errors.add(:state, "must be draft to modify")
+    end
+  end
+
+  def anything_other_than_state_changed?
+    # There's an issue with dirty-tracking of Array fields.  Merely accessing them will mark
+    # them as changed, but with no changes. This recifies that.
+    real_fields_changed = self.changes.reject {|k,v| v.nil?}.keys
+    self.changed? and (real_fields_changed != ['state'] or self.parts.any?(&:changed?))
   end
 
   def alert_status_contains_valid_values
