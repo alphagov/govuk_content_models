@@ -21,19 +21,19 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "gds-sso",          ">= 3.0.0", "< 4.0.0"
   gem.add_dependency "govspeak",         ">= 1.0.1", "< 2.0.0"
-  gem.add_dependency "omniauth-oauth2",  "~> 1.0" # Specify as a dependency here to get Jenkins to build
   gem.add_dependency "mongoid",          "~> 2.4.10"
   gem.add_dependency "plek"
   gem.add_dependency "state_machine"
-  gem.add_dependency "multi_json",       "= 1.3.7" # Fixes problems with transitive dependencies
 
   gem.add_development_dependency "database_cleaner", "0.7.2"
   gem.add_development_dependency "factory_girl", "3.3.0"
   gem.add_development_dependency "gemfury", "0.4.8"
-  gem.add_development_dependency "faraday", "0.7.6" # Pin to fix jenkins being unable to resolve
   gem.add_development_dependency "gem_publisher", "~> 1.1.1"
   gem.add_development_dependency "mocha", "0.11.4"
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "webmock", "1.8.7"
   gem.add_development_dependency "shoulda-context", "1.0.0"
+
+  # The following are added to help bundler resolve dependencies
+  gem.add_development_dependency "rack", "~> 1.4.4"
 end
