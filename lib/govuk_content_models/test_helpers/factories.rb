@@ -176,4 +176,19 @@ FactoryGirl.define do
     sequence(:country_slug) {|n| "test-country-#{n}" }
     sequence(:title) {|n| "Test Country #{n}" }
   end
+
+  # These factories only work when used with FactoryGirl.create
+  factory :draft_travel_advice_edition, :parent => :travel_advice_edition do
+  end
+  factory :published_travel_advice_edition, :parent => :travel_advice_edition do
+    after :create do |tae|
+      tae.publish!
+    end
+  end
+  factory :archived_travel_advice_edition, :parent => :travel_advice_edition do
+    after :create do |tae|
+      tae.state = 'archived'
+      tae.save!
+    end
+  end
 end
