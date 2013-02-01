@@ -38,7 +38,7 @@ class TravelAdviceEdition
   scope :published, where(:state => "published")
 
   class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = [:title, :country_slug, :overview]
+  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary]
 
   state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|

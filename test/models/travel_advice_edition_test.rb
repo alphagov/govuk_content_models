@@ -201,7 +201,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @ed = FactoryGirl.create(:travel_advice_edition,
                                :title => "Aruba",
                                :overview => "Aruba is not near Wales",
-                               :country_slug => "aruba")
+                               :country_slug => "aruba",
+                               :summary => "## The summary",
+                               :alert_status => ["avoid_all_but_essential_travel_to_whole_country", "avoid_all_travel_to_parts"])
       @ed.parts.build(:title => "Fooey", :slug => 'fooey', :body => "It's all about Fooey")
       @ed.parts.build(:title => "Gooey", :slug => 'gooey', :body => "It's all about Gooey")
       @ed.save!
@@ -214,6 +216,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal @ed.title, new_ed.title
       assert_equal @ed.country_slug, new_ed.country_slug
       assert_equal @ed.overview, new_ed.overview
+      assert_equal @ed.summary, new_ed.summary
+      assert_equal @ed.alert_status, new_ed.alert_status
     end
 
     should "copy the edition's parts" do
