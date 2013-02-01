@@ -245,15 +245,17 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @edition = FactoryGirl.build(:travel_advice_edition)
     end
 
-    should "return all part titles and bodies" do
-      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff")
+    should "return summary and all part titles and bodies" do
+      @edition.summary = "The Summary"
+      @edition.parts << Part.new(:title => "Part One", :body => "Some text")
       @edition.parts << Part.new(:title => "More info", :body => "Some more information")
-      assert_equal "Summary A summary of stuff More info Some more information", @edition.indexable_content
+      assert_equal "The Summary Part One Some text More info Some more information", @edition.indexable_content
     end
 
     should "convert govspeak to plain text" do
-      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff\n------")
-      assert_equal "Summary A summary of stuff", @edition.indexable_content
+      @edition.summary = "## The Summary"
+      @edition.parts << Part.new(:title => "Part One", :body => "* Some text")
+      assert_equal "The Summary Part One Some text", @edition.indexable_content
     end
   end
 

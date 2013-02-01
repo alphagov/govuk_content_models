@@ -64,9 +64,11 @@ class TravelAdviceEdition
   end
 
   def indexable_content
-    parts.map do |part|
-      [part.title, Govspeak::Document.new(part.body).to_text]
-    end.flatten.join(" ").strip
+    strings = [Govspeak::Document.new(self.summary).to_text]
+    parts.each do |part|
+      strings << part.title << Govspeak::Document.new(part.body).to_text
+    end
+    strings.join(" ").strip
   end
 
   def build_clone
