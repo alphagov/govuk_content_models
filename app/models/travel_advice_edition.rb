@@ -38,7 +38,7 @@ class TravelAdviceEdition
   scope :published, where(:state => "published")
 
   class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = [:title, :country_slug, :overview]
+  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary]
 
   state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|
@@ -64,9 +64,11 @@ class TravelAdviceEdition
   end
 
   def indexable_content
-    parts.map do |part|
-      [part.title, Govspeak::Document.new(part.body).to_text]
-    end.flatten.join(" ").strip
+    strings = [Govspeak::Document.new(self.summary).to_text]
+    parts.each do |part|
+      strings << part.title << Govspeak::Document.new(part.body).to_text
+    end
+    strings.join(" ").strip
   end
 
   def build_clone

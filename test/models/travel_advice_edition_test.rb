@@ -201,7 +201,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @ed = FactoryGirl.create(:travel_advice_edition,
                                :title => "Aruba",
                                :overview => "Aruba is not near Wales",
-                               :country_slug => "aruba")
+                               :country_slug => "aruba",
+                               :summary => "## The summary",
+                               :alert_status => ["avoid_all_but_essential_travel_to_whole_country", "avoid_all_travel_to_parts"])
       @ed.parts.build(:title => "Fooey", :slug => 'fooey', :body => "It's all about Fooey")
       @ed.parts.build(:title => "Gooey", :slug => 'gooey', :body => "It's all about Gooey")
       @ed.save!
@@ -214,6 +216,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal @ed.title, new_ed.title
       assert_equal @ed.country_slug, new_ed.country_slug
       assert_equal @ed.overview, new_ed.overview
+      assert_equal @ed.summary, new_ed.summary
+      assert_equal @ed.alert_status, new_ed.alert_status
     end
 
     should "copy the edition's parts" do
@@ -241,15 +245,17 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @edition = FactoryGirl.build(:travel_advice_edition)
     end
 
-    should "return all part titles and bodies" do
-      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff")
+    should "return summary and all part titles and bodies" do
+      @edition.summary = "The Summary"
+      @edition.parts << Part.new(:title => "Part One", :body => "Some text")
       @edition.parts << Part.new(:title => "More info", :body => "Some more information")
-      assert_equal "Summary A summary of stuff More info Some more information", @edition.indexable_content
+      assert_equal "The Summary Part One Some text More info Some more information", @edition.indexable_content
     end
 
     should "convert govspeak to plain text" do
-      @edition.parts << Part.new(:title => "Summary", :body => "A summary of stuff\n------")
-      assert_equal "Summary A summary of stuff", @edition.indexable_content
+      @edition.summary = "## The Summary"
+      @edition.parts << Part.new(:title => "Part One", :body => "* Some text")
+      assert_equal "The Summary Part One Some text", @edition.indexable_content
     end
   end
 
