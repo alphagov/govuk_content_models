@@ -54,7 +54,7 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal "other", a.kind
   end
 
-  test "should store related artefacts in order" do
+  test "should store and return related artefacts in order" do
     a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
     b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
     c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
@@ -63,7 +63,32 @@ class ArtefactTest < ActiveSupport::TestCase
     a.save!
     a.reload
 
-    assert_equal [b, c], a.related_artefacts
+    assert_equal [b, c], a.ordered_related_artefacts
+  end
+
+  test "should store and return related artefacts in order, even when not in natural order" do
+    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
+    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
+    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+
+    a.related_artefacts = [c, b]
+    a.save!
+    a.reload
+
+    assert_equal [c, b], a.ordered_related_artefacts
+  end
+
+  test "should store and return related artefacts in order, with a scope" do
+    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
+    b = Artefact.create!(state: "live", slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
+    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+    d = Artefact.create!(state: "live", slug: "d", name: "d", kind: "place", need_id: 3, owning_app: "x")
+
+    a.related_artefacts = [d, c, b]
+    a.save!
+    a.reload
+
+    assert_equal [d, b], a.ordered_related_artefacts(a.related_artefacts.where(state: "live"))
   end
 
   test "published_related_artefacts should return all non-publisher artefacts, but only published publisher artefacts" do
