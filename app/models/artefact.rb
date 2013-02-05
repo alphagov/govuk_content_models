@@ -161,6 +161,12 @@ class Artefact
     end
   end
 
+  # Pass in the desired scope, eg self.related_artefacts.live,
+  # get back the items in the order they were set in, rather than natural order
+  def ordered_related_artefacts(scope_or_array = self.related_artefacts)
+    scope_or_array.sort_by { |artefact| related_artefact_ids.index(artefact.id) }
+  end
+
   def any_editions_published?
     Edition.where(panopticon_id: self.id, state: 'published').any?
   end
