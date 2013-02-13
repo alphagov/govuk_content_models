@@ -4,8 +4,8 @@ class SlugValidator < ActiveModel::EachValidator
     # allow slugs to have the done/ prefix
     if value.to_s =~ /^done\/(.+)/
       value = $1
-    # allow travel-advice prefix
-    elsif value.to_s =~ /\Atravel-advice\/(.+)/ and record.kind == 'travel-advice'
+    # allow foreign-travel-advice prefix
+    elsif value.to_s =~ /\Aforeign-travel-advice\/(.+)/ and record.kind == 'travel-advice'
       value = $1
     end
 

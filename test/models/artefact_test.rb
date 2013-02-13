@@ -30,13 +30,19 @@ class ArtefactTest < ActiveSupport::TestCase
       assert a.errors[:slug].any?
     end
 
-    should "allow travel-advice to have a slug prefixed with 'travel-advice/'" do
-      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "travel-advice")
+    should "allow travel-advice to have a slug prefixed with 'foreign-travel-advice/'" do
+      a = FactoryGirl.build(:artefact, slug: "foreign-travel-advice/aruba", kind: "travel-advice")
       assert a.valid?
     end
 
-    should "not allow a travel-advice prefix for non-travel-advice artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "travel-advice/aruba", kind: "answer")
+    should "not allow multiple slashes in travel-advice artefacts" do
+      a = FactoryGirl.build(:artefact, slug: "foreign-travel-advice/aruba/foo", kind: "travel-advice")
+      refute a.valid?
+      assert a.errors[:slug].any?
+    end
+
+    should "not allow a foreign-travel-advice prefix for non-travel-advice artefacts" do
+      a = FactoryGirl.build(:artefact, slug: "foreign-travel-advice/aruba", kind: "answer")
       refute a.valid?
       assert a.errors[:slug].any?
     end
