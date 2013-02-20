@@ -22,6 +22,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ], ed.alert_status
     assert_equal "This is the summary of stuff going on in Aruba", ed.summary
     assert_equal 4, ed.version_number
+    assert_equal "id_from_the_asset_manager_for_an_image", ed.image_id
+    assert_equal "id_from_the_asset_manager_for_a_document", ed.document_id
     assert_equal "Part One", ed.parts.first.title
   end
 
