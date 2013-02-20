@@ -10,6 +10,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.alert_status = [ 'avoid_all_but_essential_travel_to_parts', 'avoid_all_travel_to_parts' ]
     ed.summary = "This is the summary of stuff going on in Aruba"
     ed.version_number = 4
+    ed.image_id = "id_from_the_asset_manager_for_an_image"
+    ed.document_id = "id_from_the_asset_manager_for_a_document"
     ed.parts.build(:title => "Part One", :slug => "one")
     ed.safely.save!
 
