@@ -16,12 +16,16 @@ class TravelAdviceEdition
   field :summary,              type: String
   field :image_id,             type: String
   field :document_id,          type: String
+  field :change_description,   type: String
+  field :minor_update,         type: Boolean,   default: false
+  # This is the publicly presented publish time. For minor updates, this will be the publish time of the previous version
+  field :published_at,         type: Time
 
   embeds_many :actions
 
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
-  GOVSPEAK_FIELDS = [:summary]
+  GOVSPEAK_FIELDS = [:summary, :change_description]
   ALERT_STATUSES = [
     "avoid_all_but_essential_travel_to_parts",
     "avoid_all_but_essential_travel_to_whole_country",
@@ -35,6 +39,7 @@ class TravelAdviceEdition
   validate :state_for_slug_unique
   validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
   validate :alert_status_contains_valid_values
+  validate :first_version_cant_be_minor_update
   validates_with SafeHtml
 
   scope :published, where(:state => "published")
@@ -44,6 +49,13 @@ class TravelAdviceEdition
 
   state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|
+      if edition.minor_update
+        previous = edition.previous_version
+        edition.published_at = previous.published_at
+        edition.change_description = previous.change_description
+      else
+        edition.published_at = Time.now.utc
+      end
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive
       end
@@ -59,6 +71,7 @@ class TravelAdviceEdition
 
     state :published do
       validate :cannot_edit_published
+      validates_presence_of :change_description, :unless => :minor_update, :message => "can't be blank on publish"
     end
     state :archived do
       validate :cannot_edit_archived
@@ -87,7 +100,12 @@ class TravelAdviceEdition
   end
 
   def publish_as(user)
-    build_action_as(user, Action::PUBLISH) && publish
+    comment = self.minor_update ? 'Minor update' : Govspeak::Document.new(self.change_description).to_text
+    build_action_as(user, Action::PUBLISH, comment) && publish
+  end
+
+  def previous_version
+    self.class.where(:country_slug => self.country_slug, :version_number.lt => self.version_number).order_by([:version_number, :desc]).first
   end
 
   private
@@ -136,4 +154,9 @@ class TravelAdviceEdition
     end
   end
 
+  def first_version_cant_be_minor_update
+    if self.minor_update and self.version_number == 1
+      errors.add(:minor_update, "can't be set for first version")
+    end
+  end
 end

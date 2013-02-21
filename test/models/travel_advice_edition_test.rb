@@ -12,6 +12,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.version_number = 4
     ed.image_id = "id_from_the_asset_manager_for_an_image"
     ed.document_id = "id_from_the_asset_manager_for_a_document"
+    ed.published_at = Time.parse('2013-02-21T14:56:22Z')
+    ed.minor_update = true
+    ed.change_description = "Some things"
     ed.parts.build(:title => "Part One", :slug => "one")
     ed.safely.save!
 
@@ -24,6 +27,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal 4, ed.version_number
     assert_equal "id_from_the_asset_manager_for_an_image", ed.image_id
     assert_equal "id_from_the_asset_manager_for_a_document", ed.document_id
+    assert_equal Time.parse('2013-02-21T14:56:22Z'), ed.published_at
+    assert_equal true, ed.minor_update
+    assert_equal "Some things", ed.change_description
     assert_equal "Part One", ed.parts.first.title
   end
 
@@ -153,6 +159,45 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         assert @ta.valid?
       end
     end
+
+    context "on minor update" do
+      should "not allow first version to be minor update" do
+        @ta.minor_update = true
+        refute @ta.valid?
+        assert_includes @ta.errors.messages[:minor_update], "can't be set for first version"
+      end
+
+      should "allow other versions to be minor updates" do
+        FactoryGirl.create(:published_travel_advice_edition, :country_slug => @ta.country_slug)
+        @ta.minor_update = true
+        assert @ta.valid?
+      end
+    end
+
+    context "on change_description" do
+      should "be required on publish" do
+        @ta.save! # Can't save directly as published, have to save as draft first
+        @ta.change_description = ""
+        @ta.state = "published"
+        refute @ta.valid?
+        assert_includes @ta.errors.messages[:change_description], "can't be blank on publish"
+      end
+
+      should "not be required on publish for a minor update" do
+        FactoryGirl.create(:archived_travel_advice_edition, :country_slug => @ta.country_slug)
+        @ta.version_number = 2 # version one can't be minor update
+        @ta.save! # Can't save directly as published, have to save as draft first
+        @ta.change_description = ""
+        @ta.minor_update = true
+        @ta.state = "published"
+        assert @ta.valid?
+      end
+
+      should "not be required when just saving a draft" do
+        @ta.change_description = ""
+        assert @ta.valid?
+      end
+    end
   end
 
   should "have a published scope" do
@@ -198,6 +243,10 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         assert_equal nil, ed.version_number
       end
     end
+
+    should "not be minor_update" do
+      assert_equal false, TravelAdviceEdition.new.minor_update
+    end
   end
 
   context "building a new version" do
@@ -219,6 +268,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     should "build a new instance with the same fields" do
       new_ed = @ed.build_clone
       assert new_ed.new_record?
+      assert new_ed.valid?
       assert_equal @ed.title, new_ed.title
       assert_equal @ed.country_slug, new_ed.country_slug
       assert_equal @ed.overview, new_ed.overview
@@ -234,9 +284,27 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
   end
 
+  context "previous_version" do
+    setup do
+      @ed1 = FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo')
+      @ed2 = FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo')
+      @ed3 = FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo')
+    end
+
+    should "return the previous version" do
+      assert_equal @ed2, @ed3.previous_version
+      assert_equal @ed1, @ed2.previous_version
+    end
+
+    should "return nil if there is no previous version" do
+      assert_equal nil, @ed1.previous_version
+    end
+  end
+
   context "publishing" do
     setup do
-      @published = FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'aruba')
+      @published = FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'aruba',
+                                      :published_at => 3.days.ago, :change_description => 'Stuff changed')
       @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
     end
 
@@ -245,6 +313,29 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @published.reload
       assert @ed.published?
       assert @published.archived?
+    end
+
+    context "setting the published date" do
+      should "set the published_at to now for a normal update" do
+        Timecop.freeze(1.day.from_now) do
+          @ed.publish!
+          # The to_i is necessary to account for the difference in milliseconds
+          # Time from the db only has a resolution in seconds, whereas Time.now is more accurate
+          assert_equal Time.now.utc.to_i, @ed.published_at.to_i
+        end
+      end
+
+      should "set the published_at to the previous version's published_at for a minor update" do
+        @ed.minor_update = true
+        @ed.publish!
+        assert_equal @published.published_at, @ed.published_at
+      end
+    end
+
+    should "set the change_description to the previous version's change_description for a minor update" do
+      @ed.minor_update = true
+      @ed.publish!
+      assert_equal @published.change_description, @ed.change_description
     end
   end
 
@@ -270,7 +361,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
   context "actions" do
     setup do
       @user = FactoryGirl.create(:user)
-      @edition = FactoryGirl.create(:travel_advice_edition)
+      @old = FactoryGirl.create(:archived_travel_advice_edition, :country_slug => 'foo')
+      @edition = FactoryGirl.create(:draft_travel_advice_edition, :country_slug => 'foo')
     end
 
     should "not have any actions by default" do
@@ -290,10 +382,27 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal "a comment for the new version", @edition.actions.first.comment
     end
 
-    should "add a 'publish' action on publish" do
-      @edition.publish_as(@user)
-      assert_equal 1, @edition.actions.size
-      assert_equal Action::PUBLISH, @edition.actions.first.request_type
+    context "publish_as" do
+      should "add a 'publish' action with change_description as comment on publish" do
+        @edition.change_description = "## My hovercraft is full of eels!"
+        @edition.publish_as(@user)
+        @edition.reload
+        assert_equal 1, @edition.actions.size
+        action = @edition.actions.last
+        assert_equal Action::PUBLISH, action.request_type
+        assert_equal @user, action.requester
+        assert_equal "My hovercraft is full of eels!", action.comment
+      end
+
+      should "add a 'publish' action with 'Minor update' as comment on publish of a minor_update" do
+        @edition.minor_update = true
+        @edition.publish_as(@user)
+        @edition.reload
+        assert_equal 1, @edition.actions.size
+        action = @edition.actions.last
+        assert_equal Action::PUBLISH, action.request_type
+        assert_equal "Minor update", action.comment
+      end
     end
   end
 end
