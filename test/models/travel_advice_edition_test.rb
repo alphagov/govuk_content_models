@@ -207,7 +207,9 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
                                :overview => "Aruba is not near Wales",
                                :country_slug => "aruba",
                                :summary => "## The summary",
-                               :alert_status => ["avoid_all_but_essential_travel_to_whole_country", "avoid_all_travel_to_parts"])
+                               :alert_status => ["avoid_all_but_essential_travel_to_whole_country", "avoid_all_travel_to_parts"],
+                               :image_id => "id_from_the_asset_manager_for_an_image",
+                               :document_id => "id_from_the_asset_manager_for_a_document")
       @ed.parts.build(:title => "Fooey", :slug => 'fooey', :body => "It's all about Fooey")
       @ed.parts.build(:title => "Gooey", :slug => 'gooey', :body => "It's all about Gooey")
       @ed.save!
@@ -221,6 +223,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       assert_equal @ed.country_slug, new_ed.country_slug
       assert_equal @ed.overview, new_ed.overview
       assert_equal @ed.summary, new_ed.summary
+      assert_equal @ed.image_id, new_ed.image_id
+      assert_equal @ed.document_id, new_ed.document_id
       assert_equal @ed.alert_status, new_ed.alert_status
     end
 
