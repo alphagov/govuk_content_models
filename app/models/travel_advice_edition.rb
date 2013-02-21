@@ -14,6 +14,8 @@ class TravelAdviceEdition
   field :state,                type: String,    default: "draft"
   field :alert_status,         type: Array,     default: [ ]
   field :summary,              type: String
+  field :image_id,             type: String
+  field :document_id,          type: String
 
   embeds_many :actions
 
@@ -38,7 +40,7 @@ class TravelAdviceEdition
   scope :published, where(:state => "published")
 
   class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary]
+  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary, :image_id, :document_id]
 
   state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|
