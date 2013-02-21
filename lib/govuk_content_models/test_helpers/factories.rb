@@ -173,6 +173,7 @@ FactoryGirl.define do
   factory :travel_advice_edition do
     sequence(:country_slug) {|n| "test-country-#{n}" }
     sequence(:title) {|n| "Test Country #{n}" }
+    change_description "Stuff changed"
   end
 
   # These factories only work when used with FactoryGirl.create
@@ -180,6 +181,7 @@ FactoryGirl.define do
   end
   factory :published_travel_advice_edition, :parent => :travel_advice_edition do
     after :create do |tae|
+      tae.published_at ||= Time.now.utc
       tae.state = 'published'
       tae.save!
     end

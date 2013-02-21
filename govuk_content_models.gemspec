@@ -33,6 +33,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "webmock", "1.8.7"
   gem.add_development_dependency "shoulda-context", "1.0.0"
+  gem.add_development_dependency "timecop", "0.5.9.2"
 
   # The following are added to help bundler resolve dependencies
   gem.add_development_dependency "rack", "~> 1.4.4"
