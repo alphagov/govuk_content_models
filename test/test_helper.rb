@@ -11,6 +11,7 @@ require "database_cleaner"
 require "gds_api/test_helpers/panopticon"
 require "webmock/test_unit"
 require "govuk_content_models/test_helpers/factories"
+require "timecop"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
 WebMock.disable_net_connect!
@@ -35,4 +36,9 @@ class ActiveSupport::TestCase
     DatabaseCleaner.clean
   end
   set_callback :teardown, :before, :clean_db
+
+  def timecop_return
+    Timecop.return
+  end
+  set_callback :teardown, :before, :timecop_return
 end
