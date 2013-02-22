@@ -11,8 +11,9 @@ Rake::TestTask.new do |t|
 end
 
 require "gem_publisher"
+desc "Publish gem to Gemfury"
 task :publish_gem do |t|
-  gem = GemPublisher.publish_if_updated("govuk_content_models.gemspec", :gemfury)
+  gem = GemPublisher.publish_if_updated("govuk_content_models.gemspec", :gemfury, :as => "govuk")
   puts "Published #{gem}" if gem
 end
 
