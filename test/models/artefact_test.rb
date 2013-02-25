@@ -46,6 +46,11 @@ class ArtefactTest < ActiveSupport::TestCase
       refute a.valid?
       assert a.errors[:slug].any?
     end
+
+    should "allow a government prefix for Inside Government artefacts" do
+      a = FactoryGirl.build(:artefact, slug: "government/slug", kind: "inside_government")
+      assert a.valid?
+    end
   end
 
   test "should translate kind into internally normalised form" do

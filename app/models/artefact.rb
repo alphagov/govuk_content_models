@@ -65,6 +65,11 @@ class Artefact
     "video"
   ].freeze
 
+  WHITEHALL_FORMATS = [
+    "detailed_guidance",
+    "inside_government"
+  ].freeze
+
   KIND_TRANSLATIONS = {
     "standard transaction link"        => "transaction",
     "local authority transaction link" => "local_transaction",
@@ -83,7 +88,7 @@ class Artefact
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
-  validates :kind, inclusion: { in: FORMATS }
+  validates :kind, inclusion: { in: FORMATS + WHITEHALL_FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }
