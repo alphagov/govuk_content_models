@@ -10,6 +10,11 @@ class SlugValidator < ActiveModel::EachValidator
     else
       last_part = value
     end
+    if record.respond_to?(:kind) and (record.kind == 'inside_government')
+      unless value.to_s =~ /\Agovernment\/(.+)/
+        record.errors[attribute] << "Inside Government slugs must have a government/ prefix"
+      end
+    end
     unless ActiveSupport::Inflector.parameterize(last_part.to_s) == last_part.to_s
       record.errors[attribute] << "must be usable in a URL"
     end
