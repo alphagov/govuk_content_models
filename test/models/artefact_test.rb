@@ -238,6 +238,10 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_includes Artefact::FORMATS, "video"
   end
 
+  test "should find the default owning_app for a format" do
+    assert_equal "publisher", Artefact.default_app_for_format("guide")
+  end
+
   test "should allow creation of artefacts with 'video' as the kind" do
     artefact = Artefact.create!(slug: "omlette-du-fromage", name: "Omlette du fromage", kind: "video", owning_app: "Dexter's Lab")
 

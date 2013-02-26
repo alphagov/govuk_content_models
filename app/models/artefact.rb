@@ -76,6 +76,10 @@ class Artefact
 
   FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
 
+  def self.default_app_for_format(format)
+    FORMATS_BY_DEFAULT_OWNING_APP.detect { |app, formats| formats.include?(format) }.first
+  end
+
   KIND_TRANSLATIONS = {
     "standard transaction link"        => "transaction",
     "local authority transaction link" => "local_transaction",
