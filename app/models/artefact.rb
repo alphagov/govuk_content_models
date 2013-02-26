@@ -65,6 +65,18 @@ class Artefact
     "video"
   ].freeze
 
+  INSIDE_GOVERNMENT_FORMATS = [
+    "case_study",
+    "consultation",
+    "detailed_guide",
+    "news_article",
+    "speech",
+    "policy",
+    "publication",
+    "statistical_data_set",
+    "worldwide_priority"
+  ].freeze
+
   KIND_TRANSLATIONS = {
     "standard transaction link"        => "transaction",
     "local authority transaction link" => "local_transaction",
@@ -83,7 +95,7 @@ class Artefact
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
-  validates :kind, inclusion: { in: FORMATS }
+  validates :kind, inclusion: { in: FORMATS + INSIDE_GOVERNMENT_FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }
