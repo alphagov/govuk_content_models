@@ -66,8 +66,15 @@ class Artefact
   ].freeze
 
   INSIDE_GOVERNMENT_FORMATS = [
-    "detailed_guidance",
-    "inside_government"
+    "case_study",
+    "consultation",
+    "detailed_guide",
+    "news_article",
+    "speech",
+    "policy",
+    "publication",
+    "statistical_data_set",
+    "worldwide_priority"
   ].freeze
 
   KIND_TRANSLATIONS = {

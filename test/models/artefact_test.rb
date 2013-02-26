@@ -48,13 +48,18 @@ class ArtefactTest < ActiveSupport::TestCase
     end
 
     should "allow a government prefix for Inside Government artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "government/slug", kind: "inside_government")
+      a = FactoryGirl.build(:artefact, slug: "government/slug", kind: "case_study")
       assert a.valid?
     end
 
     should "require a government prefix for Inside Government artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "slug", kind: "inside_government")
+      a = FactoryGirl.build(:artefact, slug: "slug", kind: "case_study")
       refute a.valid?
+    end
+
+    should "not require a government prefix for Detailed Guides" do
+      a = FactoryGirl.build(:artefact, slug: "slug", kind: "detailed_guide")
+      assert a.valid?
     end
   end
 
