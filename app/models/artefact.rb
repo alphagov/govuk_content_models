@@ -49,33 +49,32 @@ class Artefact
 
   MAXIMUM_RELATED_ITEMS = 8
 
-  FORMATS = [
-    "answer",
-    "guide",
-    "programme",
-    "local_transaction",
-    "transaction",
-    "completed_transaction",
-    "place",
-    "smart-answer",
-    "custom-application",
-    "licence",
-    "business_support",
-    "travel-advice",
-    "video"
-  ].freeze
+  FORMATS_BY_DEFAULT_OWNING_APP = {
+    "publisher"               => ["answer",
+                                  "business_support",
+                                  "completed_transaction",
+                                  "guide",
+                                  "licence",
+                                  "local_transaction",
+                                  "place",
+                                  "programme",
+                                  "transaction",
+                                  "video"],
+    "smartanswers"            => ["smart-answer"],
+    "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
+    "travel-advice-publisher" => ["travel-advice"],
+    "whitehall"               => ["case_study",
+                                  "consultation",
+                                  "detailed_guide",
+                                  "news_article",
+                                  "speech",
+                                  "policy",
+                                  "publication",
+                                  "statistical_data_set",
+                                  "worldwide_priority"]
+  }.freeze
 
-  INSIDE_GOVERNMENT_FORMATS = [
-    "case_study",
-    "consultation",
-    "detailed_guide",
-    "news_article",
-    "speech",
-    "policy",
-    "publication",
-    "statistical_data_set",
-    "worldwide_priority"
-  ].freeze
+  FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
 
   KIND_TRANSLATIONS = {
     "standard transaction link"        => "transaction",
@@ -95,7 +94,7 @@ class Artefact
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
-  validates :kind, inclusion: { in: FORMATS + INSIDE_GOVERNMENT_FORMATS }
+  validates :kind, inclusion: { in: FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }

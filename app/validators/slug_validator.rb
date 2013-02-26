@@ -5,12 +5,12 @@ class SlugValidator < ActiveModel::EachValidator
       last_part = $1
     elsif value.to_s =~ /\Aforeign-travel-advice\/(.+)/ and record.kind == 'travel-advice'
       last_part = $1
-    elsif value.to_s =~ /\Agovernment\/(.+)/ and Artefact::INSIDE_GOVERNMENT_FORMATS.include?(record.kind)
+    elsif value.to_s =~ /\Agovernment\/(.+)/ and prefixed_inside_government_format_names.include?(record.kind)
       last_part = $1
     else
       last_part = value
     end
-    if record.respond_to?(:kind) and prefixed_inside_government_formats.include?(record.kind)
+    if record.respond_to?(:kind) and prefixed_inside_government_format_names.include?(record.kind)
       unless value.to_s =~ /\Agovernment\/(.+)/
         record.errors[attribute] << "Inside Government slugs must have a government/ prefix"
       end
@@ -21,7 +21,7 @@ class SlugValidator < ActiveModel::EachValidator
   end
 
   private
-    def prefixed_inside_government_formats
-      Artefact::INSIDE_GOVERNMENT_FORMATS - ["detailed_guide"]
+    def prefixed_inside_government_format_names
+      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"] - ["detailed_guide"]
     end
 end
