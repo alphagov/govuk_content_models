@@ -65,7 +65,7 @@ class Artefact
     "video"
   ].freeze
 
-  WHITEHALL_FORMATS = [
+  INSIDE_GOVERNMENT_FORMATS = [
     "detailed_guidance",
     "inside_government"
   ].freeze
@@ -88,7 +88,7 @@ class Artefact
 
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
-  validates :kind, inclusion: { in: FORMATS + WHITEHALL_FORMATS }
+  validates :kind, inclusion: { in: FORMATS + INSIDE_GOVERNMENT_FORMATS }
   validates :state, inclusion: { in: ["draft", "live", "archived"] }
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }
