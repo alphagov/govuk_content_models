@@ -10,7 +10,7 @@ class CuratedList
   stores_tags_for :sections
 
   field "slug", type: String
-  field "artefact_ids", type: Array, default: [] # order is important
+  has_and_belongs_to_many :artefacts, class_name: "Artefact"
 
   index "slug"
 

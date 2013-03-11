@@ -23,4 +23,10 @@ class CuratedListTest < ActiveSupport::TestCase
     cl = FactoryGirl.create(:curated_list, artefact_ids: [b._id, a._id])
     assert_equal ["B", "A"], cl.artefacts.map(&:name)
   end
+
+  test "should translate string IDs to BSON::ObjectIds for artefacts set via artefact_ids" do
+    a = FactoryGirl.create(:artefact, name: "A")
+    cl = FactoryGirl.create(:curated_list, artefact_ids: [a.id.to_s])
+    assert cl.artefact_ids.first.is_a?(BSON::ObjectId)
+  end
 end
