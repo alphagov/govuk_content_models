@@ -16,4 +16,11 @@ class CuratedListTest < ActiveSupport::TestCase
 
     assert_equal [tag], cl.sections
   end
+
+  test "should return artefacts in relationship order, not their natural order" do
+    a = FactoryGirl.create(:artefact, name: "A")
+    b = FactoryGirl.create(:artefact, name: "B")
+    cl = FactoryGirl.create(:curated_list, artefact_ids: [b._id, a._id])
+    assert_equal ["B", "A"], cl.artefacts.map(&:name)
+  end
 end
