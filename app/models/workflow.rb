@@ -92,7 +92,13 @@ module Workflow
 
   def update_user_action(property, statuses)
     actions.where(:request_type.in => statuses).limit(1).each do |action|
-      self[property] = action.requester.name
+      # This can be invoked by Panopticon when it updates an artefact and associated
+      # editions. The problem is that Panopticon and Publisher users live in different
+      # collections, but share a model and relationships with eg actions.
+      # Therefore, Panopticon might not find a user for an action.
+      if action.requester
+        self[property] = action.requester.name
+      end
     end
   end
 
