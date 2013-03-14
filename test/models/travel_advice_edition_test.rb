@@ -12,7 +12,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.version_number = 4
     ed.image_id = "id_from_the_asset_manager_for_an_image"
     ed.document_id = "id_from_the_asset_manager_for_a_document"
-    ed.published_at = Time.parse('2013-02-21T14:56:22Z')
+    ed.published_at = Time.zone.parse('2013-02-21T14:56:22Z')
     ed.minor_update = true
     ed.change_description = "Some things"
     ed.parts.build(:title => "Part One", :slug => "one")
@@ -27,7 +27,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal 4, ed.version_number
     assert_equal "id_from_the_asset_manager_for_an_image", ed.image_id
     assert_equal "id_from_the_asset_manager_for_a_document", ed.document_id
-    assert_equal Time.parse('2013-02-21T14:56:22Z'), ed.published_at
+    assert_equal Time.zone.parse('2013-02-21T14:56:22Z'), ed.published_at
     assert_equal true, ed.minor_update
     assert_equal "Some things", ed.change_description
     assert_equal "Part One", ed.parts.first.title
@@ -320,8 +320,8 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         Timecop.freeze(1.day.from_now) do
           @ed.publish!
           # The to_i is necessary to account for the difference in milliseconds
-          # Time from the db only has a resolution in seconds, whereas Time.now is more accurate
-          assert_equal Time.now.utc.to_i, @ed.published_at.to_i
+          # Time from the db only has a resolution in seconds, whereas Time.zone.now is more accurate
+          assert_equal Time.zone.now.utc.to_i, @ed.published_at.to_i
         end
       end
 

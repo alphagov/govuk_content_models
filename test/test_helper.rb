@@ -13,6 +13,8 @@ require "webmock/test_unit"
 require "govuk_content_models/test_helpers/factories"
 require "timecop"
 
+Time.zone = "London"
+
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
 WebMock.disable_net_connect!
 
