@@ -42,6 +42,7 @@ class Artefact
   field "state",                type: String,  default: "draft"
   field "specialist_body",      type: String
   field "language",             type: String,  default: "en"
+  field "need_extended_font",   type: Boolean, default: false
 
   GOVSPEAK_FIELDS = []
   
