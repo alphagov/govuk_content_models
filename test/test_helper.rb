@@ -13,6 +13,7 @@ require "webmock/test_unit"
 require "govuk_content_models/test_helpers/factories"
 require "timecop"
 
+# The models depend on a zone being set, so tests will fail if we don't
 Time.zone = "London"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
