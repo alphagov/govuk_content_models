@@ -34,7 +34,7 @@ TimeWithZone and not Time. Use methods like:
     Time.zone.now, Time.zone.parse, n.days.ago, m.hours.from_now, etc
 
 in preference to methods like:
-    Time.zone.now, Time.utc, Time.parse, etc
+    Time.now, Time.utc, Time.parse, etc
 
 Files that contain bad Time handling:
   #{matching_files.join("\n  ")}
