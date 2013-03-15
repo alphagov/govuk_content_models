@@ -303,15 +303,15 @@ class ArtefactTest < ActiveSupport::TestCase
       assert ! a.valid?
     end
 
-    should "has has_internaional_chars field set to false by default" do
+    should "has has_extended_chars field set to false by default" do
       a = FactoryGirl.build(:artefact)
-      assert ! a.need_international_font
+      assert ! a.need_extended_font
     end
 
-    should "allow has_international_chars to be set" do
+    should "allow has_extended_chars to be set" do
       a = FactoryGirl.build(:artefact)
-      a.need_international_font = true
-      assert a.need_international_font
+      a.need_extended_font = true
+      assert a.need_extended_font
     end
   end
 
