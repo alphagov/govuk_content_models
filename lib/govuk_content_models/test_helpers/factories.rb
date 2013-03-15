@@ -181,7 +181,7 @@ FactoryGirl.define do
   end
   factory :published_travel_advice_edition, :parent => :travel_advice_edition do
     after :create do |tae|
-      tae.published_at ||= Time.now.utc
+      tae.published_at ||= Time.zone.now.utc
       tae.state = 'published'
       tae.save!
     end

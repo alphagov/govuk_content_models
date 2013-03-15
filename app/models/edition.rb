@@ -12,7 +12,7 @@ class Edition
   field :business_proposition, type: Boolean,  default: false
 
   field :title,                type: String
-  field :created_at,           type: DateTime, default: lambda { Time.now }
+  field :created_at,           type: DateTime, default: lambda { Time.zone.now }
   field :overview,             type: String
   field :alternative_title,    type: String
   field :slug,                 type: String
