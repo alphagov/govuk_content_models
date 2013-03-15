@@ -11,7 +11,7 @@ class Part
   field :title,      type: String
   field :body,       type: String
   field :slug,       type: String
-  field :created_at, type: DateTime, default: lambda { Time.now }
+  field :created_at, type: DateTime, default: lambda { Time.zone.now }
 
   GOVSPEAK_FIELDS = []
 

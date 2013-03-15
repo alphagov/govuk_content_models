@@ -36,7 +36,7 @@ class Action
   field :request_type,       type: String
   field :email_addresses,    type: String
   field :customised_message, type: String
-  field :created_at,         type: DateTime, default: lambda { Time.now }
+  field :created_at,         type: DateTime, default: lambda { Time.zone.now }
 
   GOVSPEAK_FIELDS = []
   validates_with SafeHtml

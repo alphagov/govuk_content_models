@@ -54,7 +54,7 @@ class TravelAdviceEdition
         edition.published_at = previous.published_at
         edition.change_description = previous.change_description
       else
-        edition.published_at = Time.now.utc
+        edition.published_at = Time.zone.now.utc
       end
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive

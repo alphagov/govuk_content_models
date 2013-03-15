@@ -68,7 +68,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
 
   test "saving with no tracked changes will not create a new snapshot" do
     a = Artefact.create!(base_fields)
-    a.updated_at = Time.now + 5.minutes
+    a.updated_at = Time.zone.now + 5.minutes
     a.save!
     assert_equal 1, a.actions.size
   end
