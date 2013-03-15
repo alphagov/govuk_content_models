@@ -302,6 +302,17 @@ class ArtefactTest < ActiveSupport::TestCase
 
       assert ! a.valid?
     end
+
+    should "has has_internaional_chars field set to false by default" do
+      a = FactoryGirl.build(:artefact)
+      assert ! a.need_international_font
+    end
+
+    should "allow has_international_chars to be set" do
+      a = FactoryGirl.build(:artefact)
+      a.need_international_font = true
+      assert a.need_international_font
+    end
   end
 
   context "returning json representation" do

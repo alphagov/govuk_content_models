@@ -23,25 +23,26 @@ class Artefact
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
-  field "department",           type: String
-  field "business_proposition", type: Boolean, default: false
+  field "department",              type: String
+  field "business_proposition",    type: Boolean, default: false
 
-  field "name",                 type: String
-  field "slug",                 type: String
-  field "paths",                type: Array, default: []
-  field "prefixes",             type: Array, default: []
-  field "kind",                 type: String
-  field "owning_app",           type: String
-  field "rendering_app",        type: String
-  field "active",               type: Boolean, default: false
-  field "need_id",              type: String
-  field "fact_checkers",        type: String
-  field "relatedness_done",     type: Boolean, default: false
-  field "publication_id",       type: String
-  field "description",          type: String
-  field "state",                type: String,  default: "draft"
-  field "specialist_body",      type: String
-  field "language",             type: String,  default: "en"
+  field "name",                    type: String
+  field "slug",                    type: String
+  field "paths",                   type: Array, default: []
+  field "prefixes",                type: Array, default: []
+  field "kind",                    type: String
+  field "owning_app",              type: String
+  field "rendering_app",           type: String
+  field "active",                  type: Boolean, default: false
+  field "need_id",                 type: String
+  field "fact_checkers",           type: String
+  field "relatedness_done",        type: Boolean, default: false
+  field "publication_id",          type: String
+  field "description",             type: String
+  field "state",                   type: String,  default: "draft"
+  field "specialist_body",         type: String
+  field "language",                type: String,  default: "en"
+  field "need_international_font", type: Boolean, default: false
 
   GOVSPEAK_FIELDS = []
   
