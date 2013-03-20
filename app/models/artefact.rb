@@ -36,7 +36,6 @@ class Artefact
   field "active",               type: Boolean, default: false
   field "need_id",              type: String
   field "fact_checkers",        type: String
-  field "relatedness_done",     type: Boolean, default: false
   field "publication_id",       type: String
   field "description",          type: String
   field "state",                type: String,  default: "draft"
