@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "factory_girl", "3.3.0"
   gem.add_development_dependency "gemfury", "0.4.12"
   gem.add_development_dependency "gem_publisher", "1.2.0"
-  gem.add_development_dependency "mocha", "0.11.4"
+  gem.add_development_dependency "mocha", "0.13.3"
   gem.add_development_dependency "multi_json", "1.3.7" # Pinned to allow dependency resolution
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "webmock", "1.8.7"
