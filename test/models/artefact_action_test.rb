@@ -20,7 +20,6 @@ class ArtefactActionTest < ActiveSupport::TestCase
   DEFAULTS = {
     "business_proposition" => false,
     "active" => false,
-    "relatedness_done" => false,
     "tag_ids" => [],
     "state" => "draft",
     "related_artefact_ids" => [],
