@@ -255,6 +255,10 @@ class Artefact
     end
   end
 
+  def archived?
+    self.state == "archived"
+  end
+
   def live?
     self.state == "live"
   end

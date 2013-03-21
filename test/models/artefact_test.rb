@@ -373,4 +373,12 @@ class ArtefactTest < ActiveSupport::TestCase
       end
     end
   end
+
+  should "have an archived? helper method" do
+    published_artefact = FactoryGirl.create(:artefact, :slug => "scooby", :state => "live")
+    archived_artefact = FactoryGirl.create(:artefact, :slug => "doo", :state => "archived")
+
+    refute published_artefact.archived?
+    assert archived_artefact.archived?
+  end
 end
