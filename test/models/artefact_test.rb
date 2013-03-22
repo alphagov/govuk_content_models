@@ -373,4 +373,20 @@ class ArtefactTest < ActiveSupport::TestCase
       end
     end
   end
+
+  should "have an archived? helper method" do
+    published_artefact = FactoryGirl.create(:artefact, :slug => "scooby", :state => "live")
+    archived_artefact = FactoryGirl.create(:artefact, :slug => "doo", :state => "archived")
+
+    refute published_artefact.archived?
+    assert archived_artefact.archived?
+  end
+
+  should "have a related_items method which discards artefacts that are archived or completion transactions" do
+    generic = FactoryGirl.create(:artefact, slug: "generic")
+    archived = FactoryGirl.create(:artefact, :slug => "archived", :state => "archived")
+    completed = FactoryGirl.create(:artefact, slug: "completed-transaction", kind: "completed_transaction")
+
+    assert_equal [generic], Artefact.relatable_items
+  end
 end
