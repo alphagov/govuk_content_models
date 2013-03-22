@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "test_helper"
 
 class TravelAdviceEditionTest < ActiveSupport::TestCase
@@ -197,6 +199,36 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         @ta.change_description = ""
         assert @ta.valid?
       end
+    end
+  end
+
+  context "fixing user input" do
+    setup do
+      @ed = FactoryGirl.build(:travel_advice_edition)
+    end
+
+    should "convert smart quotes in the change_description field" do
+      @ed.change_description = "Something changed on [GOV.UK](https://www.gov.uk/ “GOV.UK”)"
+      @ed.save!
+
+      @ed.reload
+      assert_equal 'Something changed on [GOV.UK](https://www.gov.uk/ "GOV.UK")', @ed.change_description
+    end
+
+    should "convert smart quotes in the summary field" do
+      @ed.summary = "This is a [link](https://www.gov.uk/ “link”)"
+      @ed.save!
+
+      @ed.reload
+      assert_equal 'This is a [link](https://www.gov.uk/ "link")', @ed.summary
+    end
+
+    should "convert smart quotes in part bodies" do
+      @ed.parts.build(:title => 'One', :slug => 'one', :body => "This is a [link](https://www.gov.uk/ “link”)")
+      @ed.save!
+
+      @ed.reload
+      assert_equal 'This is a [link](https://www.gov.uk/ "link")', @ed.parts.first.body
     end
   end
 
