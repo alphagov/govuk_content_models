@@ -112,6 +112,10 @@ class Artefact
     where(slug: s).first
   end
 
+  def self.relatable_items
+    self.in_alphabetical_order.where(:kind.nin => ["completed_transaction"], :state.nin => ["archived"])
+  end
+
   # The old-style section string identifier, of the form 'Crime:Prisons'
   def section
     return '' unless self.primary_section
@@ -253,6 +257,10 @@ class Artefact
       # children when an update event fires on the parent
       new_action.set_created_at
     end
+  end
+
+  def archived?
+    self.state == "archived"
   end
 
   def live?
