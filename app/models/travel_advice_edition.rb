@@ -36,6 +36,7 @@ class TravelAdviceEdition
 
   include GovspeakSmartQuotesFixer
   before_validation :populate_version_number, :on => :create
+  before_save :sort_parts
 
   validates_presence_of :country_slug, :title
   validate :state_for_slug_unique
@@ -160,5 +161,9 @@ class TravelAdviceEdition
     if self.minor_update and self.version_number == 1
       errors.add(:minor_update, "can't be set for first version")
     end
+  end
+
+  def sort_parts
+    self.parts.sort_by!(&:order)
   end
 end
