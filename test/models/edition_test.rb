@@ -587,17 +587,6 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  test "parts are sorted by the order field" do
-    edition = GuideEdition.new(title: "One", slug: "one", panopticon_id: @artefact.id)
-    edition.parts.build title: "Biscuits", body:"Never gonna give you up", slug: "biscuits", order: 2
-    edition.parts.build title: "Cookies", body:"NYAN NYAN NYAN NYAN", slug: "cookies", order: 1
-    edition.save!
-    edition.reload
-
-    assert_equal "Cookies", edition.parts.first.title
-    assert_equal "Biscuits", edition.parts.last.title
-  end
-
   test "user should not be able to review an edition they requested review for" do
     user = User.create(name: "Mary")
 
