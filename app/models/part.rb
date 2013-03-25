@@ -14,6 +14,8 @@ class Part
   field :slug,       type: String
   field :created_at, type: DateTime, default: lambda { Time.zone.now }
 
+  default_scope asc(:order)
+
   GOVSPEAK_FIELDS = [:body]
 
   include GovspeakSmartQuotesFixer
