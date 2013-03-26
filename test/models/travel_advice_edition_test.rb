@@ -390,21 +390,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
   end
 
-  context "sorting parts" do
-    should "sort the array of parts by the order before save" do
-      @edition = FactoryGirl.build(:travel_advice_edition)
-
-      @edition.parts << Part.new(:title => "Part One", :slug => "one", :body => "Hello", :order => 3)
-      @edition.parts << Part.new(:title => "Part Two", :slug => "two", :body => "Bonjour", :order => 2)
-      @edition.parts << Part.new(:title => "Part Three", :slug => "three", :body => "Ola", :order => 1)
-
-      @edition.save!
-
-      assert_equal "Part Three", @edition.parts.first.title
-      assert_equal "Part One", @edition.parts.last.title
-    end
-  end
-
   context "actions" do
     setup do
       @user = FactoryGirl.create(:user)

@@ -8,6 +8,8 @@ class Part
   embedded_in :programme_edition
   embedded_in :business_support_edition
 
+  scope :in_order, order_by(:order, :asc)
+
   field :order,      type: Integer
   field :title,      type: String
   field :body,       type: String
