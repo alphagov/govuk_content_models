@@ -26,7 +26,7 @@ class TravelAdviceEdition
 
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
 
-  GOVSPEAK_FIELDS = [:summary, :change_description]
+  GOVSPEAK_FIELDS = [:summary]
   ALERT_STATUSES = [
     "avoid_all_but_essential_travel_to_parts",
     "avoid_all_but_essential_travel_to_whole_country",
