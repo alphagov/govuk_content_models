@@ -207,14 +207,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @ed = FactoryGirl.build(:travel_advice_edition)
     end
 
-    should "convert smart quotes in the change_description field" do
-      @ed.change_description = "Something changed on [GOV.UK](https://www.gov.uk/ “GOV.UK”)"
-      @ed.save!
-
-      @ed.reload
-      assert_equal 'Something changed on [GOV.UK](https://www.gov.uk/ "GOV.UK")', @ed.change_description
-    end
-
     should "convert smart quotes in the summary field" do
       @ed.summary = "This is a [link](https://www.gov.uk/ “link”)"
       @ed.save!
