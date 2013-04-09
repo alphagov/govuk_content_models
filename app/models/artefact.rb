@@ -43,6 +43,8 @@ class Artefact
   field "language",             type: String,  default: "en"
   field "need_extended_font",   type: Boolean, default: false
 
+  scope :not_archived, where(:state.nin => ["archived"])
+
   GOVSPEAK_FIELDS = []
   
   validates_with SafeHtml
