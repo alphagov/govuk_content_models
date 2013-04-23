@@ -19,6 +19,7 @@ class TravelAdviceEdition
   field :document_id,          type: String
   field :change_description,   type: String
   field :minor_update,         type: Boolean,   default: false
+  field :synonyms,             type: Array,     default: [ ]
   # This is the publicly presented publish time. For minor updates, this will be the publish time of the previous version
   field :published_at,         type: Time
 
@@ -47,7 +48,7 @@ class TravelAdviceEdition
   scope :published, where(:state => "published")
 
   class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary, :image_id, :document_id]
+  @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary, :image_id, :document_id, :synonyms]
 
   state_machine initial: :draft do
     before_transition :draft => :published do |edition, transition|
@@ -87,6 +88,7 @@ class TravelAdviceEdition
     end
     strings.join(" ").strip
   end
+
 
   def build_clone
     new_edition = self.class.new
@@ -146,7 +148,8 @@ class TravelAdviceEdition
   def anything_other_than_state_changed?
     # There's an issue with dirty-tracking of Array fields.  Merely accessing them will mark
     # them as changed, but with no changes. This recifies that.
-    real_fields_changed = self.changes.reject {|k,v| v.nil?}.keys
+    # this also allows changes when the change is something changing from nil to an empty array
+    real_fields_changed = self.changes.reject {|k,v| v.nil? || v == [nil, []]}.keys
     self.changed? and (real_fields_changed != ['state'] or self.parts.any?(&:changed?))
   end
 

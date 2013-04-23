@@ -17,6 +17,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.published_at = Time.zone.parse('2013-02-21T14:56:22Z')
     ed.minor_update = true
     ed.change_description = "Some things"
+    ed.synonyms = ["Foo", "Bar"]
     ed.parts.build(:title => "Part One", :slug => "one")
     ed.safely.save!
 
@@ -31,6 +32,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal "id_from_the_asset_manager_for_a_document", ed.document_id
     assert_equal Time.zone.parse('2013-02-21T14:56:22Z'), ed.published_at
     assert_equal true, ed.minor_update
+    assert_equal ["Foo", "Bar"], ed.synonyms
     assert_equal "Some things", ed.change_description
     assert_equal "Part One", ed.parts.first.title
   end
