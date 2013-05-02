@@ -22,6 +22,7 @@ class TravelAdviceEdition
   field :synonyms,             type: Array,     default: [ ]
   # This is the publicly presented publish time. For minor updates, this will be the publish time of the previous version
   field :published_at,         type: Time
+  field :reviewed_at,          type: Time, default: -> { Time.now }
 
   embeds_many :actions
 
@@ -59,6 +60,7 @@ class TravelAdviceEdition
       else
         edition.published_at = Time.zone.now.utc
       end
+      edition.reviewed_at = edition.published_at
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive
       end
