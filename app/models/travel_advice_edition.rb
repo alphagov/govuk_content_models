@@ -137,7 +137,9 @@ class TravelAdviceEdition
 
   def cannot_edit_published
     if anything_other_than_state_changed? and self.state_was != 'draft'
-      errors.add(:state, "must be draft to modify")
+      if (real_fields_changed - ['reviewed_at', 'state']) != []
+        errors.add(:state, "must be draft to modify")
+      end
     end
   end
 
@@ -148,11 +150,16 @@ class TravelAdviceEdition
   end
 
   def anything_other_than_state_changed?
+    self.changed? and ((real_fields_changed - ['state']) != [] or self.parts.any?(&:changed?))
+  end
+
+  def real_fields_changed
     # There's an issue with dirty-tracking of Array fields.  Merely accessing them will mark
     # them as changed, but with no changes. This recifies that.
     # this also allows changes when the change is something changing from nil to an empty array
-    real_fields_changed = self.changes.reject {|k,v| v.nil? || v == [nil, []]}.keys
-    self.changed? and (real_fields_changed != ['state'] or self.parts.any?(&:changed?))
+    self.changes.reject { |k, v|
+      v.nil? || v == [nil, []]
+    }.keys
   end
 
   def alert_status_contains_valid_values
