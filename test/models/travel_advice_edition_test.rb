@@ -369,7 +369,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     setup do
       @published = FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'aruba',
                                       :published_at => 3.days.ago, :change_description => 'Stuff changed')
-      Timecop.freeze(Time.now - 1.day) do
+      Timecop.freeze(1.days.ago) do
         # this is done to make sure there's a significant difference in time
         # between creating the edition and it being published
         @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
@@ -391,7 +391,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     should "be able to be updated without affecting other dates" do
       published_at = @ed.published_at
       Timecop.freeze(1.day.from_now) do
-        @ed.reviewed_at = Time.now
+        @ed.reviewed_at = Time.zone.now
         assert_equal published_at, @ed.published_at
       end
     end
@@ -400,10 +400,10 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @ed.minor_update = true
       @ed.publish!
       Timecop.freeze(1.day.from_now) do
-        new_time = Time.zone.now.utc.to_i
+        new_time = Time.zone.now
         @ed.reviewed_at = new_time
         @ed.save!
-        assert_equal new_time, @ed.reviewed_at.to_i
+        assert_equal new_time.utc.to_i, @ed.reviewed_at.to_i
       end
     end
   end
