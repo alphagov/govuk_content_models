@@ -43,7 +43,7 @@ class BusinessSupportEdition < Edition
   end
   
   def business_support_identifier_unique
-    if self.class.where(:business_support_identifier => business_support_identifier,
+    if self.class.without_state('archived').where(:business_support_identifier => business_support_identifier,
                         :panopticon_id.ne => panopticon_id).any?
       errors.add(:business_support_identifier, :taken)
     end

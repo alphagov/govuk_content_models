@@ -1,4 +1,4 @@
-require 'test_helper'
+require_relative '../test_helper'
 
 class LicenceEditionTest < ActiveSupport::TestCase
   def setup
@@ -32,11 +32,20 @@ class LicenceEditionTest < ActiveSupport::TestCase
       assert_equal false, @l.valid?, "expected licence edition not to be valid"
     end
 
-    should "require a unique licence identifier" do
-      artefact2 = FactoryGirl.create(:artefact)
-      FactoryGirl.create(:licence_edition, :licence_identifier => "wibble", panopticon_id: artefact2.id)
-      @l.licence_identifier = "wibble"
-      assert ! @l.valid?, "expected licence edition not to be valid"
+    context "licence identifier uniqueness" do
+      should "require a unique licence identifier" do
+        artefact2 = FactoryGirl.create(:artefact)
+        FactoryGirl.create(:licence_edition, :licence_identifier => "wibble", panopticon_id: artefact2.id)
+        @l.licence_identifier = "wibble"
+        assert ! @l.valid?, "expected licence edition not to be valid"
+      end
+
+      should "not consider archived editions when evaluating uniqueness" do
+        artefact2 = FactoryGirl.create(:artefact)
+        FactoryGirl.create(:licence_edition, :licence_identifier => "wibble", panopticon_id: artefact2.id, :state => "archived")
+        @l.licence_identifier = "wibble"
+        assert @l.valid?, "expected licence edition to be valid"
+      end
     end
 
     should "not require a unique licence identifier for different versions of the same licence edition" do
