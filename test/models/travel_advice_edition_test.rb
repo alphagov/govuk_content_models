@@ -35,7 +35,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal ["Foo", "Bar"], ed.synonyms
     assert_equal "Some things", ed.change_description
     assert_equal "Part One", ed.parts.first.title
-    assert_equal ed.reviewed_at, ed.created_at
   end
 
   context "validations" do
