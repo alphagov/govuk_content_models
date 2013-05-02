@@ -22,6 +22,7 @@ class TravelAdviceEdition
   field :synonyms,             type: Array,     default: [ ]
   # This is the publicly presented publish time. For minor updates, this will be the publish time of the previous version
   field :published_at,         type: Time
+  field :reviewed_at,          type: Time
 
   embeds_many :actions
 
@@ -59,6 +60,7 @@ class TravelAdviceEdition
       else
         edition.published_at = Time.zone.now.utc
       end
+      edition.reviewed_at = edition.published_at
       edition.class.where(country_slug: edition.country_slug, state: 'published').each do |ed|
         ed.archive
       end
@@ -134,7 +136,7 @@ class TravelAdviceEdition
   end
 
   def cannot_edit_published
-    if anything_other_than_state_changed? and self.state_was != 'draft'
+    if anything_other_than_state_changed?('reviewed_at') and self.state_was != 'draft'
       errors.add(:state, "must be draft to modify")
     end
   end
@@ -145,12 +147,17 @@ class TravelAdviceEdition
     end
   end
 
-  def anything_other_than_state_changed?
+  def anything_other_than_state_changed?(*additional_allowed_fields)
+    self.changed? and ((real_fields_changed - ['state'] - additional_allowed_fields) != [] or self.parts.any?(&:changed?))
+  end
+
+  def real_fields_changed
     # There's an issue with dirty-tracking of Array fields.  Merely accessing them will mark
     # them as changed, but with no changes. This recifies that.
     # this also allows changes when the change is something changing from nil to an empty array
-    real_fields_changed = self.changes.reject {|k,v| v.nil? || v == [nil, []]}.keys
-    self.changed? and (real_fields_changed != ['state'] or self.parts.any?(&:changed?))
+    self.changes.reject { |k, v|
+      v.nil? || v == [nil, []]
+    }.keys
   end
 
   def alert_status_contains_valid_values
