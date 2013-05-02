@@ -377,10 +377,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       end
     end
 
-    should "be set to created_at date initially" do
-      assert_equal @ed.created_at, @ed.reviewed_at
-    end
-
     should "be updated to published time when edition is published" do
       @ed.change_description = "Did some stuff"
       @ed.publish!
