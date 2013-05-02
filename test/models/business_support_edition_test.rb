@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "../test_helper"
 
 class BusinessSupportEditionTest < ActiveSupport::TestCase
   def setup
@@ -51,15 +51,26 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert ! support.valid?, "expected business support edition not to be valid"
   end
 
-  should "have a unique business support identifier" do
-    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id,
-      business_support_identifier: "this-should-be-unique")
-    another_artefact = FactoryGirl.create(:artefact)
-    another_support = FactoryGirl.create(:business_support_edition, panopticon_id: another_artefact.id)
-    another_support.business_support_identifier = "this-should-be-unique"
-    assert !another_support.valid?, "business_support_identifier should be unique"
-    another_support.business_support_identifier = "this-is-different"
-    assert another_support.valid?, "business_support_identifier should be unique"
+  context "business support identifier uniqueness" do
+    setup do
+      @support = FactoryGirl.build(:business_support_edition, panopticon_id: @artefact.id)
+      @another_artefact = FactoryGirl.create(:artefact)
+    end
+    should "have a unique business support identifier" do
+      another_support = FactoryGirl.create(:business_support_edition, panopticon_id: @another_artefact.id,
+                                          :business_support_identifier => "this-should-be-unique")
+      @support.business_support_identifier = "this-should-be-unique"
+      assert !@support.valid?, "business_support_identifier should be unique"
+      @support.business_support_identifier = "this-is-different"
+      assert @support.valid?, "business_support_identifier should be unique"
+    end
+
+    should "not consider archived editions when evaluating uniqueness" do
+      another_support = FactoryGirl.create(:business_support_edition, panopticon_id: @another_artefact.id,
+                                           :business_support_identifier => "this-should-be-unique", :state => "archived")
+      @support.business_support_identifier = "this-should-be-unique"
+      assert @support.valid?, "business_support should be valid"
+    end
   end
   
   context "continuation_link validation" do 
