@@ -136,10 +136,8 @@ class TravelAdviceEdition
   end
 
   def cannot_edit_published
-    if anything_other_than_state_changed? and self.state_was != 'draft'
-      if (real_fields_changed - ['reviewed_at', 'state']) != []
-        errors.add(:state, "must be draft to modify")
-      end
+    if anything_other_than_state_changed?('reviewed_at') and self.state_was != 'draft'
+      errors.add(:state, "must be draft to modify")
     end
   end
 
@@ -149,8 +147,8 @@ class TravelAdviceEdition
     end
   end
 
-  def anything_other_than_state_changed?
-    self.changed? and ((real_fields_changed - ['state']) != [] or self.parts.any?(&:changed?))
+  def anything_other_than_state_changed?(*additional_allowed_fields)
+    self.changed? and ((real_fields_changed - ['state'] - additional_allowed_fields) != [] or self.parts.any?(&:changed?))
   end
 
   def real_fields_changed
