@@ -17,8 +17,6 @@ class TravelAdviceEdition
   field :state,                type: String,    default: "draft"
   field :alert_status,         type: Array,     default: [ ]
   field :summary,              type: String
-  field :image_id,             type: String
-  field :document_id,          type: String
   field :change_description,   type: String
   field :minor_update,         type: Boolean,   default: false
   field :synonyms,             type: Array,     default: [ ]
