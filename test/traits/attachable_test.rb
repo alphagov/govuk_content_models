@@ -9,16 +9,26 @@ class ModelWithAttachments
   include Mongoid::Document
 
   field :title, type: String
-  attaches MockAssetApi.new, :image
+  attaches :image
 end
 
 class AttachableTest < ActiveSupport::TestCase
 
   setup do
     @edition = ModelWithAttachments.new
+    Attachable.asset_api_client = MockAssetApi.new
   end
 
   context "retreiving assets from the api" do
+    should "raise an exception if there is no api client present" do
+      Attachable.asset_api_client = nil
+
+      @edition.image_id = "an_image_id"
+      assert_raise Attachable::ApiClientNotPresent do
+        @edition.image.file_url
+      end
+    end
+
     should "make the request to the asset api" do
       @edition.image_id = "an_image_id"
 
@@ -71,6 +81,15 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.save!
 
       assert_equal "an_image_id", @edition.image_id
+    end
+
+    should "raise an exception if there is no api client present" do
+      Attachable.asset_api_client = nil
+
+      @edition.image = @file
+      assert_raise Attachable::ApiClientNotPresent do
+        @edition.save!
+      end
     end
 
     should "catch any errors raised by the api client" do
