@@ -1,3 +1,4 @@
+require 'attachable'
 require 'parted'
 require 'state_machine'
 require 'safe_html'
@@ -7,6 +8,7 @@ class TravelAdviceEdition
   include Mongoid::Document
   include Mongoid::Timestamps
   include Parted
+  include Attachable
 
   field :country_slug,         type: String
   field :title,                type: String
@@ -27,6 +29,8 @@ class TravelAdviceEdition
   embeds_many :actions
 
   index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
+
+  attaches :image, :document
 
   GOVSPEAK_FIELDS = [:summary]
   ALERT_STATUSES = [
