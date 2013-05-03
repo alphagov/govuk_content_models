@@ -16,7 +16,12 @@ class AttachableTest < ActiveSupport::TestCase
 
   setup do
     @edition = ModelWithAttachments.new
+    @previous_api_client = Attachable.asset_api_client
     Attachable.asset_api_client = MockAssetApi.new
+  end
+
+  teardown do
+    Attachable.asset_api_client = @previous_api_client
   end
 
   context "retreiving assets from the api" do
