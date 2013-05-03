@@ -18,8 +18,8 @@ module Attachable
         self.field "#{field}_id".to_sym, type: String
 
         define_method(field) do
-          raise ApiClientNotPresent unless Attachable.asset_api_client.present?
-          unless self.send("#{field}_id").blank?
+          raise ApiClientNotPresent unless Attachable.asset_api_client
+          unless self.send("#{field}_id").nil?
             @attachments ||= { }
             @attachments[field] ||= Attachable.asset_api_client.asset(self.send("#{field}_id"))
           end
@@ -35,13 +35,13 @@ module Attachable
         end
 
         define_method("remove_#{field}=") do |value|
-          unless value.blank?
+          unless value.nil? or value == false or (value.respond_to?(:empty?) and value.empty?)
             self.send("#{field}_id=", nil)
           end
         end
 
         define_method("upload_#{field}") do
-          raise ApiClientNotPresent unless Attachable.asset_api_client.present?
+          raise ApiClientNotPresent unless Attachable.asset_api_client
           begin
             response = Attachable.asset_api_client.create_asset(:file => instance_variable_get("@#{field}_file"))
             self.send("#{field}_id=", response.id.match(/\/([^\/]+)\z/) {|m| m[1] })
