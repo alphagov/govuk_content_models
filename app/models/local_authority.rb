@@ -18,7 +18,7 @@ class LocalAuthority
 
   GOVSPEAK_FIELDS = []
 
-  validates_uniqueness_of :snac, :local_directgov_id
+  validates_uniqueness_of :snac
   validates_presence_of   :snac, :local_directgov_id, :name, :tier
   validates_with SafeHtml
 
