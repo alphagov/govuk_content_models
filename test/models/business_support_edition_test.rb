@@ -1,3 +1,4 @@
+# encoding: utf-8
 require_relative "../test_helper"
 
 class BusinessSupportEditionTest < ActiveSupport::TestCase
@@ -70,6 +71,38 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
                                            :business_support_identifier => "this-should-be-unique", :state => "archived")
       @support.business_support_identifier = "this-should-be-unique"
       assert @support.valid?, "business_support should be valid"
+    end
+  end
+
+  context "numeric field validations" do
+    # https://github.com/mongoid/mongoid/issues/1735 Really Mongoid‽
+    [
+      :min_value,
+      :max_value,
+      :max_employees,
+    ].each do |field|
+      should "require an integer #{field}" do
+        @support = FactoryGirl.build(:business_support_edition)
+        [
+          'sadfsadf',
+          '100,000',
+          1.23,
+        ].each do |value|
+          @support.send("#{field}=", value)
+          refute @support.valid?
+          assert_equal 1, @support.errors[field].count
+        end
+
+        @support.send("#{field}=", "100")
+        @support.save!
+        s = BusinessSupportEdition.find(@support.id)
+        assert_equal 100, s.send(field)
+
+        @support.send("#{field}=", "")
+        @support.save!
+        s = BusinessSupportEdition.find(@support.id)
+        assert_equal nil, s.send(field)
+      end
     end
   end
   
