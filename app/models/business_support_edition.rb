@@ -1,3 +1,4 @@
+# encoding: utf-8
 require "edition"
 
 class BusinessSupportEdition < Edition
@@ -23,6 +24,9 @@ class BusinessSupportEdition < Edition
   validates :business_support_identifier, :presence => true
   validate :business_support_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
+
+  # https://github.com/mongoid/mongoid/issues/1735 Really Mongoid‽
+  validates :min_value, :max_value, :max_employees, :numericality => {:allow_nil => true, :only_integer => true}
 
   @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
       :eligibility, :evaluation, :additional_information, :continuation_link,
