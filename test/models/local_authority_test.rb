@@ -1,4 +1,4 @@
-require "test_helper"
+require_relative "../test_helper"
 
 describe LocalAuthority do
   before :each do
@@ -26,6 +26,38 @@ describe LocalAuthority do
     assert_equal "http://example.gov/contact", authority.contact_url
     assert_equal "0000000000", authority.contact_phone
     assert_equal "contact@example.gov", authority.contact_email
+  end
+
+  describe "validating local_interactions" do
+    before :each do
+      @authority = FactoryGirl.create(:local_authority)
+    end
+
+    it "should require a lgsl_code and lgil_code" do
+      li = @authority.local_interactions.build
+      refute li.valid?
+      assert_equal ["can't be blank"], li.errors[:lgsl_code]
+      assert_equal ["can't be blank"], li.errors[:lgil_code]
+    end
+
+    it "should not allow duplicate lgsl/lgil pairs" do
+      li1 = @authority.local_interactions.create!(:lgsl_code => 42, :lgil_code => 8, :url => "http://www.example.com/one")
+      li2 = @authority.local_interactions.build(:lgsl_code => 42, :lgil_code => 8, :url => "http://www.example.com/two")
+
+      refute li2.valid?
+      assert_equal ["is already taken"], li2.errors[:lgil_code]
+
+      li2.lgil_code = 3
+      assert li2.valid?
+    end
+
+    it "should only validate uniqueness within the authority" do
+      authority2 = FactoryGirl.create(:local_authority)
+      li1 = @authority.local_interactions.create!(:lgsl_code => 42, :lgil_code => 8, :url => "http://www.example.com/one")
+      li2 = authority2.local_interactions.build(:lgsl_code => 42, :lgil_code => 8, :url => "http://www.example.com/two")
+
+      assert li2.valid?
+    end
   end
 
   describe "preferred_interaction_for" do
