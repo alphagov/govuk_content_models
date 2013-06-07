@@ -15,5 +15,6 @@ class LocalInteraction
   embedded_in :local_authority
 
   validates_presence_of :url, :lgil_code, :lgsl_code
+  validates_uniqueness_of :lgil_code, :scope => :lgsl_code
   validates_with SafeHtml
 end
