@@ -136,7 +136,7 @@ FactoryGirl.define do
 
   factory :local_authority do
     name "Some Council"
-    sequence(:snac) {|n| "AA0#{n}" }
+    sequence(:snac) {|n| "%02dAA" % n }
     sequence(:local_directgov_id)
     tier "county"
   end
