@@ -192,4 +192,10 @@ FactoryGirl.define do
       tae.save!
     end
   end
+
+  factory :simple_smart_answer_edition do
+    title "Simple smart answer"
+    flow({ "next" => "some-node" })
+    body "Introduction to the smart answer"
+  end
 end
