@@ -62,6 +62,7 @@ class Artefact
                                   "local_transaction",
                                   "place",
                                   "programme",
+                                  "simple_smart_answer",
                                   "transaction",
                                   "video"],
     "smartanswers"            => ["smart-answer"],
