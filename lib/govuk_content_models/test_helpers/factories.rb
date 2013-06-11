@@ -195,7 +195,7 @@ FactoryGirl.define do
 
   factory :simple_smart_answer_edition do
     title "Simple smart answer"
-    flow({ "next" => "some-node" })
+    nodes({ "question-one" => { "body" => "Test" } })
     body "Introduction to the smart answer"
   end
 end
