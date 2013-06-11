@@ -192,4 +192,10 @@ FactoryGirl.define do
       tae.save!
     end
   end
+
+  factory :simple_smart_answer_edition do
+    title "Simple smart answer"
+    nodes({ "question-one" => { "title" => "Test" } })
+    body "Introduction to the smart answer"
+  end
 end
