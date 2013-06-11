@@ -18,6 +18,19 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     assert_equal nodes, edition.nodes
   end
 
+  should "preserve the order of nodes in the hash" do
+    edition = FactoryGirl.build(:simple_smart_answer_edition, panopticon_id: @artefact.id)
+    edition.nodes = {
+      "aardvarks" => { "title" => "Aardvarks" },
+      "zebras" => { "title" => "Zebras" },
+      "meerkats" => { "title" => "Meerkats" },
+    }
+    edition.save!
+    edition.reload
+
+    assert_equal ["aardvarks", "zebras", "meerkats"], edition.nodes.keys
+  end
+
   should "be valid without any nodes" do
     edition = FactoryGirl.build(:simple_smart_answer_edition, panopticon_id: @artefact.id)
     edition.body = "This is a very simple smart answer, because it has no questions."
