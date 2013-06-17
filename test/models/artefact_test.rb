@@ -374,6 +374,20 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  context "artefact related external links" do
+    should "have none by default" do
+      artefact = FactoryGirl.create(:artefact)
+      assert_equal 0, artefact.external_links.length
+    end
+
+    should "contain the title and URL of the link" do
+      artefact = FactoryGirl.create(:artefact)
+      artefact.external_links << ArtefactExternalLink.new(:title => "Foo", :url => "http://bar.com")
+      assert_equal 1, artefact.external_links.length
+      assert_equal "Foo", artefact.external_links.first.title
+    end
+  end
+
   should "have an archived? helper method" do
     published_artefact = FactoryGirl.create(:artefact, :slug => "scooby", :state => "live")
     archived_artefact = FactoryGirl.create(:artefact, :slug => "doo", :state => "archived")
