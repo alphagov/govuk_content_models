@@ -12,6 +12,8 @@ class SimpleSmartAnswerNode
 
   default_scope order_by([:order, :asc])
 
+  GOVSPEAK_FIELDS = [:body]
+
   KINDS = [
     'question',
     'outcome'
@@ -22,6 +24,8 @@ class SimpleSmartAnswerNode
 
   validate :outcomes_have_no_options
   validate :all_options_have_labels
+
+  validates_with SafeHtml
 
   private
 
