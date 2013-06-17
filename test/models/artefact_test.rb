@@ -403,5 +403,4 @@ class ArtefactTest < ActiveSupport::TestCase
 
     assert_equal [generic], Artefact.relatable_items
   end
-
 end
