@@ -5,6 +5,8 @@ class SimpleSmartAnswerEdition < Edition
 
   embeds_many :nodes, :class_name => "SimpleSmartAnswerNode"
 
+  accepts_nested_attributes_for :nodes, allow_destroy: true
+
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
   @fields_to_clone = [:body]
 

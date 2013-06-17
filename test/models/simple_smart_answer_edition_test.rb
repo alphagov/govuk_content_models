@@ -49,4 +49,32 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     assert_equal "question1", edition.initial_node.slug
   end
 
+  should "create nodes with nested attributes" do
+    edition = FactoryGirl.create(:simple_smart_answer_edition, :nodes_attributes => [
+      { slug: "question1", title: "Question 1", kind: "question", order: 1, options: { "foo" => "Foo", "bar" => "bar" } },
+      { slug: "foo", title: "Outcome 1", kind: "outcome", order: 2 },
+    ])
+
+    assert_equal 2, edition.nodes.size
+    assert_equal ["question1", "foo"], edition.nodes.all.map(&:slug)
+  end
+
+  should "destroy nodes using nested attributes" do
+    edition = FactoryGirl.create(:simple_smart_answer_edition)
+    edition.nodes.build(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1, :options => { "foo" => "Foo", "bar" => "Bar" })
+    edition.nodes.build(:slug => "question2", :title => "Question 2", :kind => "question", :order => 1, :options => { "foo" => "Foo", "bar" => "Bar" })
+    edition.save!
+
+    assert_equal 2, edition.nodes.size
+
+    edition.update_attributes!({
+      :nodes_attributes => {
+        "1" => { "id" => edition.nodes.first.id, "_destroy" => "1" }
+      }
+    })
+    edition.reload
+
+    assert_equal 1, edition.nodes.size
+  end
+
 end
