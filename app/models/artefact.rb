@@ -95,7 +95,7 @@ class Artefact
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
   embeds_many :actions, class_name: "ArtefactAction", order: :created_at
-  embeds_many :external_links, class_name: "ArtefactExternalLink", order: :created_at
+  embeds_many :external_links, class_name: "ArtefactExternalLink"
 
   before_validation :normalise, on: :create
   before_create :record_create_action
