@@ -18,5 +18,15 @@ class ArtefactExternalLinkTest < ActiveSupport::TestCase
       link = ArtefactExternalLink.new(:title => "Foo", :url => "http://bar.com")
       assert link.valid?
     end
+
+    should "only be valid if the URL is valid" do
+      link = ArtefactExternalLink.new(:title => "Foo", :url => "notreal://foo.com")
+      refute link.valid?
+    end
+
+    should "be valid with an https URL" do
+      link = ArtefactExternalLink.new(:title => "Foo", :url => "https://bar.com")
+      assert link.valid?
+    end
   end
 end
