@@ -12,5 +12,5 @@ class ArtefactExternalLink
   validates_with SafeHtml
 
   validates_presence_of :title
-  validates_presence_of :url
+  validates :url, :presence => true, :format => { :with => URI::regexp(%w{http https}) }
 end
