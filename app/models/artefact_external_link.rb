@@ -1,6 +1,5 @@
 class ArtefactExternalLink
   include Mongoid::Document
-  include Mongoid::Timestamps::Created
 
   field "title", type: String
   field "url", type: String
