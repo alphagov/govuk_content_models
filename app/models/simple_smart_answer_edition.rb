@@ -1,3 +1,6 @@
+require_relative 'simple_smart_answer_edition/node'
+require_relative 'simple_smart_answer_edition/node/option'
+
 class SimpleSmartAnswerEdition < Edition
   include Mongoid::Document
 
