@@ -3,7 +3,7 @@ class SimpleSmartAnswerEdition < Edition
     include Mongoid::Document
 
     embedded_in :edition, :class_name => "SimpleSmartAnswerEdition"
-    embeds_many :options, :class_name => "SimpleSmartAnswerEdition::Option"
+    embeds_many :options, :class_name => "SimpleSmartAnswerEdition::Node::Option"
 
     accepts_nested_attributes_for :options, :allow_destroy => true
 
