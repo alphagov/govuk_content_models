@@ -1,3 +1,5 @@
+require "edition"
+
 class SimpleSmartAnswerEdition < Edition
   include Mongoid::Document
 
