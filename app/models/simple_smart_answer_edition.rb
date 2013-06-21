@@ -20,7 +20,7 @@ class SimpleSmartAnswerEdition < Edition
 
   def build_clone(edition_class=nil)
     new_edition = super(edition_class)
-    new_edition.body = whole_body
+    new_edition.body = self.body
 
     if new_edition.is_a?(SimpleSmartAnswerEdition)
       new_edition.nodes = self.nodes.map {|n| n.dup }
