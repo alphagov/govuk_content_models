@@ -1,29 +1,35 @@
 require "edition"
+require_relative 'simple_smart_answer_edition/node'
+require_relative 'simple_smart_answer_edition/node/option'
 
 class SimpleSmartAnswerEdition < Edition
   include Mongoid::Document
 
-  field :nodes, type: Hash
   field :body, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
-  @fields_to_clone = [:body, :nodes]
+  embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
 
-  validate :nodes_are_valid
+  accepts_nested_attributes_for :nodes, allow_destroy: true
+
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  @fields_to_clone = [:body]
 
   def whole_body
     body
   end
 
-  private
-  def nodes_are_valid
-    return if nodes.blank?
-    nodes.each do |id, node|
-      if node.is_a?(Hash)
-        errors.add(:nodes, "The title for #{id} cannot be blank") if node['title'].blank?
-      else
-        errors.add(:nodes, "#{id} is not a hash")
-      end
+  def build_clone(edition_class=nil)
+    new_edition = super(edition_class)
+    new_edition.body = self.body
+
+    if new_edition.is_a?(SimpleSmartAnswerEdition)
+      new_edition.nodes = self.nodes.map {|n| n.dup }
     end
+
+    new_edition
+  end
+
+  def initial_node
+    self.nodes.first
   end
 end

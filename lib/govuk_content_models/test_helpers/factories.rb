@@ -194,8 +194,11 @@ FactoryGirl.define do
   end
 
   factory :simple_smart_answer_edition do
+    panopticon_id {
+      a = create(:artefact)
+      a.id
+    }
     title "Simple smart answer"
-    nodes({ "question-one" => { "title" => "Test" } })
     body "Introduction to the smart answer"
   end
 end
