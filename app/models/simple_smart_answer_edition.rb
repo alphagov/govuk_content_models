@@ -1,3 +1,4 @@
+require "edition"
 require_relative 'simple_smart_answer_edition/node'
 require_relative 'simple_smart_answer_edition/node/option'
 
