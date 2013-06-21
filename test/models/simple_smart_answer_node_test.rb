@@ -10,10 +10,6 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
         title: "How much wood could a woodchuck chuck if a woodchuck could chuck wood?",
         slug: "how-much-wood-could-a-woodchuck-chuck-if-a-woodchuck-could-chuck-wood",
         body: "This is a serious question.",
-        options: {
-          "as-much-as-he-could-chuck" => "As much as he could chuck",
-          "not-as-much-as-he-could-chuck" => "Not as much as he could chuck"
-        },
         kind: "question"
       }
     end
@@ -28,8 +24,6 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
       assert_equal "how-much-wood-could-a-woodchuck-chuck-if-a-woodchuck-could-chuck-wood", @edition.nodes.first.slug
       assert_equal "How much wood could a woodchuck chuck if a woodchuck could chuck wood?", @edition.nodes.first.title
       assert_equal "This is a serious question.", @edition.nodes.first.body
-      assert_equal ["as-much-as-he-could-chuck","not-as-much-as-he-could-chuck"], @edition.nodes.first.options.keys
-      assert_equal ["As much as he could chuck","Not as much as he could chuck"], @edition.nodes.first.options.values
     end
 
     should "not be valid without a slug" do
@@ -46,13 +40,6 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
       assert_equal [:title], @node.errors.keys
     end
 
-    should "not be valid if options have blank labels" do
-      @node = @edition.nodes.build( @atts.merge(options: { "yes" => "", "no" => "No" }) )
-
-      assert ! @node.valid?
-      assert_equal [:options], @node.errors.keys
-    end
-
     should "not be valid without a kind" do
       @node = @edition.nodes.build(@atts.merge(:kind => nil))
       assert ! @node.valid?
@@ -67,18 +54,50 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
       assert_equal [:kind], @node.errors.keys
     end
 
-    should "permit outcomes with nil options" do
-      @node = @edition.nodes.build(@atts.merge(:kind => 'outcome', options: nil))
+    should "create options using nested attributes" do
+      @node = @edition.nodes.create!(@atts.merge(:options_attributes => [
+        { :label => "Yes", :next => "yes" },
+        { :label => "No", :next => "no" }
+      ]))
 
-      assert @node.valid?
-      assert @node.save!
+      @node.reload
+      assert_equal 2, @node.options.count
+      assert_equal ["Yes", "No"], @node.options.all.map(&:label)
+      assert_equal ["yes", "no"], @node.options.all.map(&:next)
+    end
+
+    should "destroy options using nested attributes" do
+      @node = @edition.nodes.create!(@atts.merge(:options_attributes => [
+        { :label => "Yes", :next => "yes" },
+        { :label => "No", :next => "no" }
+      ]))
+      assert_equal 2, @node.options.count
+
+      @node.update_attributes!(:options_attributes => {
+        "1" => { "id" => @node.options.first.id, "_destroy" => "1" }
+      })
+      @node.reload
+
+      assert_equal 1, @node.options.count
+      assert_equal ["No"], @node.options.all.map(&:label)
+      assert_equal ["no"], @node.options.all.map(&:next)
     end
 
     should "not be valid if an outcome has options" do
-      @node = @edition.nodes.build(@atts.merge(:kind => 'outcome', options: { "foo" => "foo", "bar" => "bar" }))
+      @node = @edition.nodes.build(@atts.merge(:kind => 'outcome', options_attributes: [
+        { :label => "Yes", :next => "yes" },
+        { :label => "No", :next => "no" }
+      ]))
       assert ! @node.valid?
 
       assert_equal [:options], @node.errors.keys
+    end
+
+    should "be able to create an outcome without options" do
+      @node = @edition.nodes.build(@atts.merge(:kind => 'outcome', :options_attributes => [] ))
+
+      assert @node.valid?
+      assert @node.save!
     end
 
     should "be returned in order" do

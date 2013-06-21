@@ -3,7 +3,7 @@ class SimpleSmartAnswerEdition < Edition
 
   field :body, type: String
 
-  embeds_many :nodes, :class_name => "SimpleSmartAnswerNode"
+  embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
 
   accepts_nested_attributes_for :nodes, allow_destroy: true
 
