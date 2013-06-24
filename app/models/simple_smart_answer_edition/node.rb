@@ -22,8 +22,9 @@ class SimpleSmartAnswerEdition < Edition
       'outcome'
     ]
 
-    validates :slug, :title, :kind, presence: true
+    validates :title, :kind, presence: true
     validates :kind, inclusion: { :in => KINDS }
+    validates :slug, :presence => true, :format => {:with => /\A[a-z0-9-]+\z/}
 
     validate :outcomes_have_no_options
 
