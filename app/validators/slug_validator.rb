@@ -6,7 +6,7 @@ class SlugValidator < ActiveModel::EachValidator
     elsif value.to_s =~ /\Aforeign-travel-advice\/(.+)/ and record.kind == 'travel-advice'
       last_part = $1
     elsif value.to_s =~ /\Agovernment\/(.+)/ and prefixed_inside_government_format_names.include?(record.kind)
-      last_part = $1
+      last_part = $1.gsub('/','-')
     else
       last_part = value
     end
