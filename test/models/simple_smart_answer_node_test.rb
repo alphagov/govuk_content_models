@@ -33,6 +33,19 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
       assert_equal [:slug], @node.errors.keys
     end
 
+    should "not be valid with an invalid slug" do
+      @node = @edition.nodes.build(@atts)
+
+      [
+        'under_score',
+        'space space',
+        'punct.u&ation',
+      ].each do |slug|
+        @node.slug = slug
+        refute @node.valid?
+      end
+    end
+
     should "not be valid without a title" do
       @node = @edition.nodes.build( @atts.merge(title: "") )
 
