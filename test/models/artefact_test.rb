@@ -57,6 +57,11 @@ class ArtefactTest < ActiveSupport::TestCase
       assert a.valid?
     end
 
+    should "not allow a government prefix with invalid path parts" do
+      a = FactoryGirl.build(:artefact, slug: "government/SomeThing/some.where/somehow/slug", kind: "case_study")
+      refute a.valid?
+    end
+    
     should "require a government prefix for Inside Government artefacts" do
       a = FactoryGirl.build(:artefact, slug: "slug", kind: "case_study")
       refute a.valid?
