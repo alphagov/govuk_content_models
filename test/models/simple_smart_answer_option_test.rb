@@ -57,5 +57,34 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
       assert_equal ["First","Second","Third"], @node.options.all.map(&:label)
       assert_equal ["foo","bar","baz"], @node.options.all.map(&:next)
     end
+
+    context "slug" do
+      should "generate a slug from the label if blank" do
+        @option = @node.options.build(@atts)
+
+        assert @option.valid?
+        assert_equal "yes", @option.slug
+      end
+
+      should "not overwrite a given slug" do
+        @option = @node.options.build(@atts.merge(:slug => "fooey"))
+
+        assert @option.valid?
+        assert_equal "fooey", @option.slug
+      end
+
+      should "not be valid with an invalid slug" do
+        @option = @node.options.build(@atts)
+
+        [
+          'under_score',
+          'space space',
+          'punct.u&ation',
+        ].each do |slug|
+          @option.slug = slug
+          refute @option.valid?
+        end
+      end
+    end
   end
 end
