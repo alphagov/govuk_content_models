@@ -2,7 +2,7 @@ class SlugValidator < ActiveModel::EachValidator
   # implement the method called during validation
   def validate_each(record, attribute, value)
     if value.to_s =~ /^done\/(.+)/
-     parts = [$1]
+      parts = [$1]
     elsif value.to_s =~ /\Aforeign-travel-advice\/(.+)/ and record.kind == 'travel-advice'
       parts = [$1]
     elsif value.to_s =~ /\Agovernment\/(.+)/ and prefixed_inside_government_format_names.include?(record.kind)
