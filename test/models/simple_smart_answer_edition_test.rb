@@ -32,9 +32,14 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     edition.nodes.build(:slug => "right", :title => "As you wander through the door, it slams shut behind you, as a tiger starts pacing towards you...", :order => 3, :kind => "outcome")
     edition.save!
 
-    new_edition = edition.build_clone
-    new_edition.save!
+    cloned_edition = edition.build_clone
+    cloned_edition.save!
 
+    old_edition = SimpleSmartAnswerEdition.find(edition.id)
+    assert_equal ["question", "outcome", "outcome"], old_edition.nodes.all.map(&:kind)
+    assert_equal ["question1", "left", "right"], old_edition.nodes.all.map(&:slug)
+
+    new_edition = SimpleSmartAnswerEdition.find(cloned_edition.id)
     assert_equal edition.body, new_edition.body
     assert_equal ["question", "outcome", "outcome"], new_edition.nodes.all.map(&:kind)
     assert_equal ["question1", "left", "right"], new_edition.nodes.all.map(&:slug)
