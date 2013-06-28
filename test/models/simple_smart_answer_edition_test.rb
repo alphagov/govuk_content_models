@@ -32,8 +32,14 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     edition.nodes.build(:slug => "right", :title => "As you wander through the door, it slams shut behind you, as a tiger starts pacing towards you...", :order => 3, :kind => "outcome")
     edition.save!
 
-    new_edition = edition.build_clone
+    cloned_edition = edition.build_clone
+    cloned_edition.save!
 
+    old_edition = SimpleSmartAnswerEdition.find(edition.id)
+    assert_equal ["question", "outcome", "outcome"], old_edition.nodes.all.map(&:kind)
+    assert_equal ["question1", "left", "right"], old_edition.nodes.all.map(&:slug)
+
+    new_edition = SimpleSmartAnswerEdition.find(cloned_edition.id)
     assert_equal edition.body, new_edition.body
     assert_equal ["question", "outcome", "outcome"], new_edition.nodes.all.map(&:kind)
     assert_equal ["question1", "left", "right"], new_edition.nodes.all.map(&:slug)
@@ -92,6 +98,14 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     edition.reload
 
     assert_equal 1, edition.nodes.size
+  end
+
+  should "destroy nodes when an edition is deleted" do
+    edition = FactoryGirl.create(:simple_smart_answer_edition)
+    node = edition.nodes.create(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1 )
+
+    assert edition.destroy
+    assert node.destroyed?
   end
 
 end
