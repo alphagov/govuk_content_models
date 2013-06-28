@@ -4,11 +4,11 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
 
   context "given a smart answer exists with a node" do
     setup do
+      @node = SimpleSmartAnswerEdition::Node.new(:slug => "question1", :title => "Question One?", :kind => "question")
       @edition = FactoryGirl.create(:simple_smart_answer_edition, :nodes => [
-        SimpleSmartAnswerEdition::Node.new(:slug => "question1", :title => "Question One?", :kind => "question"),
-        SimpleSmartAnswerEdition::Node.new(:slug => "question1", :title => "Question One?", :kind => "outcome")
+        @node,
+        SimpleSmartAnswerEdition::Node.new(:slug => "outcome1", :title => "Outcome One", :kind => "outcome")
       ])
-      @node = @edition.nodes.first
 
       @atts = {
         label: "Yes",
@@ -20,10 +20,10 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
       @option = @node.options.build(@atts)
 
       assert @option.save!
-      @edition.reload
+      @node.reload
 
-      assert_equal "Yes", @edition.nodes.first.options.first.label
-      assert_equal "yes", @edition.nodes.first.options.first.next
+      assert_equal "Yes", @node.options.first.label
+      assert_equal "yes", @node.options.first.next
     end
 
     should "not be valid without a label" do

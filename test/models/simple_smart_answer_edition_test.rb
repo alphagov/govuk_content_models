@@ -33,6 +33,7 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     edition.save!
 
     new_edition = edition.build_clone
+    new_edition.save!
 
     assert_equal edition.body, new_edition.body
     assert_equal ["question", "outcome", "outcome"], new_edition.nodes.all.map(&:kind)
