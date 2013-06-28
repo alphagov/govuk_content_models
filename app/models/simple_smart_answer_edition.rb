@@ -7,7 +7,19 @@ class SimpleSmartAnswerEdition < Edition
 
   field :body, type: String
 
-  embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
+  # We would use an embedded association to nodes here, however there is a
+  # known issue with all versions of Mongoid where a conflict can arise on
+  # save for documents with more than one level of embedded hierarchy and
+  # which use nested attributes. For now, we're going to use a relational
+  # association here.
+
+  # This issue is already noted in the Mongoid GitHub repository.
+  # https://github.com/mongoid/mongoid/issues/2989
+
+  has_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node",
+                   :foreign_key => "edition_id",
+                   :autosave => true,
+                   :dependent => :destroy
 
   accepts_nested_attributes_for :nodes, allow_destroy: true
 
@@ -23,7 +35,7 @@ class SimpleSmartAnswerEdition < Edition
     new_edition.body = self.body
 
     if new_edition.is_a?(SimpleSmartAnswerEdition)
-      new_edition.nodes = self.nodes.map {|n| n.dup }
+      self.nodes.each {|n| new_edition.nodes << n.clone }
     end
 
     new_edition
