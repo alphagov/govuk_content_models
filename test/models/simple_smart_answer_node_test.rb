@@ -69,20 +69,20 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
 
     should "create options using nested attributes" do
       @node = @edition.nodes.create!(@atts.merge(:options_attributes => [
-        { :label => "Yes", :next => "yes" },
-        { :label => "No", :next => "no" }
+        { :label => "Yes", :next_node => "yes" },
+        { :label => "No", :next_node => "no" }
       ]))
 
       @node.reload
       assert_equal 2, @node.options.count
       assert_equal ["Yes", "No"], @node.options.all.map(&:label)
-      assert_equal ["yes", "no"], @node.options.all.map(&:next)
+      assert_equal ["yes", "no"], @node.options.all.map(&:next_node)
     end
 
     should "destroy options using nested attributes" do
       @node = @edition.nodes.create!(@atts.merge(:options_attributes => [
-        { :label => "Yes", :next => "yes" },
-        { :label => "No", :next => "no" }
+        { :label => "Yes", :next_node => "yes" },
+        { :label => "No", :next_node => "no" }
       ]))
       assert_equal 2, @node.options.count
 
@@ -93,13 +93,13 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
 
       assert_equal 1, @node.options.count
       assert_equal ["No"], @node.options.all.map(&:label)
-      assert_equal ["no"], @node.options.all.map(&:next)
+      assert_equal ["no"], @node.options.all.map(&:next_node)
     end
 
     should "not be valid if an outcome has options" do
       @node = @edition.nodes.build(@atts.merge(:kind => 'outcome', options_attributes: [
-        { :label => "Yes", :next => "yes" },
-        { :label => "No", :next => "no" }
+        { :label => "Yes", :next_node => "yes" },
+        { :label => "No", :next_node => "no" }
       ]))
       assert ! @node.valid?
 
@@ -128,6 +128,7 @@ class SimpleSmartAnswerNodeTest < ActiveSupport::TestCase
 
       assert_equal @node.edition, @edition
     end
+
   end
 
 end

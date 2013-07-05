@@ -100,12 +100,4 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     assert_equal 1, edition.nodes.size
   end
 
-  should "destroy nodes when an edition is deleted" do
-    edition = FactoryGirl.create(:simple_smart_answer_edition)
-    node = edition.nodes.create(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1 )
-
-    assert edition.destroy
-    assert node.destroyed?
-  end
-
 end

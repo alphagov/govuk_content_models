@@ -16,10 +16,7 @@ class SimpleSmartAnswerEdition < Edition
   # This issue is already noted in the Mongoid GitHub repository.
   # https://github.com/mongoid/mongoid/issues/2989
 
-  has_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node",
-                   :foreign_key => "edition_id",
-                   :autosave => true,
-                   :dependent => :destroy
+  embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
 
   accepts_nested_attributes_for :nodes, allow_destroy: true
 

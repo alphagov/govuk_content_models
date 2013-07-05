@@ -12,7 +12,7 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
 
       @atts = {
         label: "Yes",
-        next: "yes"
+        next_node: "yes"
       }
     end
 
@@ -23,7 +23,7 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
       @node.reload
 
       assert_equal "Yes", @node.options.first.label
-      assert_equal "yes", @node.options.first.next
+      assert_equal "yes", @node.options.first.next_node
     end
 
     should "not be valid without a label" do
@@ -34,10 +34,10 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
     end
 
     should "not be valid without the next node" do
-      @option = @node.options.build(@atts.merge(next: nil))
+      @option = @node.options.build(@atts.merge(next_node: nil))
 
       assert !@option.valid?
-      assert @option.errors.keys.include?(:next)
+      assert @option.errors.keys.include?(:next_node)
     end
 
     should "expose the node" do
@@ -49,13 +49,13 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
 
     should "return in order" do
       @options = [
-        @node.options.create(@atts.merge(:label => "Third", :next => "baz", :order => 3)),
-        @node.options.create(@atts.merge(:label => "First", :next => "foo", :order => 1)),
-        @node.options.create(@atts.merge(:label => "Second", :next => "bar", :order => 2)),
+        @node.options.create(@atts.merge(:label => "Third", :next_node => "baz", :order => 3)),
+        @node.options.create(@atts.merge(:label => "First", :next_node => "foo", :order => 1)),
+        @node.options.create(@atts.merge(:label => "Second", :next_node => "bar", :order => 2)),
       ]
 
       assert_equal ["First","Second","Third"], @node.options.all.map(&:label)
-      assert_equal ["foo","bar","baz"], @node.options.all.map(&:next)
+      assert_equal ["foo","bar","baz"], @node.options.all.map(&:next_node)
     end
 
     context "slug" do
