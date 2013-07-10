@@ -7,15 +7,6 @@ class SimpleSmartAnswerEdition < Edition
 
   field :body, type: String
 
-  # We would use an embedded association to nodes here, however there is a
-  # known issue with all versions of Mongoid where a conflict can arise on
-  # save for documents with more than one level of embedded hierarchy and
-  # which use nested attributes. For now, we're going to use a relational
-  # association here.
-
-  # This issue is already noted in the Mongoid GitHub repository.
-  # https://github.com/mongoid/mongoid/issues/2989
-
   embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
 
   accepts_nested_attributes_for :nodes, allow_destroy: true
