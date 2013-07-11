@@ -84,13 +84,13 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
 
   should "destroy nodes using nested attributes" do
     edition = FactoryGirl.create(:simple_smart_answer_edition)
-    edition.nodes.build(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1 )
-    edition.nodes.build(:slug => "question2", :title => "Question 2", :kind => "question", :order => 1 )
+    edition.nodes.build(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1)
+    edition.nodes.build(:slug => "question2", :title => "Question 2", :kind => "question", :order => 1)
     edition.save!
 
     assert_equal 2, edition.nodes.size
 
-    edition.update_attributes!({
+    edition.update_attributes({
       :nodes_attributes => {
         "1" => { "id" => edition.nodes.first.id, "_destroy" => "1" }
       }
@@ -100,12 +100,57 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
     assert_equal 1, edition.nodes.size
   end
 
-  should "destroy nodes when an edition is deleted" do
-    edition = FactoryGirl.create(:simple_smart_answer_edition)
-    node = edition.nodes.create(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1 )
+  context "update_attributes method" do
+    setup do
+      @edition = FactoryGirl.create(:simple_smart_answer_edition)
+      @edition.nodes.build(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1)
+      @edition.nodes.build(:slug => "question2", :title => "Question 2", :kind => "question", :order => 1)
+      @edition.nodes.first.options.build(
+        :label => "Option 1", :next_node => "question2", :order => 1)
+      @edition.save!
+    end
 
-    assert edition.destroy
-    assert node.destroyed?
+    should "update edition and nested node and option attributes" do
+      @edition.update_attributes(:title => "Smarter than the average answer",
+        :body => "No developers were involved in the changing of this copy",
+        :nodes_attributes => {
+          "0" => { "id" => @edition.nodes.first.id, "title" => "Question the first", "options_attributes" => {
+            "0" => { "id" => @edition.nodes.first.options.first.id, "label" => "Option the first" }
+          }
+        }
+      })
+      
+      @edition.reload
+
+      assert_equal "Smarter than the average answer", @edition.title
+      assert_equal "No developers were involved in the changing of this copy", @edition.body
+      assert_equal "Question the first", @edition.nodes.first.title
+      assert_equal "Option the first", @edition.nodes.first.options.first.label
+    end
+
+    should "create and destroy nodes and options using nested attributes" do
+      @edition.update_attributes({
+        :nodes_attributes => {
+          "0" => { "id" => @edition.nodes.first.id, "options_attributes" => {
+              "0" => { "id" => @edition.nodes.first.options.first.id, "_destroy" => "1" }
+            }
+          },
+          "1" => { "id" => @edition.nodes.second.id, "_destroy" => "1" },
+          "2" => { "kind" => "question", "title" => "Question 3", "slug" => "question3", "options_attributes" => {
+            "0" => { "label" => "Goes to outcome 1", "next_node" => "outcome1" }
+          } },
+          "3" => { "kind" => "outcome", "title" => "Outcome 1", "slug" => "outcome1" }
+        }
+      })
+
+      @edition.reload
+
+      assert_equal 3, @edition.nodes.size
+      assert_equal 0, @edition.nodes.first.options.size
+      assert_equal "Question 3", @edition.nodes.second.title
+      assert_equal 1, @edition.nodes.second.options.size
+      assert_equal "outcome1", @edition.nodes.second.options.first.next_node
+      assert_equal "Outcome 1", @edition.nodes.third.title
+    end
   end
-
 end
