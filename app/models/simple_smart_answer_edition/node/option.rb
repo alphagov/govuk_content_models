@@ -16,7 +16,7 @@ class SimpleSmartAnswerEdition < Edition
       validates :slug, :format => {:with => /\A[a-z0-9-]+\z/}
 
       before_validation :populate_slug_if_blank
-      
+
       private
 
       def populate_slug_if_blank

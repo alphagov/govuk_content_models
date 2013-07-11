@@ -28,7 +28,7 @@ class SimpleSmartAnswerEdition < Edition
     validate :outcomes_have_no_options
 
     validates_with SafeHtml
-    
+
     private
 
     def outcomes_have_no_options
