@@ -106,13 +106,15 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
       @edition.nodes.build(:slug => "question1", :title => "Question 1", :kind => "question", :order => 1)
       @edition.nodes.build(:slug => "question2", :title => "Question 2", :kind => "question", :order => 1)
       @edition.nodes.first.options.build(
-        :label => "Option 1", :slug => "option1", :kind => "option", :next_node => "question2", :order => 1)
+        :label => "Option 1", :next_node => "question2", :order => 1)
       @edition.save!
     end
 
-    should "call an aliased method to circumvent mongoid nested docs bug" do
-      @edition.update_attributes(:nodes_attributes => {
-        "0" => { "id" => @edition.nodes.first.id, "title" => "Question the first", "options_attributes" => {
+    should "update edition and nested node and option attributes" do
+      @edition.update_attributes(:title => "Smarter than the average answer",
+        :body => "No developers were involved in the changing of this copy",
+        :nodes_attributes => {
+          "0" => { "id" => @edition.nodes.first.id, "title" => "Question the first", "options_attributes" => {
             "0" => { "id" => @edition.nodes.first.options.first.id, "label" => "Option the first" }
           }
         }
@@ -120,6 +122,8 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
       
       @edition.reload
 
+      assert_equal "Smarter than the average answer", @edition.title
+      assert_equal "No developers were involved in the changing of this copy", @edition.body
       assert_equal "Question the first", @edition.nodes.first.title
       assert_equal "Option the first", @edition.nodes.first.options.first.label
     end
