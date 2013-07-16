@@ -42,21 +42,25 @@ class SimpleSmartAnswerEdition < Edition
       nodes_attrs.each do |index, node_attrs|
         if node_id = node_attrs['id']
           node = nodes.find(node_id)
-          if node_attrs["_destroy"] == '1'
+          if destroy_in_attrs?(node_attrs)
             node.destroy
           else
             node.update_attributes(node_attrs)
           end
         else
-          nodes << Node.new(node_attrs)
+          nodes << Node.new(node_attrs) unless destroy_in_attrs?(node_attrs)
         end
       end
     end
-    
+
     original_update_attributes(attributes)
   end
 
   def initial_node
     self.nodes.first
+  end
+
+  def destroy_in_attrs?(attrs)
+    attrs['_destroy'] == '1'
   end
 end

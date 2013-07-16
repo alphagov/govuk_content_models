@@ -152,5 +152,18 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
       assert_equal "outcome1", @edition.nodes.second.options.first.next_node
       assert_equal "Outcome 1", @edition.nodes.third.title
     end
+    
+    should "ignore new nodes if they are to be destroyed" do
+      @edition.update_attributes({
+        :nodes_attributes => {
+          "0" => { "id" => @edition.nodes.first.id, "title" => "Question the first" }, 
+          "1" => { "title" => "", "slug" => "", "kind" => "outcome", "_destroy" => "1" }
+        }
+      })
+      @edition.reload
+
+      assert_equal "Question the first", @edition.nodes.first.title
+      assert_equal 2, @edition.nodes.size
+    end
   end
 end
