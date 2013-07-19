@@ -195,22 +195,26 @@ class Artefact
     scope_or_array.sort_by { |artefact| related_artefact_ids.index(artefact.id) }
   end
 
-  def related_artefacts_grouped_by_distance
-    groups = Hash.new([])
+  def related_artefacts_grouped_by_distance(scope_or_array = self.related_artefacts)
+    groups = { "subsection" => [], "section" => [], "other" => [] }
+    scoped_artefacts = ordered_related_artefacts(scope_or_array)
 
     if primary_tag = self.primary_section
-      groups['subsection'] = related_artefacts.select {|a| a.tag_ids.include?(primary_tag.tag_id) }
+      groups['subsection'] = scoped_artefacts.select {|a| a.tag_ids.include?(primary_tag.tag_id) }
 
       if primary_tag.parent_id.present?
         pattern = Regexp.new "^#{Regexp.quote(primary_tag.parent_id)}\/.+"
-        groups['section'] = related_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
+        groups['section'] = scoped_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
           a.tag_ids.grep(pattern).count > 0
         }
       end
     end
+    groups['other'] = scoped_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
 
-    groups['other'] = related_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
-    groups
+    # reorder each list so that each artefact is in the order it was set in
+    groups.each do |key, artefacts|
+      groups[key] = ordered_related_artefacts(artefacts)
+    end
   end
 
   def any_editions_published?

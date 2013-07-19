@@ -451,6 +451,18 @@ class ArtefactTest < ActiveSupport::TestCase
         artefacts = @artefact.related_artefacts_grouped_by_distance
         assert_equal ["broccoli"], artefacts['other'].map(&:slug)
       end
+
+      should "return related artefacts in order, with a scope" do
+        a = Artefact.create!(state: "live", slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
+        b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
+        c = Artefact.create!(state: "live", slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+
+        @artefact.related_artefacts = [c,b,a]
+        @artefact.save!
+        @artefact.reload
+
+        assert_equal [c, a], @artefact.related_artefacts_grouped_by_distance(@artefact.related_artefacts.where(state: "live"))["other"]
+      end
     end
 
     should "return an empty array for a group with no related artefacts" do
