@@ -413,4 +413,78 @@ class ArtefactTest < ActiveSupport::TestCase
 
     assert_equal [generic], Artefact.relatable_items
   end
+
+  context "related artefacts grouped by section tags" do
+    setup do
+      FactoryGirl.create(:tag, :tag_id => "fruit", :tag_type => 'section', :title => "Fruit")
+      FactoryGirl.create(:tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits", :parent_id => "fruit")
+      FactoryGirl.create(:tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits", :parent_id => "fruit")
+      FactoryGirl.create(:tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
+
+      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_id: 1, owning_app: "x")
+    end
+
+    context "when related items are present in all groups" do
+      setup do
+        @artefact.sections = ["fruit/simple"]
+
+        @artefact.related_artefacts = [
+          Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_id: 4, owning_app: "x"),
+          Artefact.create!(slug: "pineapple", name: "Pineapple", kind: "guide", sections: ["fruit/aggregate"], need_id: 2, owning_app: "x"),
+          Artefact.create!(slug: "broccoli", name: "Broccoli", kind: "guide", sections: ["vegetables"], need_id: 3, owning_app: "x")
+        ]
+        @artefact.save!
+        @artefact.reload
+      end
+
+      should "return a hash of artefacts in the same subsection" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["pear"], artefacts['subsection'].map(&:slug)
+      end
+
+      should "return a hash of other artefacts in the same parent section" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["pineapple"], artefacts['section'].map(&:slug)
+      end
+
+      should "return a hash of artefacts in other sections" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["broccoli"], artefacts['other'].map(&:slug)
+      end
+    end
+
+    should "return an empty array for a group with no related artefacts" do
+      # @artefact with no related items created in setup block
+
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["other"]
+    end
+
+    should "return all related artefacts in 'other' when an artefact has no sections" do
+      @artefact.related_artefacts = [
+        Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_id: 4, owning_app: "x"),
+        Artefact.create!(slug: "banana", name: "Banana", kind: "guide", sections: ["fruit/simple"], need_id: 6, owning_app: "x")
+      ]
+
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
+      assert_equal ["pear", "banana"], @artefact.related_artefacts_grouped_by_distance["other"].map(&:slug)
+    end
+
+    should "return no section level related artefacts if the primary section has no parent_id" do
+      FactoryGirl.create(:tag, :tag_id => "fruit/multiple", :tag_type => 'section', :title => "Multiple fruits", :parent_id => nil)
+
+      @artefact.primary_section = "fruit/multiple"
+      @artefact.related_artefacts = [
+        Artefact.create!(slug: "fig", name: "Fig", kind: "guide", sections: ["fruit/multiple"], need_id: 4, owning_app: "x"),
+        Artefact.create!(slug: "strawberry", name: "Strawberry", kind: "guide", sections: ["fruit/simple"], need_id: 6, owning_app: "x")
+      ]
+      @artefact.save!
+
+      assert_equal ["fig"], @artefact.related_artefacts_grouped_by_distance["subsection"].map(&:slug)
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
+      assert_equal ["strawberry"], @artefact.related_artefacts_grouped_by_distance["other"].map(&:slug)
+    end
+  end
 end
