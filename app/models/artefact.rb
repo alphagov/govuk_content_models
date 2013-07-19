@@ -211,10 +211,7 @@ class Artefact
     end
     groups['other'] = scoped_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
 
-    # reorder each list so that each artefact is in the order it was set in
-    groups.each do |key, artefacts|
-      groups[key] = ordered_related_artefacts(artefacts)
-    end
+    groups
   end
 
   def any_editions_published?
