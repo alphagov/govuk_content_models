@@ -195,6 +195,20 @@ class Artefact
     scope_or_array.sort_by { |artefact| related_artefact_ids.index(artefact.id) }
   end
 
+  def related_artefacts_grouped_by_distance
+    groups = { }
+
+    groups['subsection'] = related_artefacts.select {|a| a.tag_ids.include?(self.tag_ids.first) }
+    groups['section'] = related_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
+      parent_section = Regexp.quote self.tag_ids.first.split('/').first
+      pattern = Regexp.new "#{parent_section}\/.+"
+      a.tag_ids.grep(pattern).count > 0
+    }
+    groups['other'] = related_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
+
+    groups
+  end
+
   def any_editions_published?
     Edition.where(panopticon_id: self.id, state: 'published').any?
   end

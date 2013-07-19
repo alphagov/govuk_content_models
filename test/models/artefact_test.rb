@@ -413,4 +413,57 @@ class ArtefactTest < ActiveSupport::TestCase
 
     assert_equal [generic], Artefact.relatable_items
   end
+
+  context "related artefacts grouped by section tags" do
+    context "when related items are present in all groups" do
+      setup do
+        FactoryGirl.create(:tag, :tag_id => "fruit", :tag_type => 'section', :title => "Fruit")
+        FactoryGirl.create(:tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits")
+
+        FactoryGirl.create(:tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits")
+        FactoryGirl.create(:tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
+
+        @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: ["fruit/simple"], kind: "guide", need_id: 1, owning_app: "x")
+        @artefact.related_artefacts = [
+          Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_id: 4, owning_app: "x"),
+          Artefact.create!(slug: "pineapple", name: "Pineapple", kind: "guide", sections: ["fruit/aggregate"], need_id: 2, owning_app: "x"),
+          Artefact.create!(slug: "broccoli", name: "Broccoli", kind: "guide", sections: ["vegetables"], need_id: 3, owning_app: "x")
+        ]
+        @artefact.save!
+        @artefact.reload
+      end
+
+      should "return a hash of artefacts in the same subsection" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["pear"], artefacts['subsection'].map(&:slug)
+      end
+
+      should "return a hash of other artefacts in the same parent section" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["pineapple"], artefacts['section'].map(&:slug)
+      end
+
+      should "return a hash of artefacts in other sections" do
+        artefacts = @artefact.related_artefacts_grouped_by_distance
+        assert_equal ["broccoli"], artefacts['other'].map(&:slug)
+      end
+    end
+
+    should "return an empty array for a group with no related artefacts" do
+      FactoryGirl.create(:tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits")
+      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: ["fruit/simple"], kind: "guide", need_id: 1, owning_app: "x")
+
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["other"]
+    end
+
+    should "return an empty array when an artefact has no sections" do
+      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_id: 1, owning_app: "x")
+
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
+      assert_equal [], @artefact.related_artefacts_grouped_by_distance["other"]
+    end
+  end
 end
