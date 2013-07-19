@@ -196,16 +196,20 @@ class Artefact
   end
 
   def related_artefacts_grouped_by_distance
-    groups = { }
+    groups = Hash.new([])
 
-    groups['subsection'] = related_artefacts.select {|a| a.tag_ids.include?(self.tag_ids.first) }
-    groups['section'] = related_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
-      parent_section = Regexp.quote self.tag_ids.first.split('/').first
-      pattern = Regexp.new "#{parent_section}\/.+"
-      a.tag_ids.grep(pattern).count > 0
-    }
+    if primary_tag = self.primary_section
+      groups['subsection'] = related_artefacts.select {|a| a.tag_ids.include?(primary_tag.tag_id) }
+
+      if primary_tag.parent_id.present?
+        pattern = Regexp.new "^#{Regexp.quote(primary_tag.parent_id)}\/.+"
+        groups['section'] = related_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
+          a.tag_ids.grep(pattern).count > 0
+        }
+      end
+    end
+
     groups['other'] = related_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
-
     groups
   end
 
