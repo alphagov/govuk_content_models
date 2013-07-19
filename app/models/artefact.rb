@@ -65,7 +65,8 @@ class Artefact
                                   "programme",
                                   "simple_smart_answer",
                                   "transaction",
-                                  "video"],
+                                  "video",
+                                  "course"],
     "smartanswers"            => ["smart-answer"],
     "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
     "travel-advice-publisher" => ["travel-advice"],
