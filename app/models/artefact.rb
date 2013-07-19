@@ -60,6 +60,7 @@ class Artefact
                                   "guide",
                                   "licence",
                                   "local_transaction",
+                                  "person",
                                   "place",
                                   "programme",
                                   "simple_smart_answer",
