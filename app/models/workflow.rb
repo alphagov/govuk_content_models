@@ -192,7 +192,10 @@ module Workflow
     if self.whole_body.empty?
       false
     else
-      Differ.diff_by_line(self.whole_body, self.published_edition.whole_body)
+      my_body, their_body = [self, self.published_edition].map do |edition|
+        edition.whole_body.gsub("\r\n", "\n")
+      end
+      Differ.diff_by_line(my_body, their_body)
     end
   end
 
