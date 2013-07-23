@@ -280,6 +280,23 @@ class WorkflowTest < ActiveSupport::TestCase
     end
   end
 
+  test "handles inconsistent newlines" do
+    # Differ tries to be smart when calculating changes, by searching for a matching line
+    # later in the texts. When we have predominantly Windows-style new lines (\r\n) with
+    # a few Unix-style new lines (\n), a Unix-style new line later in one document will be
+    # matched to a Unix-style new line in the other, causing large swathes of spurious diff.
+
+    edition_one = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
+    edition_one.body = "badger\n\nmushroom\r\n\r\nsnake\n\nend"
+
+    edition_two = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
+    edition_two.body = "badger\r\n\r\nmushroom\r\n\r\nsnake\n\nend"
+    edition_two.stubs(:published_edition).returns(edition_one)
+
+    # Test that the diff output is simply the (normalised) string, with no diff markers
+    assert_equal "badger\n\nmushroom\n\nsnake\n\nend", edition_two.edition_changes.to_s
+  end
+
   test "an edition can be moved into archive state" do
     user, other_user = template_users
 
