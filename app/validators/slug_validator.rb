@@ -5,6 +5,13 @@ class SlugValidator < ActiveModel::EachValidator
       parts = [$1]
     elsif value.to_s =~ /\Aforeign-travel-advice\/(.+)/ and record.kind == 'travel-advice'
       parts = [$1]
+    elsif record.respond_to?(:kind) and record.kind == 'help_page'
+      if value.to_s =~ /\Ahelp\/(.+)\z/
+        parts = [$1]
+      else
+        record.errors[attribute] << "Help page slugs must have a help/ prefix"
+        return
+      end
     elsif value.to_s =~ /\Agovernment\/(.+)/ and prefixed_inside_government_format_names.include?(record.kind)
       parts = $1.split('/')
     else

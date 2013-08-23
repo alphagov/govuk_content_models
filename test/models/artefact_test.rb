@@ -71,6 +71,25 @@ class ArtefactTest < ActiveSupport::TestCase
       a = FactoryGirl.build(:artefact, slug: "slug", kind: "detailed_guide")
       assert a.valid?
     end
+
+    context "help page special case" do
+      should "allow a help page to have a help/ prefix on the slug" do
+        a = FactoryGirl.build(:artefact, :slug => "help/foo", :kind => "help_page")
+        assert a.valid?
+      end
+
+      should "require a help page to have a help/ prefix on the slug" do
+        a = FactoryGirl.build(:artefact, :slug => "foo", :kind => "help_page")
+        refute a.valid?
+        assert_equal 1, a.errors[:slug].count
+      end
+
+      should "not allow other kinds to have a help/ prefix" do
+        a = FactoryGirl.build(:artefact, :slug => "help/foo", :kind => "answer")
+        refute a.valid?
+        assert_equal 1, a.errors[:slug].count
+      end
+    end
   end
 
   test "should translate kind into internally normalised form" do
