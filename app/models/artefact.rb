@@ -58,6 +58,7 @@ class Artefact
                                   "business_support",
                                   "completed_transaction",
                                   "guide",
+                                  "help_page",
                                   "licence",
                                   "local_transaction",
                                   "place",
