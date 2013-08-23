@@ -52,6 +52,9 @@ FactoryGirl.define do
   factory :help_page_edition, :parent => :edition, :class => 'HelpPageEdition' do
   end
 
+  factory :completed_transaction_edition, :parent => :edition, :class => 'CompletedTransactionEdition' do
+  end
+
   factory :video_edition, parent: :edition, :class => 'VideoEdition' do
   end
 
