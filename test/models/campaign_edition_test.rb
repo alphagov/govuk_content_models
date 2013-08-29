@@ -8,10 +8,16 @@ class CampaignEditionTest < ActiveSupport::TestCase
   should "have correct extra fields" do
     c = FactoryGirl.build(:campaign_edition, :panopticon_id => @artefact.id)
     c.body = "Start all the campaigns!"
+    c.large_image_id = "large-image-id-from-the-asset-manager"
+    c.medium_image_id = "medium-image-id-from-the-asset-manager"
+    c.small_image_id = "small-image-id-from-the-asset-manager"
     c.safely.save!
 
     c = CampaignEdition.first
     assert_equal "Start all the campaigns!", c.body
+    assert_equal "large-image-id-from-the-asset-manager", c.large_image_id
+    assert_equal "medium-image-id-from-the-asset-manager", c.medium_image_id
+    assert_equal "small-image-id-from-the-asset-manager", c.small_image_id
   end
 
   should "give a friendly (legacy supporting) description of its format" do
@@ -30,9 +36,15 @@ class CampaignEditionTest < ActiveSupport::TestCase
     campaign = FactoryGirl.create(:campaign_edition,
                                :panopticon_id => @artefact.id,
                                :state => "published",
-                               :body => "I'm very campaignful")
+                               :body => "I'm very campaignful",
+                               :large_image_id => "large-image",
+                               :medium_image_id => "medium-image",
+                               :small_image_id => "small-image" )
 
     new_campaign = campaign.build_clone
     assert_equal campaign.body, new_campaign.body
+    assert_equal campaign.large_image_id, new_campaign.large_image_id
+    assert_equal campaign.medium_image_id, new_campaign.medium_image_id
+    assert_equal campaign.small_image_id, new_campaign.small_image_id
   end
 end

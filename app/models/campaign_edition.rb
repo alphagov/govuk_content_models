@@ -1,11 +1,15 @@
-require "edition"
+require 'attachable'
+require 'edition'
 
 class CampaignEdition < Edition
+  include Attachable
+
   field :body, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  attaches :large_image, :medium_image, :small_image
 
-  @fields_to_clone = [:body]
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  @fields_to_clone = [:body, :large_image_id, :medium_image_id, :small_image_id]
 
   def whole_body
     self.body
