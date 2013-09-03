@@ -21,7 +21,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "gds-sso",          ">= 3.0.0", "< 4.0.0"
   gem.add_dependency "govspeak",         ">= 1.0.1", "< 2.0.0"
-  gem.add_dependency "mongoid",          "~> 2.4.10"
+  # Mongoid 2.5.0 supports the newer 1.7.x and 1.8.x Mongo drivers
+  gem.add_dependency "mongoid",          "~> 2.5"
   gem.add_dependency "plek"
   gem.add_dependency "state_machine"
 
