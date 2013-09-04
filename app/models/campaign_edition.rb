@@ -63,8 +63,8 @@ class CampaignEdition < Edition
     "UK Atomic Energy Authority" => "ukaea"
   }
 
-  validates :organisation_brand_colour, :inclusion => { :in => BRAND_COLOURS }
-  validates :organisation_crest, :inclusion => { :in => CRESTS.values }
+  validates :organisation_brand_colour, :inclusion => { :in => BRAND_COLOURS, :allow_blank => true }
+  validates :organisation_crest, :inclusion => { :in => CRESTS.values, :allow_blank => true }
 
   def whole_body
     self.body
