@@ -47,12 +47,20 @@ class CampaignEditionTest < ActiveSupport::TestCase
                                :body => "I'm very campaignful",
                                :large_image_id => "large-image",
                                :medium_image_id => "medium-image",
-                               :small_image_id => "small-image" )
+                               :small_image_id => "small-image",
+                               :organisation_formatted_name => "Driver & Vehicle\nLicensing\nAgency",
+                               :organisation_url => "/government/organisations/driver-and-vehicle-licensing-agency",
+                               :organisation_brand_colour => "department-for-transport",
+                               :organisation_crest => "single-identity" )
 
     new_campaign = campaign.build_clone
     assert_equal campaign.body, new_campaign.body
     assert_equal campaign.large_image_id, new_campaign.large_image_id
     assert_equal campaign.medium_image_id, new_campaign.medium_image_id
     assert_equal campaign.small_image_id, new_campaign.small_image_id
+    assert_equal campaign.organisation_formatted_name, new_campaign.organisation_formatted_name
+    assert_equal campaign.organisation_url, new_campaign.organisation_url
+    assert_equal campaign.organisation_brand_colour, new_campaign.organisation_brand_colour
+    assert_equal campaign.organisation_crest, new_campaign.organisation_crest
   end
 end
