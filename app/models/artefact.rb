@@ -48,7 +48,7 @@ class Artefact
   scope :not_archived, where(:state.nin => ["archived"])
 
   GOVSPEAK_FIELDS = []
-  
+
   validates_with SafeHtml
 
   MAXIMUM_RELATED_ITEMS = 8
@@ -56,6 +56,7 @@ class Artefact
   FORMATS_BY_DEFAULT_OWNING_APP = {
     "publisher"               => ["answer",
                                   "business_support",
+                                  "campaign",
                                   "completed_transaction",
                                   "guide",
                                   "help_page",
