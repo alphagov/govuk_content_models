@@ -11,6 +11,10 @@ class CampaignEditionTest < ActiveSupport::TestCase
     c.large_image_id = "large-image-id-from-the-asset-manager"
     c.medium_image_id = "medium-image-id-from-the-asset-manager"
     c.small_image_id = "small-image-id-from-the-asset-manager"
+    c.organisation_formatted_name = "Driver & Vehicle\nLicensing\nAgency"
+    c.organisation_url = "/government/organisations/driver-and-vehicle-licensing-agency"
+    c.organisation_brand_colour = "department-for-transport"
+    c.organisation_crest = "single-identity"
     c.safely.save!
 
     c = CampaignEdition.first
@@ -18,6 +22,10 @@ class CampaignEditionTest < ActiveSupport::TestCase
     assert_equal "large-image-id-from-the-asset-manager", c.large_image_id
     assert_equal "medium-image-id-from-the-asset-manager", c.medium_image_id
     assert_equal "small-image-id-from-the-asset-manager", c.small_image_id
+    assert_equal "Driver & Vehicle\nLicensing\nAgency", c.organisation_formatted_name
+    assert_equal "/government/organisations/driver-and-vehicle-licensing-agency", c.organisation_url
+    assert_equal "department-for-transport", c.organisation_brand_colour
+    assert_equal "single-identity", c.organisation_crest
   end
 
   should "give a friendly (legacy supporting) description of its format" do

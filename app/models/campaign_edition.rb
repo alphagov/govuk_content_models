@@ -5,6 +5,10 @@ class CampaignEdition < Edition
   include Attachable
 
   field :body, type: String
+  field :organisation_formatted_name, type: String
+  field :organisation_url, type: String
+  field :organisation_brand_colour, type: String
+  field :organisation_crest, type: String
 
   attaches :large_image, :medium_image, :small_image
 
