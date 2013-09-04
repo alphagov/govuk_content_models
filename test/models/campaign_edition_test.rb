@@ -63,4 +63,20 @@ class CampaignEditionTest < ActiveSupport::TestCase
     assert_equal campaign.organisation_brand_colour, new_campaign.organisation_brand_colour
     assert_equal campaign.organisation_crest, new_campaign.organisation_crest
   end
+
+  should "not permit a organisation brand colour from outside the list" do
+    campaign = FactoryGirl.build(:campaign_edition, :panopticon_id => @artefact.id)
+    campaign.organisation_brand_colour = "something-else"
+
+    refute campaign.valid?
+    assert campaign.errors.has_key?(:organisation_brand_colour)
+  end
+
+  should "not permit a organisation crest from outside the list" do
+    campaign = FactoryGirl.build(:campaign_edition, :panopticon_id => @artefact.id)
+    campaign.organisation_crest = "something-else"
+
+    refute campaign.valid?
+    assert campaign.errors.has_key?(:organisation_crest)
+  end
 end
