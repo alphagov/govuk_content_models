@@ -21,7 +21,7 @@ task :check_for_bad_time_handling do
   directories = Dir.glob(File.join(File.dirname(__FILE__), '**', '*.rb'))
   matching_files = directories.select do |filename|
     match = false
-    File.open(filename) do |file|
+    File.open(filename, :encoding => 'utf-8') do |file|
       match = file.grep(%r{Time\.(now|utc|parse)}).any?
     end
     match
