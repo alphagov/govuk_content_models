@@ -114,6 +114,7 @@ class Artefact
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
+  validate :validate_prefixes_and_paths
 
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
@@ -300,5 +301,28 @@ class Artefact
   def snapshot
     reconcile_tag_ids
     attributes.except "_id", "created_at", "updated_at", "actions"
+  end
+
+  private
+
+  def validate_prefixes_and_paths
+    if ! self.prefixes.nil? and self.prefixes_changed?
+      if self.prefixes.any? {|p| ! valid_url_path?(p)}
+        errors.add(:prefixes, "are not all valid absolute URL paths")
+      end
+    end
+    if ! self.paths.nil? and self.paths_changed?
+      if self.paths.any? {|p| ! valid_url_path?(p)}
+        errors.add(:paths, "are not all valid absolute URL paths")
+      end
+    end
+  end
+
+  def valid_url_path?(path)
+    return false unless path.starts_with?("/")
+    uri = URI.parse(path)
+    uri.path == path && path !~ %r{//} && path !~ %r{./\z}
+  rescue URI::InvalidURIError
+    false
   end
 end
