@@ -92,6 +92,68 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  context "validating paths and prefixes" do
+    setup do
+      @a = FactoryGirl.build(:artefact)
+    end
+
+    should "be valid when empty" do
+      @a.paths = []
+      @a.prefixes = []
+      assert @a.valid?
+
+      @a.paths = nil
+      @a.prefixes = nil
+      assert @a.valid?
+    end
+
+    should "be valid when set to array of absolute URL paths" do
+      @a.paths = ["/foo.json"]
+      @a.prefixes = ["/foo", "/bar"]
+      assert @a.valid?
+    end
+
+    should "be invalid if an entry is not a valid absolute URL path" do
+      [
+        "not a URL path",
+        "http://foo.example.com/bar",
+        "bar/baz",
+        "/foo/bar?baz=qux",
+      ].each do |path|
+        @a.paths = ["/foo.json", path]
+        @a.prefixes = ["/foo", path]
+        refute @a.valid?
+        assert_equal 1, @a.errors[:paths].count
+        assert_equal 1, @a.errors[:prefixes].count
+      end
+    end
+
+    should "be invalid with consecutive or trailing slashes" do
+      [
+        "/foo//bar",
+        "/foo/bar///",
+        "//bar/baz",
+        "//",
+        "/foo/bar/",
+      ].each do |path|
+        @a.paths = ["/foo.json", path]
+        @a.prefixes = ["/foo", path]
+        refute @a.valid?
+        assert_equal 1, @a.errors[:paths].count
+        assert_equal 1, @a.errors[:prefixes].count
+      end
+    end
+
+    should "skip validating these if they haven't changed" do
+      # This validation can be expensive, so skip it where unnecessary.
+      @a.paths = ["foo"]
+      @a.prefixes = ["bar"]
+      @a.save :validate => false
+
+      assert @a.valid?
+    end
+  end
+
   test "should translate kind into internally normalised form" do
     a = Artefact.new(kind: "benefit / scheme")
     a.normalise
