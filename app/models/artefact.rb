@@ -45,6 +45,8 @@ class Artefact
 
   index "slug", :unique => true
 
+  index [[:state, Mongo::ASCENDING], [:kind, Mongo::ASCENDING], [:name, Mongo::ASCENDING]]
+
   scope :not_archived, where(:state.nin => ["archived"])
 
   GOVSPEAK_FIELDS = []
@@ -125,7 +127,15 @@ class Artefact
   end
 
   def self.relatable_items
-    self.in_alphabetical_order.where(:kind.nin => ["completed_transaction"], :state.nin => ["archived"])
+    # Using inequality, rather than non-inclusion, because a non-inclusion
+    # query would prevent us using the index on :state, :kind and :name
+    #
+    # Only retrieving the name field, because that's all we use in Panopticon's
+    # helper method (the only place we use this), and it means the index can
+    # cover the query entirely
+    self.in_alphabetical_order
+        .where(:kind.ne => "completed_transaction", :state.ne => "archived")
+        .only(:name)
   end
 
   # The old-style section string identifier, of the form 'Crime:Prisons'
