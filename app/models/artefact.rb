@@ -45,7 +45,13 @@ class Artefact
 
   index "slug", :unique => true
 
-  index [[:state, Mongo::ASCENDING], [:kind, Mongo::ASCENDING], [:name, Mongo::ASCENDING]]
+  # This index allows the `relatable_artefacts` method to use an index-covered
+  # query, so it doesn't have to load each of the artefacts.
+  index [[:name, Mongo::ASCENDING],
+         [:state, Mongo::ASCENDING],
+         [:kind, Mongo::ASCENDING],
+         [:_type, Mongo::ASCENDING],
+         [:_id, Mongo::ASCENDING]]
 
   scope :not_archived, where(:state.nin => ["archived"])
 
@@ -127,9 +133,6 @@ class Artefact
   end
 
   def self.relatable_items
-    # Using inequality, rather than non-inclusion, because a non-inclusion
-    # query would prevent us using the index on :state, :kind and :name
-    #
     # Only retrieving the name field, because that's all we use in Panopticon's
     # helper method (the only place we use this), and it means the index can
     # cover the query entirely
