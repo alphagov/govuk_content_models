@@ -16,6 +16,18 @@ class BusinessSupportEdition < Edition
   field :will_continue_on, type: String
   field :contact_details, type: String
   field :business_support_identifier, type: String
+
+  field :priority,        type: Integer, default: 1
+  field :business_types,  type: Array, default: []
+  field :business_sizes,  type: Array, default: []
+  field :locations,       type: Array, default: []
+  field :purposes,        type: Array, default: []
+  field :sectors,         type: Array, default: []
+  field :stages,          type: Array, default: []
+  field :support_types,   type: Array, default: []
+  field :start_date,      type: Date
+  field :end_date,        type: Date
+
   index :business_support_identifier
 
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]

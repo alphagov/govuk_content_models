@@ -6,7 +6,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     @artefact = FactoryGirl.create(:artefact)
   end
 
-  should "have correct extra fields" do
+  should "have custom fields" do
     support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
     support.short_description = "The short description"
     support.body = "The body"
@@ -21,6 +21,18 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.will_continue_on = "The GOVUK website"
     support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
     support.business_support_identifier = "123-4-5"
+
+    support.priority = 2
+    support.business_sizes << "up-to-249"
+    support.business_types << "charity"
+    support.locations = ["scotland", "england"]
+    support.purposes << "making-the-most-of-the-internet"
+    support.sectors = ["education", "manufacturing"]
+    support.stages << "start-up"
+    support.support_types = ["grant", "loan"]
+    support.start_date = Date.parse("1 Jan 2000")
+    support.end_date = Date.parse("1 Jan 2020")
+
     support.safely.save!
 
     support = BusinessSupportEdition.first
@@ -37,6 +49,17 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal "The GOVUK website", support.will_continue_on
     assert_equal "123 The Street, Townsville, UK. 07324 123456", support.contact_details
     assert_equal "123-4-5", support.business_support_identifier
+
+    assert_equal 2, support.priority
+    assert_equal ["up-to-249"], support.business_sizes
+    assert_equal ["charity"], support.business_types
+    assert_equal ["scotland", "england"], support.locations
+    assert_equal ["making-the-most-of-the-internet"], support.purposes
+    assert_equal ["education", "manufacturing"], support.sectors
+    assert_equal ["start-up"], support.stages
+    assert_equal ["grant", "loan"], support.support_types
+    assert_equal Date.parse("1 Jan 2000"), support.start_date
+    assert_equal Date.parse("1 Jan 2020"), support.end_date
   end
 
   should "not allow max_value to be less than min_value" do
@@ -46,7 +69,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
 
     refute support.valid?
   end
-  
+
   should "require a business_support_identifier" do
     support = FactoryGirl.build(:business_support_edition, :business_support_identifier => '')
     assert ! support.valid?, "expected business support edition not to be valid"
@@ -105,13 +128,13 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       end
     end
   end
-  
-  context "continuation_link validation" do 
-  
+
+  context "continuation_link validation" do
+
     setup do
       @bs = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
     end
-    
+
     should "not validate the continuation link when blank" do
       @bs.continuation_link = ""
       assert @bs.valid?, "continuation link validation should not be triggered when the field is blank"
@@ -124,7 +147,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       @bs.continuation_link = "http://www.hmrc.gov.uk"
       assert @bs.valid?, "continuation_link validation should pass with a valid url"
     end
-  
+
   end
 
   should "clone extra fields when cloning edition" do
