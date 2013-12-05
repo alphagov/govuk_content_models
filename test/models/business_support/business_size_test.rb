@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BusinessSupport::BusinessTypeSize < ActiveSupport::TestCase
+class BusinessSupport::BusinessSizeTest < ActiveSupport::TestCase
   setup do
     @charity = BusinessSupport::BusinessSize.create(name: "Under 10", slug: "under-10")
   end
