@@ -3,6 +3,8 @@ require "edition"
 
 class BusinessSupportEdition < Edition
 
+  include Mongoid::MultiParameterAttributes
+
   field :short_description, type: String
   field :body, type: String
   field :min_value, type: Integer
@@ -16,6 +18,18 @@ class BusinessSupportEdition < Edition
   field :will_continue_on, type: String
   field :contact_details, type: String
   field :business_support_identifier, type: String
+
+  field :priority,        type: Integer, default: 1
+  field :business_types,  type: Array, default: []
+  field :business_sizes,  type: Array, default: []
+  field :locations,       type: Array, default: []
+  field :purposes,        type: Array, default: []
+  field :sectors,         type: Array, default: []
+  field :stages,          type: Array, default: []
+  field :support_types,   type: Array, default: []
+  field :start_date,      type: Date
+  field :end_date,        type: Date
+
   index :business_support_identifier
 
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
@@ -35,7 +49,7 @@ class BusinessSupportEdition < Edition
 
   def whole_body
     [short_description, body].join("\n\n")
-  end 
+  end
 
   private
 
@@ -45,7 +59,7 @@ class BusinessSupportEdition < Edition
       errors[:max_value] << "Max value must be larger than min value"
     end
   end
-  
+
   def business_support_identifier_unique
     if self.class.without_state('archived').where(:business_support_identifier => business_support_identifier,
                         :panopticon_id.ne => panopticon_id).any?
