@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SlugTest < ActiveSupport::TestCase
-  class ::Dummy
+  class Dummy
     include Mongoid::Document
 
     field "name", type: String

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SafeHtmlTest < ActiveSupport::TestCase
-  class ::Dummy
+  class Dummy
     include Mongoid::Document
 
     field "declared", type: String
@@ -11,17 +11,17 @@ class SafeHtmlTest < ActiveSupport::TestCase
 
     validates_with SafeHtml
 
-    embeds_one :dummy_embedded_single
+    embeds_one :dummy_embedded_single, class_name: 'SafeHtmlTest::DummyEmbeddedSingle'
   end
 
-  class ::DummyEmbeddedSingle
+  class DummyEmbeddedSingle
     include Mongoid::Document
 
     GOVSPEAK_FIELDS = []
 
     validates_with SafeHtml
 
-    embedded_in :dummy
+    embedded_in :dummy, class_name: 'SafeHtmlTest::Dummy'
   end
 
   context "we don't quite trust mongoid (2)" do
