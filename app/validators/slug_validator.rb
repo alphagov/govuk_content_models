@@ -17,11 +17,23 @@ class SlugValidator < ActiveModel::EachValidator
     else
       parts = [value]
     end
-    if record.respond_to?(:kind) and prefixed_inside_government_format_names.include?(record.kind)
-      unless value.to_s =~ /\Agovernment\/(.+)/
-        record.errors[attribute] << "Inside Government slugs must have a government/ prefix"
+
+    if record.respond_to?(:kind)
+      # Inside Government formats use friendly_id to disambiguate clashes, which
+      # potentially results in a trailing '--1' on the last path segment.
+      # Rather than overriding the fairly robust parameterize-based validation
+      # below, we can just fudge the friendly_id added bit
+      if inside_government_format_names.include?(record.kind) && parts.last.include?('--')
+        parts.last.sub!('--', '-')
+      end
+
+      if prefixed_inside_government_format_names.include?(record.kind)
+        unless value.to_s =~ /\Agovernment\/(.+)/
+          record.errors[attribute] << "Inside Government slugs must have a government/ prefix"
+        end
       end
     end
+
     parts.each do |part|
       unless ActiveSupport::Inflector.parameterize(part.to_s) == part.to_s
         record.errors[attribute] << "must be usable in a URL"
@@ -30,7 +42,12 @@ class SlugValidator < ActiveModel::EachValidator
   end
 
   private
-    def prefixed_inside_government_format_names
-      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"] - ["detailed_guide"]
+    def inside_government_format_names
+      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"]
     end
+
+    def prefixed_inside_government_format_names
+      inside_government_format_names - ["detailed_guide"]
+    end
+
 end
