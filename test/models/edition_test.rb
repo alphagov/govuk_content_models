@@ -130,7 +130,8 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal clone1.version_number, 3
   end
 
-  test "Cloning into a different edition type" do
+# test cloning into different edition types
+  test "Cloning from GuideEdition into AnswerEdition" do
     edition = FactoryGirl.create(
         :guide_edition,
         state: "published",
@@ -144,6 +145,90 @@ class EditionTest < ActiveSupport::TestCase
     new_edition = edition.build_clone AnswerEdition
 
     assert_equal new_edition.class, AnswerEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+  end
+
+  test "Cloning from ProgrammeEdition into AnswerEdition" do
+    edition = FactoryGirl.create(
+        :programme_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title"
+    )
+    new_edition = edition.build_clone AnswerEdition
+
+    assert_equal new_edition.class, AnswerEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+  end
+
+  test "Cloning from TransactionEdition into AnswerEdition" do
+    edition = FactoryGirl.create(
+        :transaction_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title"
+    )
+    new_edition = edition.build_clone AnswerEdition
+
+    assert_equal new_edition.class, AnswerEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+  end
+
+  test "Cloning from AnswerEdition into TransactionEdition" do
+    edition = FactoryGirl.create(
+        :answer_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title"
+    )
+    new_edition = edition.build_clone TransactionEdition
+
+    assert_equal new_edition.class, TransactionEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+  end
+
+  test "Cloning from AnswerEdition into GuideEdition" do
+    edition = FactoryGirl.create(
+        :answer_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title"
+    )
+    new_edition = edition.build_clone GuideEdition
+
+    assert_equal new_edition.class, GuideEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
     assert_equal new_edition.state, "lined_up"
