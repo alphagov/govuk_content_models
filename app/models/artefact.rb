@@ -18,7 +18,7 @@ class Artefact
 
   include Taggable
   stores_tags_for :sections, :writing_teams, :propositions,
-                  :keywords, :legacy_sources
+                  :keywords, :legacy_sources, :industry_sectors
   has_primary_tag_for :section
 
   # NOTE: these fields are deprecated, and soon to be replaced with a
