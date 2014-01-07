@@ -23,6 +23,6 @@ class TransactionEdition < Edition
   end
 
   def whole_body
-    [ self.link, self.introduction, self.more_information ].join("\n\n")
+    [ self.link, self.introduction, self.more_information, self.alternate_methods ].join("\n\n")
   end
 end

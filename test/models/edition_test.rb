@@ -151,6 +151,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.whole_body, edition.whole_body
   end
 
   test "Cloning from ProgrammeEdition into AnswerEdition" do
@@ -172,6 +173,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.whole_body, edition.whole_body
   end
 
   test "Cloning from TransactionEdition into AnswerEdition" do
@@ -182,7 +184,9 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title"
+        alternative_title: "Alternative test title",
+        more_information: "More information",
+        alternate_methods: "Alternate methods"
     )
     new_edition = edition.build_clone AnswerEdition
 
@@ -193,11 +197,58 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.whole_body, edition.whole_body
   end
 
   test "Cloning from AnswerEdition into TransactionEdition" do
     edition = FactoryGirl.create(
         :answer_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title",
+        body: "Test body"
+    )
+    new_edition = edition.build_clone TransactionEdition
+
+    assert_equal new_edition.class, TransactionEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.more_information, "Test body"
+  end
+
+  test "Cloning from GuideEdition into TransactionEdition" do
+    edition = FactoryGirl.create(
+        :guide_edition,
+        state: "published",
+        panopticon_id: @artefact.id,
+        version_number: 1,
+        department: "Test dept",
+        overview: "I am a test overview",
+        alternative_title: "Alternative test title",
+        video_url: "http://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    )
+    new_edition = edition.build_clone TransactionEdition
+
+    assert_equal new_edition.class, TransactionEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.more_information, edition.whole_body
+  end
+
+  test "Cloning from ProgrammeEdition into TransactionEdition" do
+    edition = FactoryGirl.create(
+        :programme_edition,
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
@@ -214,6 +265,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
+    assert_equal new_edition.more_information, edition.whole_body
   end
 
   test "Cloning from AnswerEdition into GuideEdition" do
@@ -238,15 +290,17 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "Cloning between types with parts" do
-    edition = FactoryGirl.create(:programme_edition,
+    edition = FactoryGirl.create(:programme_edition_with_two_parts,
                                  panopticon_id: @artefact.id,
                                  state: "published",
                                  version_number: 1,
-                                 overview: "I am a shiny programme")
+                                 overview: "I am a shiny programme",
+                                 )
     new_edition = edition.build_clone GuideEdition
 
     assert_equal(new_edition.parts.map {|part| part.title },
                  edition.parts.map {|part| part.title })
+    assert_equal 7, new_edition.parts.size
   end
 
   test "edition finder should return the published edition when given an empty edition parameter" do

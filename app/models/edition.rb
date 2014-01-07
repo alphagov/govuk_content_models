@@ -166,17 +166,21 @@ class Edition
       new_edition[attr] = read_attribute(attr)
     end
 
-    if edition_class == AnswerEdition and self.class == (GuideEdition || ProgrammeEdition || TransactionEdition)
+    if edition_class == AnswerEdition and self.is_a?(GuideEdition) || self.is_a?(ProgrammeEdition) || self.is_a?(TransactionEdition)
       new_edition.body = whole_body
     end
 
-    if edition_class == TransactionEdition and self.class == (GuideEdition || ProgrammeEdition || AnswerEdition)
-      new_edition.body = whole_body
+    if edition_class == TransactionEdition and self.is_a?(AnswerEdition) || self.is_a?(GuideEdition) || self.is_a?(ProgrammeEdition)
+      new_edition.more_information = whole_body
     end
 
-    if edition_class == GuideEdition and self.class == (AnswerEdition || ProgrammeEdition)
+    if edition_class == GuideEdition and self.is_a?(AnswerEdition)
       new_edition.parts.build(title: "Part One", body: whole_body,
                               slug: "part-one")
+    end
+
+    if edition_class == GuideEdition and self.is_a?(ProgrammeEdition)
+      new_edition.parts.build == whole_body
     end
 
     new_edition
