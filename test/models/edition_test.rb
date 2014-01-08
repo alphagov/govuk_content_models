@@ -290,7 +290,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "Cloning between types with parts" do
-    edition = FactoryGirl.create(:programme_edition_with_two_parts,
+    edition = FactoryGirl.create(:programme_edition_with_multiple_parts,
                                  panopticon_id: @artefact.id,
                                  state: "published",
                                  version_number: 1,
@@ -300,7 +300,7 @@ class EditionTest < ActiveSupport::TestCase
 
     assert_equal(new_edition.parts.map {|part| part.title },
                  edition.parts.map {|part| part.title })
-    assert_equal 7, new_edition.parts.size
+    assert_equal 7, new_edition.parts.size #there are 5 'default' parts plus an additional two created by the factory
   end
 
   test "edition finder should return the published edition when given an empty edition parameter" do

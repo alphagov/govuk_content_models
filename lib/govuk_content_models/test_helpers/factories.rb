@@ -85,7 +85,7 @@ FactoryGirl.define do
     section { "test:subsection test" }
   end
 
-  factory :programme_edition_with_two_parts, parent: :programme_edition do
+  factory :programme_edition_with_multiple_parts, parent: :programme_edition do
     title "a title"
     after :create do |getp|
       getp.parts.build(title: "PART !", body: "This is some programme version text.",
