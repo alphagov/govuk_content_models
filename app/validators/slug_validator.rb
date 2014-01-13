@@ -15,7 +15,7 @@ class SlugValidator < ActiveModel::EachValidator
     elsif value.to_s =~ /\Agovernment\/(.+)/ and prefixed_inside_government_format_names.include?(record.kind)
       parts = $1.split('/')
     else
-      parts = [value]
+      parts = [value.clone]
     end
 
     if record.respond_to?(:kind)

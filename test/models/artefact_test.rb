@@ -371,6 +371,13 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  should "not remove double dashes in a Detailed Guide slug" do
+    a = FactoryGirl.create(:artefact, slug: "duplicate-slug--1", kind: "detailed_guide")
+    a.reload
+
+    assert_equal "duplicate-slug--1", a.slug
+  end
+
   context "artefact language" do
     should "return english by default" do
       a = FactoryGirl.create(:artefact)
