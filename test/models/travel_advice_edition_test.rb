@@ -136,6 +136,15 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
         @ta.alert_status = [ ]
         assert @ta.valid?
       end
+
+      # Test that accessing an Array field doesn't mark it as dirty.
+      # mongoid/dirty#changes method is patched in lib/mongoid/monkey_patches.rb
+      # See https://github.com/mongoid/mongoid/issues/2311 for details.
+      should "track changes to alert status accurately" do
+        @ta.alert_status = [ ]
+        @ta.alert_status
+        assert @ta.valid?
+      end
     end
 
     context "on version_number" do
