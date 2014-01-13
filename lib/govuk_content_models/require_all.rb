@@ -1,7 +1,7 @@
 # Require this file in a non-Rails app to load all the things
 require "active_model"
 require "mongoid"
-require "mongoid/monkey_patches"
+require "govuk_content_models"
 
 %w[ app/models app/validators app/repositories app/traits lib ].each do |path|
   full_path = File.expand_path(
