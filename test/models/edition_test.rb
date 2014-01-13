@@ -303,6 +303,21 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 7, new_edition.parts.size #there are 5 'default' parts plus an additional two created by the factory
   end
 
+  # Mongoid 2.x marks array fields as dirty whenever they are accessed.
+  # See https://github.com/mongoid/mongoid/issues/2311
+  # This behaviour has been patched in lib/mongoid/monkey_patches.rb
+  # in order to prevent workflow validation failures for editions
+  # with array fields.
+  #
+  test "editions with array fields should accurately track changes" do
+    bs = FactoryGirl.create(:business_support_edition, sectors: [])
+    assert_empty bs.changes
+    bs.sectors
+    assert_empty bs.changes
+    bs.sectors << 'manufacturing'
+    assert_equal ['sectors'], bs.changes.keys
+  end
+
   test "edition finder should return the published edition when given an empty edition parameter" do
     dummy_publication = template_published_answer
     second_publication = template_unpublished_answer(2)
