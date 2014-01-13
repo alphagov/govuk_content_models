@@ -151,16 +151,7 @@ class TravelAdviceEdition
   end
 
   def anything_other_than_state_changed?(*additional_allowed_fields)
-    self.changed? and ((real_fields_changed - ['state'] - additional_allowed_fields) != [] or self.parts.any?(&:changed?))
-  end
-
-  def real_fields_changed
-    # There's an issue with dirty-tracking of Array fields.  Merely accessing them will mark
-    # them as changed, but with no changes. This recifies that.
-    # this also allows changes when the change is something changing from nil to an empty array
-    self.changes.reject { |k, v|
-      v.nil? || v == [nil, []]
-    }.keys
+    self.changed? and ((changes.keys - ['state'] - additional_allowed_fields) != [] or self.parts.any?(&:changed?))
   end
 
   def alert_status_contains_valid_values
