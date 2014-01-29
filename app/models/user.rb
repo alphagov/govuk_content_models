@@ -22,6 +22,7 @@ class User
   field "email",               type: String
   field "permissions",         type: Array
   field "remotely_signed_out", type: Boolean, default: false
+  field "organisation_slug",   type: String
   
   GOVSPEAK_FIELDS = []
 
@@ -32,12 +33,6 @@ class User
   scope :alphabetized, order_by(name: :asc)
 
   validates_with SafeHtml
-
-  # GDS::SSO specifically looks for find_by_uid within warden
-  # when loading authentication user from session
-  def self.find_by_uid(uid)
-    where(uid: uid).first
-  end
 
   def to_s
     name || email || ""
