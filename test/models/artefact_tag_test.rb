@@ -6,6 +6,9 @@ class ArtefactTagTest < ActiveSupport::TestCase
     ['crime', 'Crime'], ['crime/the-police', 'The Police'], ['crime/batman', 'Batman']
   ]
   TEST_KEYWORDS = [['cheese', 'Cheese'], ['bacon', 'Bacon']]
+  TEST_LEGACY_SOURCES = [
+    ['businesslink', 'Business Link'], ['directgov', 'Directgov'], ['dvla', 'DVLA']
+  ]
 
   setup do
     TEST_SECTIONS.each do |tag_id, title|
@@ -13,6 +16,9 @@ class ArtefactTagTest < ActiveSupport::TestCase
     end
     TEST_KEYWORDS.each do |tag_id, title|
       FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
+    end
+    TEST_LEGACY_SOURCES.each do |tag_id, title|
+      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'legacy_source', :title => title)
     end
   end
 
@@ -37,16 +43,30 @@ class ArtefactTagTest < ActiveSupport::TestCase
     assert_equal "#{parent.title}:#{child.title}", a.section
   end
 
-  test "has legacy_sources tag collection" do
-    ls1 = FactoryGirl.create(:tag, :tag_id => 'businesslink', :tag_type => 'legacy_source', :title => 'Business Link')
-    ls2 = FactoryGirl.create(:tag, :tag_id => 'directgov', :tag_type => 'legacy_source', :title => 'Directgov')
-    ls3 = FactoryGirl.create(:tag, :tag_id => 'dvla', :tag_type => 'legacy_source', :title => 'DVLA')
+  test "stores the tag type and tag id for each tag" do
+    a = FactoryGirl.create(:artefact)
 
+    a.sections = ['crime', 'crime/the-police']
+    a.legacy_sources = ['businesslink']
+    a.keywords = ['bacon']
+    a.reconcile_tag_ids
+
+    expected_tags = [
+      { tag_id: "crime", tag_type: "section" },
+      { tag_id: "crime/the-police", tag_type: "section" },
+      { tag_id: "businesslink", tag_type: "legacy_source" },
+      { tag_id: "bacon", tag_type: "keyword" },
+    ]
+    assert_equal ["crime", "crime/the-police", "businesslink", "bacon"], a.tag_ids
+    assert_equal expected_tags, a.attributes["tags"]
+  end
+
+  test "has legacy_sources tag collection" do
     a = FactoryGirl.build(:artefact)
     a.legacy_sources = ['businesslink', 'dvla']
     a.save
 
     a = Artefact.first
-    assert_equal [ls1, ls3], a.legacy_sources
+    assert_equal ["businesslink", "dvla"], a.legacy_source_ids
   end
 end
