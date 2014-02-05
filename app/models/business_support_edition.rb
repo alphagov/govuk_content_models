@@ -45,7 +45,9 @@ class BusinessSupportEdition < Edition
   @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
       :eligibility, :evaluation, :additional_information, :continuation_link,
       :will_continue_on, :contact_details, :short_description,
-      :business_support_identifier]
+      :business_support_identifier, :priority, :business_sizes,
+      :locations, :purposes, :sectors, :stages, :support_types,
+      :start_date, :end_date]
 
   def whole_body
     [short_description, body].join("\n\n")
