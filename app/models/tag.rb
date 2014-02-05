@@ -72,6 +72,11 @@ class Tag
     tag_id_list.map { |tag_id| tags.find { |t| t.tag_id == tag_id } }
   end
 
+  def self.by_tag_types_and_ids(tag_types_and_ids)
+    list = tag_types_and_ids.map {|hash| hash.slice(:tag_id, :tag_type) }
+    any_of(list)
+  end
+
   # Retrieve a list of tags by tag ID. Any missing tags raise an exception.
   def self.by_tag_ids!(tag_id_list, tag_type = nil)
     tags = by_tag_ids(tag_id_list, tag_type)
