@@ -203,4 +203,41 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal support.start_date, new_support.start_date
     assert_equal support.end_date, new_support.end_date
   end
+
+  context "for facets" do
+    setup do
+      @e1 = FactoryGirl.create(:business_support_edition,
+                              :business_sizes => ['1', 'up-to-1000000'],
+                              :locations => ['narnia'], :purposes => ['world-domination'],
+                              :sectors => ['agriculture', 'healthcare'],
+                              :stages => ['pivoting'], :support_types => ['award', 'grant', 'loan'])
+      @e2 = FactoryGirl.create(:business_support_edition,
+                              :business_sizes => ['1', 'up-to-1000000'],
+                              :locations => ['hades', 'narnia'], :purposes => ['business-growth-and-expansion'],
+                              :sectors => ['education', 'healthcare'],
+                              :stages => ['start-up', 'pivoting'], :support_types => ['grant', 'loan', 'equity'])
+      @e3 = FactoryGirl.create(:business_support_edition,
+                              :business_sizes => ['up-to-249', 'up-to-1000000'],
+                              :locations => ['hades', 'chicken-town'], :purposes => ['making-the-most-of-the-internet'],
+                              :sectors => ['utilities'], :stages => ['start-up'], :support_types => ['grant'])
+    end
+
+    should "only return editions matching the facet values provided" do
+      editions = BusinessSupportEdition.for_facets({:purposes => 'business-growth-and-expansion', :support_types => 'equity'})
+      assert_equal [@e2], editions
+      editions = BusinessSupportEdition.for_facets({:business_sizes => '1,up-to-1000000', :locations => 'narnia'})
+      assert_equal [@e1, @e2], editions
+    end
+    should "support searching with all the facet values" do
+      editions = BusinessSupportEdition.for_facets({:business_sizes => 'up-to-1000000', :locations => 'narnia,hades,chicken-town',
+                                                    :purposes => 'business-growth-and-expansion,making-the-most-of-the-internet,world-domination',
+                                                    :sectors => 'agriculture,healthcare,utilities', :stages => 'pivoting,start-up',
+                                                    :support_types => 'award,grant,loan'})
+      assert_equal [@e1, @e2, @e3], editions
+    end
+    should "return nothing where no facet values match" do
+      editions = BusinessSupportEdition.for_facets({:business_sizes => 'up-to-a-bizillion', :locations => 'ecclefechan'})
+      assert_empty editions
+    end
+  end
 end

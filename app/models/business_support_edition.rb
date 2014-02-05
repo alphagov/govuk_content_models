@@ -49,6 +49,11 @@ class BusinessSupportEdition < Edition
       :locations, :purposes, :sectors, :stages, :support_types,
       :start_date, :end_date]
 
+  scope :for_facets, lambda { |facets|
+    where({ "$and" => schemes_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
+  }
+
+
   def whole_body
     [short_description, body].join("\n\n")
   end
@@ -67,5 +72,15 @@ class BusinessSupportEdition < Edition
                         :panopticon_id.ne => panopticon_id).any?
       errors.add(:business_support_identifier, :taken)
     end
+  end
+
+  def self.schemes_criteria(facets)
+    criteria = []
+    facets.each do |k, v|
+      collection = "#{k.to_s.singularize}s".to_sym
+      slugs = v.split(",")
+      criteria << { collection => { "$in" => slugs } } unless slugs.empty?
+    end
+    criteria
   end
 end
