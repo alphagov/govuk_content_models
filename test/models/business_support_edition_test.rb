@@ -166,7 +166,17 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
                                  :additional_information => "Additional info to be cloned",
                                  :will_continue_on => "Continuation text to be cloned",
                                  :continuation_link => "http://www.gov.uk",
-                                 :contact_details => "Contact details to be cloned")
+                                 :contact_details => "Contact details to be cloned",
+                                 :priority => 2,
+                                 :business_sizes => ['up-to-249'],
+                                 :locations => ['london'],
+                                 :purposes => ['start-up'],
+                                 :sectors => ['agriculture','manufacturing'],
+                                 :stages => ['grow-and-sustain'],
+                                 :support_types => ['grant','loan'],
+                                 :start_date => 1.year.ago(Date.today),
+                                 :end_date => 1.year.since(Date.today))
+
     new_support = support.build_clone
 
     assert_equal support.business_support_identifier, new_support.business_support_identifier
@@ -182,5 +192,15 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal support.will_continue_on, new_support.will_continue_on
     assert_equal support.continuation_link, new_support.continuation_link
     assert_equal support.contact_details, new_support.contact_details
+
+    assert_equal support.priority, new_support.priority
+    assert_equal support.business_sizes, new_support.business_sizes
+    assert_equal support.locations, new_support.locations
+    assert_equal support.purposes, new_support.purposes
+    assert_equal support.sectors, new_support.sectors
+    assert_equal support.stages, new_support.stages
+    assert_equal support.support_types, new_support.support_types
+    assert_equal support.start_date, new_support.start_date
+    assert_equal support.end_date, new_support.end_date
   end
 end
