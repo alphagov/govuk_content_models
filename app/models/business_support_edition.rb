@@ -76,10 +76,9 @@ class BusinessSupportEdition < Edition
 
   def self.schemes_criteria(facets)
     criteria = []
-    facets.each do |k, v|
-      collection = "#{k.to_s.singularize}s".to_sym
-      slugs = v.split(",")
-      criteria << { collection => { "$in" => slugs } } unless slugs.empty?
+    facets.each do |facet_name, values|
+      slugs = values.split(",")
+      criteria << { facet_name => { "$in" => slugs } } unless slugs.empty?
     end
     criteria
   end
