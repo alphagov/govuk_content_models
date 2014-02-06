@@ -50,7 +50,7 @@ class BusinessSupportEdition < Edition
       :start_date, :end_date]
 
   scope :for_facets, lambda { |facets|
-    where({ "$and" => schemes_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
+    where({ "$and" => facets_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
   }
 
 
@@ -74,7 +74,7 @@ class BusinessSupportEdition < Edition
     end
   end
 
-  def self.schemes_criteria(facets)
+  def self.facets_criteria(facets)
     criteria = []
     facets.each do |facet_name, values|
       slugs = values.split(",")
