@@ -7,6 +7,7 @@ class SlugValidator < ActiveModel::EachValidator
       HelpPageValidator,
       DetailedGuidePageValidator,
       GovernmentPageValidator,
+      SpecialistDocumentPageValidator,
       DefaultValidator
     ].map { |klass| klass.new(record, attribute, value) }
 
@@ -117,6 +118,21 @@ protected
   protected
     def prefixed_whitehall_format_names
       Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"] - ["detailed_guide"]
+    end
+  end
+
+  class SpecialistDocumentPageValidator < WhitehallFormatValidator
+    def applicable?
+      of_kind?('specialist-document')
+    end
+
+    def validate!
+      unless url_parts.size == 2
+        record.errors[attribute] << "must be of form <finder-slug>/<specialist-document-slug>"
+      end
+      unless url_parts.all? { |url_part| valid_slug?(url_part) }
+        record.errors[attribute] << "must be usable in a URL"
+      end
     end
   end
 
