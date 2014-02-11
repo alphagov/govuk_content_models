@@ -213,6 +213,12 @@ FactoryGirl.define do
     end
   end
 
+  factory :specialist_document_edition do
+    sequence(:slug) {|n| "test-specialist-document-#{n}" }
+    sequence(:title) {|n| "Test Specialist Document #{n}" }
+    summary "My summary"
+  end
+
   factory :simple_smart_answer_edition do
     panopticon_id {
       a = create(:artefact)

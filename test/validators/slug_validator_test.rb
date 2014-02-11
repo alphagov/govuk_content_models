@@ -12,31 +12,49 @@ class SlugTest < ActiveSupport::TestCase
     validates :slug, presence: true, uniqueness: true, slug: true
   end
 
-  context "Slugs are checked" do
-    should "validate slugs for normal documents" do
-      record = Dummy.new(name: "Test", slug: "test")
-      assert record.valid?
+  def document_with_slug(slug, override_options = {})
+    default_options = {
+      name: "Test",
+      slug: slug
+    }
+    Dummy.new(default_options.merge(override_options))
+  end
+
+  context "default slugs" do
+    should "reject url paths" do
+      refute document_with_slug("path/not-allowed").valid?
     end
 
-    should "validate help pages as starting with /help" do
-      record = Dummy.new(name: "Help 1", slug: "test", kind: "help_page")
-      assert record.invalid?
-
-      record.slug = "help/test"
-      assert record.valid?
+    should "allow a normal slug" do
+      assert document_with_slug("normal-slug").valid?
     end
+  end
 
-    should "validate inside government slugs as containing /government" do
-      record = Dummy.new(name: "Test 2", slug: "test", kind: "policy")
-      assert record.invalid?
+  context "Help pages" do
+    should "must start with help/" do
+      refute document_with_slug("test", kind: "help_page").valid?
+      assert document_with_slug("help/test", kind: "help_page").valid?
+    end
+  end
 
-      record.slug = "government/test"
-      assert record.valid?
+  context "Inside government slugs" do
+    should "allow slug starting government/" do
+      refute document_with_slug("test", kind: "policy").valid?
+      assert document_with_slug("government/test", kind: "policy").valid?
     end
 
     should "allow friendly_id suffixes to pass" do
-      record = Dummy.new(name: "Test 3", slug: "government/policy/test--3", kind: "policy")
-      assert record.valid?
+      assert document_with_slug("government/policy/test--3", kind: "policy").valid?
+    end
+  end
+
+  context "Specialist documents" do
+    should "all url nested one level deep" do
+      assert document_with_slug("some-finder/my-specialist-document", kind: "specialist-document").valid?
+    end
+
+    should "not allow deeper nesting" do
+      refute document_with_slug("some-finder/my-specialist-document/not-allowed", kind: "specialist-document").valid?
     end
   end
 end
