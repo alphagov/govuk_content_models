@@ -26,11 +26,47 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
     kind            Artefact::FORMATS.first
     owning_app      'publisher'
-  end
 
-  factory :non_publisher_artefact, parent: :artefact do
-    kind            'smart-answer'
-    owning_app      'smart-answers'
+    trait :whitehall do
+      sequence(:slug) {|n| "government/slug--#{n}"}
+      owning_app      "whitehall"
+      kind            Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"].first
+    end
+
+    trait :with_published_edition do
+      after(:create) {|object|
+        self.create("#{object.kind}_edition".to_sym, panopticon_id: object.id, slug: object.slug, state: "published")
+      }
+    end
+
+    trait :non_publisher do
+      kind            'smart-answer'
+      owning_app      'smart-answers'
+    end
+
+    trait :draft do
+      state "draft"
+    end
+
+    trait :live do
+      state "live"
+    end
+
+    trait :archived do
+      state "archived"
+    end
+
+    factory :draft_artefact, traits: [:draft]
+    factory :live_artefact, traits: [:live]
+    factory :archived_artefact, traits: [:archived]
+
+    factory :live_artefact_with_edition, traits: [:live, :with_published_edition]
+
+    factory :whitehall_draft_artefact, traits: [:whitehall, :draft]
+    factory :whitehall_live_artefact, traits: [:whitehall, :live]
+    factory :whitehall_archived_artefact, traits: [:whitehall, :archived]
+
+    factory :non_publisher_artefact, traits: [:non_publisher]
   end
 
   factory :edition, class: AnswerEdition do
