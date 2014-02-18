@@ -89,4 +89,16 @@ class TagTest < ActiveSupport::TestCase
       Tag.by_tag_ids!(%w(crime business pie chips), "section")
     end
   end
+
+  test "should return tags given a list of tag ids and tag types" do
+    tag_types_and_ids = [
+      { tag_type: "section", tag_id: "crime" },
+      { tag_type: "section", tag_id: "business" },
+      { tag_type: "keyword", tag_id: "pie" },
+      { tag_type: "keyword", tag_id: "chips" }
+    ]
+    tags = Tag.by_tag_types_and_ids(tag_types_and_ids)
+
+    assert_equal %w{Business Chips Crime Pie}, tags.map(&:title).sort
+  end
 end

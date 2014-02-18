@@ -42,6 +42,8 @@ module Taggable
   def self.included(klass)
     klass.extend         ClassMethods
     klass.field          :tag_ids, type: Array, default: []
+    klass.field          :tags, type: Array, default: []
+
     klass.index          :tag_ids
     klass.attr_protected :tags, :tag_ids
     klass.__send__       :private, :tag_ids=
@@ -90,6 +92,9 @@ module Taggable
     tags
 
     self.tag_ids = @tags.collect(&:tag_id)
+    self.tags = @tags.map {|tag|
+      { tag_id: tag.tag_id, tag_type: tag.tag_type }
+    }
   end
 
   def tags

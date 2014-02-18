@@ -21,6 +21,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
     "business_proposition" => false,
     "active" => false,
     "tag_ids" => [],
+    "tags" => [],
     "state" => "draft",
     "related_artefact_ids" => [],
     "paths" => [],
