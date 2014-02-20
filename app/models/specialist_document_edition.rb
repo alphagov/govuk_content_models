@@ -6,7 +6,7 @@ class SpecialistDocumentEdition
   include Mongoid::Timestamps
   include Workflow
 
-  field :panopticon_id,        type: String
+  field :document_id,          type: String
   field :version_number,       type: Integer,  default: 1
   field :sibling_in_progress,  type: Integer,  default: nil
   field :business_proposition, type: Boolean,  default: false
@@ -63,14 +63,11 @@ class SpecialistDocumentEdition
 
   validates :title, presence: true
   validates :version_number, presence: true
-  validates :panopticon_id, presence: true
+  validates :document_id, presence: true
   validates_with SafeHtml
 
-  before_save :check_for_archived_artefact
-  before_destroy :destroy_artefact
-
   index "assigned_to_id"
-  index "panopticon_id"
+  index "document_id"
   index "state"
 
   class << self; attr_accessor :fields_to_clone end
@@ -79,7 +76,7 @@ class SpecialistDocumentEdition
   alias_method :admin_list_title, :title
 
   def series
-    Edition.where(panopticon_id: panopticon_id)
+    SpecialistDocumentEdition.where(document_id: document_id)
   end
 
   def history
@@ -269,35 +266,7 @@ class SpecialistDocumentEdition
     self.save!
   end
 
-  def check_for_archived_artefact
-    if panopticon_id
-      a = Artefact.find(panopticon_id)
-      if a.state == "archived" and changed_attributes.any?
-        # If we're only changing the state to archived, that's ok
-        # Any other changes are not allowed
-        allowed_keys = ["state", "updated_at"]
-        unless ((changed_attributes.keys - allowed_keys).empty?) and state == "archived"
-          raise "Editing of an edition with an Archived artefact is not allowed"
-        end
-      end
-    end
-  end
-
   def artefact
     Artefact.find(panopticon_id)
-  end
-
-  # When we delete an edition is the only one in its series
-  # we delete the associated artefact to remove all trace of the
-  # item from the system.
-  #
-  # We don't do this by notifying panopticon as this will only ever
-  # happen for artefacts representing editions that haven't been
-  # published (and therefore aren't registered in the rest of the)
-  # system.
-  def destroy_artefact
-    if can_destroy? && siblings.empty?
-      Artefact.find(self.panopticon_id).destroy
-    end
   end
 end
