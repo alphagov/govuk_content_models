@@ -1,3 +1,9 @@
+## 7.2.1
+
+Added Finder artefact kind
+
+## 7.2.0
+
 ## 6.4.0
 
 Added SpecialistDocumentEdition
