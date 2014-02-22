@@ -17,13 +17,12 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
   end
 
   should "be persistable" do
-    artefact = FactoryGirl.create(:artefact)
     edition = SpecialistDocumentEdition.create!(
       slug: 'cma-cases/merger-investigation-2014',
       title: "Merger Investigation 2014",
       summary: "This is the summary of stuff going on in the Merger Investigation 2014",
       state: "published",
-      panopticon_id: artefact.id
+      document_id: 'a-document-id'
     )
 
     found = SpecialistDocumentEdition.where(slug: edition.slug).first
