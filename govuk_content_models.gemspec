@@ -38,5 +38,5 @@ Gem::Specification.new do |gem|
 
   # The following are added to help bundler resolve dependencies
   gem.add_development_dependency "rack", "~> 1.4.4"
-  gem.add_development_dependency "rails", "= 3.2.13"
+  gem.add_development_dependency "rails", "= 3.2.17"
 end
