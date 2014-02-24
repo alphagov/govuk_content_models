@@ -76,10 +76,6 @@ module Workflow
         transition all => :archived, :unless => :archived?
       end
     end
-
-    # alias_method :created_by, :creator
-    # alias_method :published_by, :publisher
-    # alias_method :archived_by, :archiver
   end
 
   def fact_checked?
