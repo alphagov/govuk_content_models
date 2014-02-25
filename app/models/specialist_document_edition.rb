@@ -62,6 +62,12 @@ class SpecialistDocumentEdition
   }
 
   validates :title, presence: true
+  validates :summary, presence: true
+  validates :body, presence: true
+  validates :opened_date, presence: true
+  validates :market_sector, presence: true
+  validates :case_type, presence: true
+  validates :case_state, presence: true
   validates :version_number, presence: true
   validates :document_id, presence: true
   validates_with SafeHtml
