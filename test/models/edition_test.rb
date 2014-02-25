@@ -756,7 +756,6 @@ class EditionTest < ActiveSupport::TestCase
     user = User.create(name: "Mary")
 
     edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
-    user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
     assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
@@ -797,13 +796,11 @@ class EditionTest < ActiveSupport::TestCase
 
   test "a draft edition cannot be published" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    edition.start_work
     refute edition.can_publish?
   end
 
   test "a draft edition can be emergency published" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    edition.start_work
     assert edition.can_emergency_publish?
   end
 

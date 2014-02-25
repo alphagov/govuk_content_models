@@ -26,10 +26,6 @@ module Workflow
         edition.was_published
       end
 
-      event :start_work do
-        transition lined_up: :draft
-      end
-
       event :request_review do
         transition [:draft, :amends_needed] => :in_review
       end

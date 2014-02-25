@@ -5,7 +5,6 @@ class Action
 
   STATUS_ACTIONS = [
     CREATE              = "create",
-    START_WORK          = "start_work",
     REQUEST_REVIEW      = "request_review",
     APPROVE_REVIEW      = "approve_review",
     APPROVE_FACT_CHECK  = "approve_fact_check",

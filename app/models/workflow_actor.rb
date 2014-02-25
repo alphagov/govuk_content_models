@@ -6,7 +6,7 @@ require "programme_edition"
 require "transaction_edition"
 
 module WorkflowActor
-  SIMPLE_WORKFLOW_ACTIONS = %W[start_work request_review
+  SIMPLE_WORKFLOW_ACTIONS = %W[request_review
     request_amendments approve_review approve_fact_check archive]
 
   def record_action(edition, type, options={})
