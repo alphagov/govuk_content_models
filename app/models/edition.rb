@@ -30,7 +30,6 @@ class Edition
 
   belongs_to :assigned_to, class_name: "User"
 
-  scope :lined_up,            where(state: "lined_up")
   scope :draft,               where(state: "draft")
   scope :amends_needed,       where(state: "amends_needed")
   scope :in_review,           where(state: "in_review")

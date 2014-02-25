@@ -79,9 +79,8 @@ class WorkflowTest < ActiveSupport::TestCase
     assert_equal "AnswerEdition", new_edition._type
   end
 
-  test "a new answer is lined up" do
+  test "a new answer is in draft" do
     g = AnswerEdition.new(slug: "childcare", panopticon_id: @artefact.id, title: "My new answer")
-    assert g.lined_up?
   end
 
   test "starting work on an answer removes it from lined up" do
@@ -89,12 +88,12 @@ class WorkflowTest < ActiveSupport::TestCase
     g.save!
     user = User.create(name: "Ben")
     user.start_work(g)
-    assert_equal false, g.lined_up?
+    assert g.draft?
   end
 
-  test "a new guide has lined_up but isn't published" do
+  test "a new guide has draft but isn't published" do
     g = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id)
-    assert g.lined_up?
+    assert g.draft?
     refute g.published?
   end
 
@@ -163,6 +162,52 @@ class WorkflowTest < ActiveSupport::TestCase
     user.receive_fact_check(edition, {comment: "Text.<l>content that the SafeHtml validator would catch</l>"})
 
     assert_equal "Text.<l>content that the SafeHtml validator would catch</l>", edition.actions.last.comment
+  end
+
+  test "fact_check_received can go back to out for fact_check" do
+    user = User.create(name: "Ben")
+    other_user = User.create(name: "James")
+
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    edition = guide
+
+    user.request_review(edition,{comment: "Review this guide please."})
+    other_user.approve_review(edition, {comment: "I've reviewed it"})
+    user.send_fact_check(edition,{comment: "Review this guide please.", email_addresses: "test@test.com"})
+    user.receive_fact_check(edition, {comment: "Text.<l>content that the SafeHtml validator would catch</l>"})
+    user.send_fact_check(edition,{comment: "Out of office reply triggered receive_fact_check", email_addresses: "test@test.com"})
+
+    assert(edition.actions.last.comment.include? "Out of office reply triggered receive_fact_check\n\nResponses should be sent to:")
+  end
+
+  test "when processing fact check, an edition can request for amendments" do
+    user = User.create(name: "Ben")
+    other_user = User.create(name: "James")
+
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    edition = guide
+
+    user.request_review(edition,{comment: "Review this guide please."})
+    other_user.approve_review(edition, {comment: "I've reviewed it"})
+    user.send_fact_check(edition,{comment: "Review this guide please.", email_addresses: "test@test.com"})
+    other_user.request_amendments(edition,{comment: "More amendments are required", email_addresses: "foo@bar.com"})
+
+    assert_equal "More amendments are required", edition.actions.last.comment
+  end
+
+  test "ready items may require further amendments" do
+    user = User.create(name: "Ben")
+    other_user = User.create(name: "James")
+    another_user = User.create(name: "Fiona")
+
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    edition = guide
+
+    user.request_review(edition,{comment: "Review this guide please."})
+    other_user.approve_review(edition, {comment: "I've reviewed it"})
+    another_user.request_amendments(edition,{comment: "More amendments are required", email_addresses: "foo@bar.com"})
+
+    assert_equal "More amendments are required", edition.actions.last.comment
   end
 
   test "check counting reviews" do
