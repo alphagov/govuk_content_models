@@ -380,4 +380,19 @@ class WorkflowTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "#cancel_scheduled_publishing" do
+    setup do
+      @edition = FactoryGirl.create(:edition, state: 'scheduled_for_publishing', publish_at: 1.day.from_now)
+      @edition.cancel_scheduled_publishing
+    end
+
+    should "remove the publish_at stored against the edition" do
+      assert_nil @edition.publish_at
+    end
+
+    should "complete the transition back to ready" do
+      assert_equal 'ready', @edition.state
+    end
+  end
 end
