@@ -165,7 +165,7 @@ module Workflow
   end
 
   def can_destroy?
-    ! published? and ! archived?
+    ! published? && ! archived?
   end
 
   def check_can_delete_and_notify
