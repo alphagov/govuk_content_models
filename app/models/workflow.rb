@@ -22,6 +22,10 @@ module Workflow
         edition.mark_as_rejected
       end
 
+      before_transition on: :schedule_for_publishing do |edition, transition|
+        edition.publish_at = transition.args.first
+      end
+
       after_transition on: :publish do |edition, transition|
         edition.was_published
       end
@@ -60,6 +64,10 @@ module Workflow
         transition fact_check: :fact_check_received
       end
 
+      event :schedule_for_publishing do
+        transition ready: :scheduled_for_publishing
+      end
+
       event :publish do
         transition ready: :published
       end
@@ -70,6 +78,10 @@ module Workflow
 
       event :archive do
         transition all => :archived, :unless => :archived?
+      end
+
+      state :scheduled_for_publishing do
+        validates_presence_of :publish_at
       end
     end
   end

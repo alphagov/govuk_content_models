@@ -46,6 +46,15 @@ class EditionTest < ActiveSupport::TestCase
     assert a.errors[:title].any?
   end
 
+  context "#publish_at" do
+    should "not be a time in the past" do
+      edition = FactoryGirl.build(:edition, publish_at: 1.minute.ago)
+
+      refute edition.valid?
+      assert_includes edition.errors[:publish_at], "can't be a time in the past"
+    end
+  end
+
   test "it should give a friendly (legacy supporting) description of its format" do
     a = LocalTransactionEdition.new
     assert_equal "LocalTransaction", a.format

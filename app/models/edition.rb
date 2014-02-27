@@ -13,6 +13,7 @@ class Edition
 
   field :title,                type: String
   field :created_at,           type: DateTime, default: lambda { Time.zone.now }
+  field :publish_at,           type: DateTime
   field :overview,             type: String
   field :alternative_title,    type: String
   field :slug,                 type: String
@@ -50,6 +51,7 @@ class Edition
   validates :title, presence: true
   validates :version_number, presence: true
   validates :panopticon_id, presence: true
+  validate  :publish_at_is_in_the_future
   validates_with SafeHtml
 
   before_save :check_for_archived_artefact
@@ -286,4 +288,10 @@ class Edition
       Artefact.find(self.panopticon_id).destroy
     end
   end
+
+  private
+
+    def publish_at_is_in_the_future
+      errors.add(:publish_at, "can't be a time in the past") if publish_at.present? && publish_at < Time.zone.now
+    end
 end
