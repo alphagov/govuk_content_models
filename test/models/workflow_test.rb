@@ -261,6 +261,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user.request_review(edition,{comment: "Review this guide please."})
     assert edition.can_approve_review?
     other_user.approve_review(edition, {comment: "Looks good to me"})
+    assert edition.can_request_amendments?
     assert edition.can_publish?
   end
 
