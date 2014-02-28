@@ -34,9 +34,29 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
     end
   end
 
+  context "when scheduled_for_publishing" do
+    should "not allow editing fields like title" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+
+      edition.title = 'a new title'
+
+      refute edition.valid?
+      assert_includes edition.errors.full_messages, "Editions scheduled for publishing can't be edited"
+    end
+
+    should "allow editing fields like section" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+
+      edition.section = 'new section'
+
+      assert edition.save
+      assert_equal edition.reload.section, 'new section'
+    end
+  end
+
   context "#cancel_scheduled_publishing" do
     setup do
-      @edition = FactoryGirl.create(:edition, state: 'scheduled_for_publishing', publish_at: 1.day.from_now)
+      @edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
       @edition.cancel_scheduled_publishing
     end
 

@@ -166,24 +166,6 @@ module Workflow
     self.actions.sort_by(&:created_at).reverse.find(&blk)
   end
 
-  def not_editing_published_item
-    if changed? and ! state_changed?
-      if archived?
-        errors.add(:base, "Archived editions can't be edited")
-      end
-      if published?
-        changes_allowed_when_published = ["slug", "section",
-                                          "department", "business_proposition"]
-        illegal_changes = changes.keys - changes_allowed_when_published
-        if illegal_changes.empty?
-          # Allow it
-        else
-          errors.add(:base, "Published editions can't be edited")
-        end
-      end
-    end
-  end
-
   def can_destroy?
     ! published? && ! archived?
   end
@@ -226,4 +208,25 @@ module Workflow
   def in_progress?
     ! ["archived", "published"].include? self.state
   end
+
+  private
+
+    def not_editing_published_item
+      if changed? and ! state_changed?
+        if archived?
+          errors.add(:base, "Archived editions can't be edited")
+        end
+        if scheduled_for_publishing? || published?
+          changes_allowed_when_published = ["slug", "section",
+                                            "department", "business_proposition"]
+          illegal_changes = changes.keys - changes_allowed_when_published
+          if illegal_changes.empty?
+            # Allow it
+          else
+            edition_description = published? ? 'Published editions' : 'Editions scheduled for publishing'
+            errors.add(:base, "#{edition_description} can't be edited")
+          end
+        end
+      end
+    end
 end
