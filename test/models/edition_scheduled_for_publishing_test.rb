@@ -52,6 +52,11 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       assert edition.save
       assert_equal edition.reload.section, 'new section'
     end
+
+    should "return false for #can_destroy?" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      refute edition.can_destroy?
+    end
   end
 
   context "#cancel_scheduled_publishing" do
