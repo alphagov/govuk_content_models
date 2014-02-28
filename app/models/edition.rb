@@ -31,16 +31,12 @@ class Edition
 
   belongs_to :assigned_to, class_name: "User"
 
-  scope :draft,               where(state: "draft")
-  scope :amends_needed,       where(state: "amends_needed")
-  scope :in_review,           where(state: "in_review")
-  scope :fact_check,          where(state: "fact_check")
-  scope :fact_check_received, where(state: "fact_check_received")
-  scope :ready,               where(state: "ready")
-  scope :published,           where(state: "published")
-  scope :archived,            where(state: "archived")
-  scope :in_progress,         where(:state.nin => ["archived", "published"])
-  scope :assigned_to,         lambda { |user|
+  # state_machine comes from Workflow
+  state_machine.states.map(&:name).each do |state|
+    scope state, where(state: state)
+  end
+  scope :in_progress, where(:state.nin => ["archived", "published"])
+  scope :assigned_to, lambda { |user|
     if user
       where(assigned_to_id: user.id)
     else
