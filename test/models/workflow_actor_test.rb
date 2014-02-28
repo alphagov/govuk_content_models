@@ -58,4 +58,32 @@ class WorkflowActorTest < ActiveSupport::TestCase
     end
   end
 
+  context "#schedule_for_publishing" do
+    setup do
+      @user = FactoryGirl.build(:user)
+      @publish_at = 1.day.from_now
+      @activity_details = { publish_at: @publish_at, comment: "Go schedule !" }
+    end
+
+    should "return false when scheduling an already published edition" do
+      edition = FactoryGirl.create(:edition, state: 'published')
+      refute @user.schedule_for_publishing(edition, @activity_details)
+    end
+
+    should "schedule an edition for publishing if it is ready" do
+      edition = FactoryGirl.create(:edition, state: 'ready')
+
+      edition = @user.schedule_for_publishing(edition, @activity_details)
+
+      assert edition.scheduled_for_publishing?
+      assert_equal @publish_at.to_i, edition.publish_at.to_i
+    end
+
+    should "record the action" do
+      edition = FactoryGirl.create(:edition, state: 'ready')
+      @user.expects(:record_action).with(edition, :schedule_for_publishing, { comment: "Go schedule !" })
+
+      @user.schedule_for_publishing(edition, @activity_details)
+    end
+  end
 end

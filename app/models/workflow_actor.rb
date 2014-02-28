@@ -36,8 +36,8 @@ module WorkflowActor
     end
   end
 
-  def take_action!(edition, action, details = {})
-    edition = take_action(edition, action, details)
+  def take_action!(edition, action, details = {}, action_parameters = [])
+    edition = take_action(edition, action, details, action_parameters)
     edition.save if edition
   end
 
@@ -107,6 +107,11 @@ module WorkflowActor
     define_method(method) do |edition, details = {}|
       take_action(edition, __method__, details)
     end
+  end
+
+  def schedule_for_publishing(edition, details)
+    publish_at = details.delete(:publish_at)
+    take_action(edition, __method__, details, [publish_at])
   end
 
   def publish(edition, details)
