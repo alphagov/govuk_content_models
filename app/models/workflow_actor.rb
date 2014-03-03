@@ -6,8 +6,14 @@ require "programme_edition"
 require "transaction_edition"
 
 module WorkflowActor
-  SIMPLE_WORKFLOW_ACTIONS = %W[request_review
-    request_amendments approve_review approve_fact_check archive]
+  SIMPLE_WORKFLOW_ACTIONS = %w(
+    request_review
+    request_amendments
+    approve_review
+    approve_fact_check
+    archive
+    cancel_scheduled_publishing
+  )
 
   def record_action(edition, type, options={})
     type = Action.const_get(type.to_s.upcase)
