@@ -27,7 +27,6 @@ private
 
   def row_status
     {
-      lined_up: 1,
       draft: 1,
       ammends_needed: 1,
       in_review: 1,

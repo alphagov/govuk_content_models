@@ -9,7 +9,6 @@ class OverviewDashboard
   field :dashboard_type,      type: String
   field :result_group,        type: Integer
   field :count,               type: Integer
-  field :lined_up,            type: Integer
   field :draft,               type: Integer
   field :amends_needed,       type: Integer
   field :in_review,           type: Integer

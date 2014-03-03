@@ -147,7 +147,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, AnswerEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -169,7 +169,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, AnswerEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -193,7 +193,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, AnswerEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -216,7 +216,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, TransactionEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -239,7 +239,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, TransactionEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -261,7 +261,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, TransactionEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -283,7 +283,7 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.class, GuideEdition
     assert_equal new_edition.version_number, 2
     assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "lined_up"
+    assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
     assert_equal new_edition.alternative_title, "Alternative test title"
@@ -756,7 +756,6 @@ class EditionTest < ActiveSupport::TestCase
     user = User.create(name: "Mary")
 
     edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
-    user.start_work(edition)
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
     assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
@@ -797,13 +796,11 @@ class EditionTest < ActiveSupport::TestCase
 
   test "a draft edition cannot be published" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    edition.start_work
     refute edition.can_publish?
   end
 
   test "a draft edition can be emergency published" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    edition.start_work
     assert edition.can_emergency_publish?
   end
 
@@ -833,7 +830,7 @@ class EditionTest < ActiveSupport::TestCase
     @user1 = FactoryGirl.create(:user)
     @user2 = FactoryGirl.create(:user)
 
-    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "lined_up")
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     @user1.assign edition, @user2
 
     assert_equal @user2, edition.assigned_to

@@ -13,21 +13,17 @@ module Workflow
     before_save :denormalise_users
     after_create :notify_siblings_of_new_edition
 
-    field :state, type: String, default: "lined_up"
+    field :state, type: String, default: "draft"
     belongs_to :assigned_to, class_name: "User"
     embeds_many :actions
 
-    state_machine initial: :lined_up do
+    state_machine initial: :draft do
       after_transition on: :request_amendments do |edition, transition|
         edition.mark_as_rejected
       end
 
       after_transition on: :publish do |edition, transition|
         edition.was_published
-      end
-
-      event :start_work do
-        transition lined_up: :draft
       end
 
       event :request_review do
@@ -43,12 +39,12 @@ module Workflow
       end
 
       event :request_amendments do
-        transition [:fact_check_received, :in_review] => :amends_needed
+        transition [:fact_check_received, :in_review, :ready, :fact_check] => :amends_needed
       end
 
       # Editions can optionally be sent out for fact check
       event :send_fact_check do
-        transition ready: :fact_check
+        transition [:ready, :fact_check_received] => :fact_check
       end
 
       # If no response is received to a fact check request we can skip
@@ -76,10 +72,6 @@ module Workflow
         transition all => :archived, :unless => :archived?
       end
     end
-
-    # alias_method :created_by, :creator
-    # alias_method :published_by, :publisher
-    # alias_method :archived_by, :archiver
   end
 
   def fact_checked?
