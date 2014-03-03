@@ -98,8 +98,10 @@ module Workflow
     (self.actions.where(request_type: Action::APPROVE_FACT_CHECK).count > 0)
   end
 
-  def capitalized_state_name
-    self.human_state_name.capitalize
+  def status_text
+    text = human_state_name.capitalize
+    text += ' on ' + publish_at.strftime("%d/%m/%Y %H:%M") if scheduled_for_publishing?
+    text
   end
 
   def update_user_action(property, statuses)
