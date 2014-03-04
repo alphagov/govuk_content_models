@@ -57,6 +57,11 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
       refute edition.can_destroy?
     end
+
+    should "allow transition to published state" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      assert edition.can_publish?
+    end
   end
 
   context "#cancel_scheduled_publishing" do

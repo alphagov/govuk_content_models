@@ -638,6 +638,15 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, GuideEdition.where(panopticon_id: edition.panopticon_id, state: "archived").count
   end
 
+  test "when an edition is published, publish_at is cleared" do
+    user = FactoryGirl.create(:user)
+    edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+
+    user.publish edition, comment: "First publication"
+
+    assert_nil edition.reload.publish_at
+  end
+
   test "edition can return latest status action of a specified request type" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     user = User.create(name: "George")

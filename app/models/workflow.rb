@@ -26,7 +26,7 @@ module Workflow
         edition.publish_at = transition.args.first
       end
 
-      before_transition on: :cancel_scheduled_publishing do |edition, transition|
+      before_transition on: [:publish, :cancel_scheduled_publishing] do |edition, transition|
         edition.publish_at = nil
       end
 
@@ -77,7 +77,7 @@ module Workflow
       end
 
       event :publish do
-        transition ready: :published
+        transition [:ready, :scheduled_for_publishing] => :published
       end
 
       event :emergency_publish do
