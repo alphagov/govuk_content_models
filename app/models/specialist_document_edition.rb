@@ -81,7 +81,7 @@ class SpecialistDocumentEdition
   alias_method :admin_list_title, :title
 
   def series
-    SpecialistDocumentEdition.where(document_id: document_id)
+    ::SpecialistDocumentEdition.where(document_id: document_id)
   end
 
   def history
