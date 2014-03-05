@@ -6,6 +6,7 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       setup do
         @edition = FactoryGirl.create(:edition, state: 'ready')
         @edition.schedule_for_publishing
+        @edition.reload
       end
 
       should "return an error" do
@@ -22,6 +23,7 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
         @edition = FactoryGirl.create(:edition, state: 'ready')
         @publish_when = 1.day.from_now
         @edition.schedule_for_publishing(@publish_when)
+        @edition.reload
       end
 
       should "save publish_at against the edition" do
@@ -68,6 +70,7 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
     setup do
       @edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
       @edition.cancel_scheduled_publishing
+      @edition.reload
     end
 
     should "remove the publish_at stored against the edition" do
