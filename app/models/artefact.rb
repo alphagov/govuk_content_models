@@ -1,4 +1,3 @@
-require "slug_validator"
 require "plek"
 require "traits/taggable"
 require "artefact_action"  # Require this when running outside Rails
