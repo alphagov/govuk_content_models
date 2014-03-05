@@ -129,16 +129,16 @@ module WorkflowActor
   end
 
   def can_approve_review?(edition)
-    # To accommodate latest_status_action being nil, we'll always return true in
-    # those cases
-    # This is intended as a v.temporary fix until we can remedy the root cause
-    if edition.latest_status_action
-      edition.latest_status_action.requester_id != self.id
+    requester_different?(edition)
+  end
+
+  def can_request_amendments?(edition)
+    if edition.in_review?
+      requester_different?(edition)
     else
       true
     end
   end
-  alias :can_request_amendments? :can_approve_review?
 
   def assign(edition, recipient)
     edition.assigned_to_id = recipient.id
@@ -148,5 +148,18 @@ module WorkflowActor
     # The controller saves the publication, then updates assignment.
     edition.save! and edition.reload
     record_action edition, __method__, recipient: recipient
+  end
+
+  private
+
+  def requester_different?(edition)
+    # To accommodate latest_status_action being nil, we'll always return true in
+    # those cases
+    # This is intended as a v.temporary fix until we can remedy the root cause
+    if edition.latest_status_action
+      edition.latest_status_action.requester_id != self.id
+    else
+      true
+    end
   end
 end

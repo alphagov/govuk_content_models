@@ -232,6 +232,7 @@ class WorkflowTest < ActiveSupport::TestCase
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this guide please."})
     refute user.request_amendments(edition, {comment: "Well Done, but work harder"})
+    refute user.can_request_amendments?(edition)
   end
 
   test "user should not be able to okay a guide they requested review for" do
@@ -359,5 +360,20 @@ class WorkflowTest < ActiveSupport::TestCase
     assert_equal ['sectors'], bs.changes.keys
     bs.valid?
     assert_equal "Published editions can't be edited", bs.errors[:base].first
+  end
+
+  test "User can request amendments for an edition they just approved" do
+    user_1, user_2 = template_users
+    edition = user_1.create_edition(:answer, panopticon_id: @artefact.id, title: "Answer foo", slug: "answer-foo")
+    edition.body = "body content"
+    user_1.assign(edition, user_2)
+    user_1.request_review(edition,{comment: "Review this guide please."})
+    assert edition.in_review?
+
+    user_2.approve_review(edition, {comment: "Looks good just now"})
+    assert edition.ready?
+
+    user_2.request_amendments(edition, {comment: "More work needed"})
+    assert edition.amends_needed?
   end
 end
