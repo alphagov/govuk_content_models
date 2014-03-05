@@ -6,7 +6,6 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       setup do
         @edition = FactoryGirl.create(:edition, state: 'ready')
         @edition.schedule_for_publishing
-        @edition.reload
       end
 
       should "return an error" do
@@ -33,6 +32,14 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       should "complete the transition to scheduled_for_publishing" do
         assert_equal 'scheduled_for_publishing', @edition.state
       end
+    end
+
+    should "not allow scheduling at a time in the past" do
+      edition = FactoryGirl.create(:edition, state: 'ready')
+
+      edition.schedule_for_publishing(1.hour.ago)
+
+      assert_includes edition.errors[:publish_at], "can't be a time in the past"
     end
   end
 

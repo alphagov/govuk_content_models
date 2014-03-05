@@ -90,6 +90,7 @@ module Workflow
 
       state :scheduled_for_publishing do
         validates_presence_of :publish_at
+        validate :publish_at_is_in_the_future
       end
     end
   end
@@ -211,24 +212,27 @@ module Workflow
     ! ["archived", "published"].include? self.state
   end
 
+  def error_description
+    published? ? 'Published editions' : 'Editions scheduled for publishing'
+  end
+
   private
 
+    def publish_at_is_in_the_future
+      errors.add(:publish_at, "can't be a time in the past") if publish_at.present? && publish_at < Time.zone.now
+    end
+
     def not_editing_published_item
-      if changed? and ! state_changed?
-        if archived?
-          errors.add(:base, "Archived editions can't be edited")
-        end
-        if scheduled_for_publishing? || published?
-          changes_allowed_when_published = ["slug", "section",
-                                            "department", "business_proposition"]
-          illegal_changes = changes.keys - changes_allowed_when_published
-          if illegal_changes.empty?
-            # Allow it
-          else
-            edition_description = published? ? 'Published editions' : 'Editions scheduled for publishing'
-            errors.add(:base, "#{edition_description} can't be edited")
-          end
-        end
-      end
+      return if changes.none? || state_changed?
+
+      errors.add(:base, "Archived editions can't be edited") if archived?
+      return unless scheduled_for_publishing? || published?
+
+      errors.add(:base, "#{error_description} can't be edited") if disallowable_change?
+    end
+
+    def disallowable_change?
+      allowed_to_change = %w(slug section publish_at department business_proposition)
+      (changes.keys - allowed_to_change).present?
     end
 end
