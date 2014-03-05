@@ -81,6 +81,11 @@ FactoryGirl.define do
     section "test:subsection test"
 
     association :assigned_to, factory: :user
+
+    trait :scheduled_for_publishing do
+      state 'scheduled_for_publishing'
+      publish_at 1.day.from_now
+    end
   end
   factory :answer_edition, parent: :edition do
   end

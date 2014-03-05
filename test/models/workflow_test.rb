@@ -56,6 +56,19 @@ class WorkflowTest < ActiveSupport::TestCase
     return user, transaction
   end
 
+  context "#status_text" do
+    should "return a capitalized text representation of the state" do
+      assert_equal 'Ready', FactoryGirl.build(:edition, state: 'ready').status_text
+    end
+
+    should "also return scheduled publishing time when the state is scheduled for publishing" do
+      edition = FactoryGirl.build(:edition, :scheduled_for_publishing)
+      expected_status_text = 'Scheduled for publishing on ' + edition.publish_at.strftime("%d/%m/%Y %H:%M")
+
+      assert_equal expected_status_text, edition.status_text
+    end
+  end
+
   test "permits the creation of new editions" do
     user, transaction = template_user_and_published_transaction
     assert transaction.persisted?

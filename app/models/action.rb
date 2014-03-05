@@ -4,17 +4,19 @@ class Action
   include Mongoid::Document
 
   STATUS_ACTIONS = [
-    CREATE              = "create",
-    REQUEST_REVIEW      = "request_review",
-    APPROVE_REVIEW      = "approve_review",
-    APPROVE_FACT_CHECK  = "approve_fact_check",
-    REQUEST_AMENDMENTS  = "request_amendments",
-    SEND_FACT_CHECK     = "send_fact_check",
-    RECEIVE_FACT_CHECK  = "receive_fact_check",
-    SKIP_FACT_CHECK     = "skip_fact_check",
-    PUBLISH             = "publish",
-    ARCHIVE             = "archive",
-    NEW_VERSION         = "new_version",
+    CREATE                      = "create",
+    REQUEST_REVIEW              = "request_review",
+    APPROVE_REVIEW              = "approve_review",
+    APPROVE_FACT_CHECK          = "approve_fact_check",
+    REQUEST_AMENDMENTS          = "request_amendments",
+    SEND_FACT_CHECK             = "send_fact_check",
+    RECEIVE_FACT_CHECK          = "receive_fact_check",
+    SKIP_FACT_CHECK             = "skip_fact_check",
+    SCHEDULE_FOR_PUBLISHING     = "schedule_for_publishing",
+    CANCEL_SCHEDULED_PUBLISHING = "cancel_scheduled_publishing",
+    PUBLISH                     = "publish",
+    ARCHIVE                     = "archive",
+    NEW_VERSION                 = "new_version",
   ]
 
   NON_STATUS_ACTIONS = [

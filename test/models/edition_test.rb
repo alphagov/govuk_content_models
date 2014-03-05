@@ -46,6 +46,15 @@ class EditionTest < ActiveSupport::TestCase
     assert a.errors[:title].any?
   end
 
+  context "#publish_at" do
+    should "not be a time in the past" do
+      edition = FactoryGirl.build(:edition, publish_at: 1.minute.ago)
+
+      refute edition.valid?
+      assert_includes edition.errors[:publish_at], "can't be a time in the past"
+    end
+  end
+
   test "it should give a friendly (legacy supporting) description of its format" do
     a = LocalTransactionEdition.new
     assert_equal "LocalTransaction", a.format
@@ -627,6 +636,15 @@ class EditionTest < ActiveSupport::TestCase
     assert second_edition.archived?
 
     assert_equal 2, GuideEdition.where(panopticon_id: edition.panopticon_id, state: "archived").count
+  end
+
+  test "when an edition is published, publish_at is cleared" do
+    user = FactoryGirl.create(:user)
+    edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+
+    user.publish edition, comment: "First publication"
+
+    assert_nil edition.reload.publish_at
   end
 
   test "edition can return latest status action of a specified request type" do

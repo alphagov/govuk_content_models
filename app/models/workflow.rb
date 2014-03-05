@@ -22,6 +22,14 @@ module Workflow
         edition.mark_as_rejected
       end
 
+      before_transition on: :schedule_for_publishing do |edition, transition|
+        edition.publish_at = transition.args.first
+      end
+
+      before_transition on: [:publish, :cancel_scheduled_publishing] do |edition, transition|
+        edition.publish_at = nil
+      end
+
       after_transition on: :publish do |edition, transition|
         edition.was_published
       end
@@ -60,8 +68,16 @@ module Workflow
         transition fact_check: :fact_check_received
       end
 
+      event :schedule_for_publishing do
+        transition ready: :scheduled_for_publishing
+      end
+
+      event :cancel_scheduled_publishing do
+        transition scheduled_for_publishing: :ready
+      end
+
       event :publish do
-        transition ready: :published
+        transition [:ready, :scheduled_for_publishing] => :published
       end
 
       event :emergency_publish do
@@ -71,6 +87,10 @@ module Workflow
       event :archive do
         transition all => :archived, :unless => :archived?
       end
+
+      state :scheduled_for_publishing do
+        validates_presence_of :publish_at
+      end
     end
   end
 
@@ -78,8 +98,10 @@ module Workflow
     (self.actions.where(request_type: Action::APPROVE_FACT_CHECK).count > 0)
   end
 
-  def capitalized_state_name
-    self.human_state_name.capitalize
+  def status_text
+    text = human_state_name.capitalize
+    text += ' on ' + publish_at.strftime("%d/%m/%Y %H:%M") if scheduled_for_publishing?
+    text
   end
 
   def update_user_action(property, statuses)
@@ -146,26 +168,8 @@ module Workflow
     self.actions.sort_by(&:created_at).reverse.find(&blk)
   end
 
-  def not_editing_published_item
-    if changed? and ! state_changed?
-      if archived?
-        errors.add(:base, "Archived editions can't be edited")
-      end
-      if published?
-        changes_allowed_when_published = ["slug", "section",
-                                          "department", "business_proposition"]
-        illegal_changes = changes.keys - changes_allowed_when_published
-        if illegal_changes.empty?
-          # Allow it
-        else
-          errors.add(:base, "Published editions can't be edited")
-        end
-      end
-    end
-  end
-
   def can_destroy?
-    ! published? and ! archived?
+    ! scheduled_for_publishing? && ! published? && ! archived?
   end
 
   def check_can_delete_and_notify
@@ -206,4 +210,25 @@ module Workflow
   def in_progress?
     ! ["archived", "published"].include? self.state
   end
+
+  private
+
+    def not_editing_published_item
+      if changed? and ! state_changed?
+        if archived?
+          errors.add(:base, "Archived editions can't be edited")
+        end
+        if scheduled_for_publishing? || published?
+          changes_allowed_when_published = ["slug", "section",
+                                            "department", "business_proposition"]
+          illegal_changes = changes.keys - changes_allowed_when_published
+          if illegal_changes.empty?
+            # Allow it
+          else
+            edition_description = published? ? 'Published editions' : 'Editions scheduled for publishing'
+            errors.add(:base, "#{edition_description} can't be edited")
+          end
+        end
+      end
+    end
 end

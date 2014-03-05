@@ -6,8 +6,14 @@ require "programme_edition"
 require "transaction_edition"
 
 module WorkflowActor
-  SIMPLE_WORKFLOW_ACTIONS = %W[request_review
-    request_amendments approve_review approve_fact_check archive]
+  SIMPLE_WORKFLOW_ACTIONS = %w(
+    request_review
+    request_amendments
+    approve_review
+    approve_fact_check
+    archive
+    cancel_scheduled_publishing
+  )
 
   def record_action(edition, type, options={})
     type = Action.const_get(type.to_s.upcase)
@@ -27,8 +33,8 @@ module WorkflowActor
     respond_to?(:"can_#{action}?") ? __send__(:"can_#{action}?", edition) : true
   end
 
-  def take_action(edition, action, details = {})
-    if can_take_action(action, edition) and edition.send(action)
+  def take_action(edition, action, details = {}, action_parameters = [])
+    if can_take_action(action, edition) && edition.send(action, *action_parameters)
       record_action(edition, action, details)
       edition
     else
@@ -36,8 +42,8 @@ module WorkflowActor
     end
   end
 
-  def take_action!(edition, action, details = {})
-    edition = take_action(edition, action, details)
+  def take_action!(edition, action, details = {}, action_parameters = [])
+    edition = take_action(edition, action, details, action_parameters)
     edition.save if edition
   end
 
@@ -107,6 +113,11 @@ module WorkflowActor
     define_method(method) do |edition, details = {}|
       take_action(edition, __method__, details)
     end
+  end
+
+  def schedule_for_publishing(edition, details)
+    publish_at = details.delete(:publish_at)
+    take_action(edition, __method__, details, [publish_at])
   end
 
   def publish(edition, details)

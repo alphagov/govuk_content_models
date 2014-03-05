@@ -13,6 +13,7 @@ class Edition
 
   field :title,                type: String
   field :created_at,           type: DateTime, default: lambda { Time.zone.now }
+  field :publish_at,           type: DateTime
   field :overview,             type: String
   field :alternative_title,    type: String
   field :slug,                 type: String
@@ -30,16 +31,12 @@ class Edition
 
   belongs_to :assigned_to, class_name: "User"
 
-  scope :draft,               where(state: "draft")
-  scope :amends_needed,       where(state: "amends_needed")
-  scope :in_review,           where(state: "in_review")
-  scope :fact_check,          where(state: "fact_check")
-  scope :fact_check_received, where(state: "fact_check_received")
-  scope :ready,               where(state: "ready")
-  scope :published,           where(state: "published")
-  scope :archived,            where(state: "archived")
-  scope :in_progress,         where(:state.nin => ["archived", "published"])
-  scope :assigned_to,         lambda { |user|
+  # state_machine comes from Workflow
+  state_machine.states.map(&:name).each do |state|
+    scope state, where(state: state)
+  end
+  scope :in_progress, where(:state.nin => ["archived", "published"])
+  scope :assigned_to, lambda { |user|
     if user
       where(assigned_to_id: user.id)
     else
@@ -50,6 +47,7 @@ class Edition
   validates :title, presence: true
   validates :version_number, presence: true
   validates :panopticon_id, presence: true
+  validate  :publish_at_is_in_the_future
   validates_with SafeHtml
 
   before_save :check_for_archived_artefact
@@ -286,4 +284,10 @@ class Edition
       Artefact.find(self.panopticon_id).destroy
     end
   end
+
+  private
+
+    def publish_at_is_in_the_future
+      errors.add(:publish_at, "can't be a time in the past") if publish_at.present? && publish_at < Time.zone.now
+    end
 end
