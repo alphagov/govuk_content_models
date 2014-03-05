@@ -129,9 +129,6 @@ module WorkflowActor
   end
 
   def can_approve_review?(edition)
-    # To accommodate latest_status_action being nil, we'll always return true in
-    # those cases
-    # This is intended as a v.temporary fix until we can remedy the root cause
     requester_different?(edition)
   end
 
@@ -156,6 +153,9 @@ module WorkflowActor
   private
 
   def requester_different?(edition)
+    # To accommodate latest_status_action being nil, we'll always return true in
+    # those cases
+    # This is intended as a v.temporary fix until we can remedy the root cause
     if edition.latest_status_action
       edition.latest_status_action.requester_id != self.id
     else
