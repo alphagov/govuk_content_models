@@ -74,18 +74,22 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
   end
 
   context "#cancel_scheduled_publishing" do
-    setup do
-      @edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
-      @edition.cancel_scheduled_publishing
-      @edition.reload
+    should "remove the publish_at stored against the edition and transition back to ready" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      edition.cancel_scheduled_publishing
+      edition.reload
+
+      assert_nil edition.publish_at
+      assert_equal 'ready', edition.state
     end
 
-    should "remove the publish_at stored against the edition" do
-      assert_nil @edition.publish_at
-    end
+    should "work with editions that have passed publish_at time" do
+      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      edition.update_attribute :publish_at, 2.days.ago
 
-    should "complete the transition back to ready" do
-      assert_equal 'ready', @edition.state
+      edition.cancel_scheduled_publishing
+
+      assert_equal 'ready', edition.reload.state
     end
   end
 end
