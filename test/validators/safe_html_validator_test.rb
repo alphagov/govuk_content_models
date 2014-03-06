@@ -73,14 +73,16 @@ class SafeHtmlTest < ActiveSupport::TestCase
     should "all models should use this validator" do
       models_dir = File.expand_path("../../app/models/*", File.dirname(__FILE__))
 
-      classes = Dir[models_dir].map do |file|
-        klass = File.basename(file, ".rb").camelize.constantize
-        klass.included_modules.include?(Mongoid::Document) ? klass : nil
-      end.compact
-
-      classes.each do |klass|
-        assert_includes klass.validators.map(&:class), SafeHtml, "#{klass} must be validated with SafeHtml"
-      end
+      classes = Dir[models_dir]
+        .map { |file|
+          File.basename(file, ".rb").camelize.constantize
+        }
+        .select { |klass|
+          klass.included_modules.include?(Mongoid::Document)
+        }
+        .each { |klass|
+          assert_includes klass.validators.map(&:class), SafeHtml, "#{klass} must be validated with SafeHtml"
+        }
     end
   end
 end
