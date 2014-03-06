@@ -9,6 +9,8 @@ class Attachment
   field :filename
   attaches :file
 
+  validates_with SafeHtml
+
   def snippet
     "[InlineAttachment:#{filename}]"
   end
