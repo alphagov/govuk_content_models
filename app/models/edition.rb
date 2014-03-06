@@ -98,7 +98,7 @@ class Edition
   end
 
   def can_create_new_edition?
-    subsequent_siblings.in_progress.empty?
+    !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
   end
 
   def meta_data

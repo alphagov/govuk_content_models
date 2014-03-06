@@ -63,12 +63,17 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
     end
 
     should "return false for #can_destroy?" do
-      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      edition = FactoryGirl.build(:edition, :scheduled_for_publishing)
       refute edition.can_destroy?
     end
 
+    should "return false for #can_create_new_edition?" do
+      edition = FactoryGirl.build(:edition, :scheduled_for_publishing)
+      refute edition.can_create_new_edition?
+    end
+
     should "allow transition to published state" do
-      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
+      edition = FactoryGirl.build(:edition, :scheduled_for_publishing)
       assert edition.can_publish?
     end
   end
