@@ -212,6 +212,10 @@ module Workflow
     ! ["archived", "published"].include? self.state
   end
 
+  def locked_for_edits?
+    scheduled_for_publishing? || published?
+  end
+
   def error_description
     published? ? 'Published editions' : 'Editions scheduled for publishing'
   end
@@ -226,8 +230,8 @@ module Workflow
       return if changes.none? || state_changed?
 
       errors.add(:base, "Archived editions can't be edited") if archived?
-      return unless scheduled_for_publishing? || published?
 
+      return unless locked_for_edits?
       errors.add(:base, "#{error_description} can't be edited") if disallowable_change?
     end
 
