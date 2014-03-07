@@ -86,6 +86,10 @@ FactoryGirl.define do
       state 'scheduled_for_publishing'
       publish_at 1.day.from_now
     end
+
+    trait :published do
+      state 'published'
+    end
   end
   factory :answer_edition, parent: :edition do
   end

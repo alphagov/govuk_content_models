@@ -48,7 +48,6 @@ class Edition
   validates :title, presence: true
   validates :version_number, presence: true
   validates :panopticon_id, presence: true
-  validate  :publish_at_is_in_the_future
   validates_with SafeHtml
 
   before_save :check_for_archived_artefact
@@ -100,7 +99,7 @@ class Edition
   end
 
   def can_create_new_edition?
-    subsequent_siblings.in_progress.empty?
+    !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
   end
 
   def meta_data
@@ -285,10 +284,4 @@ class Edition
       Artefact.find(self.panopticon_id).destroy
     end
   end
-
-  private
-
-    def publish_at_is_in_the_future
-      errors.add(:publish_at, "can't be a time in the past") if publish_at.present? && publish_at < Time.zone.now
-    end
 end

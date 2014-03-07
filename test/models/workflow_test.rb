@@ -69,6 +69,17 @@ class WorkflowTest < ActiveSupport::TestCase
     end
   end
 
+  context "#locked_for_edit?" do
+    should "return true if edition is scheduled for publishing for published" do
+      assert FactoryGirl.build(:edition, :scheduled_for_publishing).locked_for_edits?
+      assert FactoryGirl.build(:edition, :published).locked_for_edits?
+    end
+
+    should "return false if in draft state" do
+      refute FactoryGirl.build(:edition, state: 'draft').locked_for_edits?
+    end
+  end
+
   test "permits the creation of new editions" do
     user, transaction = template_user_and_published_transaction
     assert transaction.persisted?
