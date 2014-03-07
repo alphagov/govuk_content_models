@@ -992,4 +992,32 @@ class EditionTest < ActiveSupport::TestCase
       end
     end
   end
+
+  context "Editors note" do
+    def set_note(edition, note)
+      edition.editors_note = note
+      edition.save
+      edition.reload
+    end
+
+    setup do
+      @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+      set_note(@edition, "This is an important note.")
+    end
+
+    should "be able to add an editors note to an edition" do
+      assert_equal "This is an important note.", @edition.editors_note
+    end
+
+    should "be able to update an existing editors note" do
+      set_note(@edition, "New note.")
+      assert_equal "New note.", @edition.editors_note
+    end
+
+    should "should not exist when creating new editions" do
+      Edition.subclasses.each do |klass|
+        refute klass.fields_to_clone.include?(:editors_note), "Editors note is cloned in a #{klass}"
+      end
+    end
+  end
 end
