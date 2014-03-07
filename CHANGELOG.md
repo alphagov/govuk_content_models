@@ -1,3 +1,7 @@
+## 8.4.0
+
+Add support for attachments to SpecialistDocumentEdition.
+
 ## 8.3.1
 
 Added `Edition#locked_for_edits?`
