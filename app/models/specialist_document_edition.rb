@@ -1,4 +1,5 @@
 require "fact_check_address"
+require "state_machine"
 
 class SpecialistDocumentEdition
   include Mongoid::Document
