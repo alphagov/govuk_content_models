@@ -22,6 +22,8 @@ class SpecialistDocumentEdition
 
   field :state, type: String
 
+  embeds_many :attachments, cascade_callbacks: true
+
   state_machine initial: :draft do
     event :publish do
       transition draft: :published
@@ -74,5 +76,11 @@ class SpecialistDocumentEdition
 
   def latest_edition?
     subsequent_siblings.empty?
+  end
+
+  def build_attachment(attributes)
+    attachments.build(attributes.merge(
+      filename: attributes.fetch(:file).original_filename
+    ))
   end
 end
