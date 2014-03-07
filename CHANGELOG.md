@@ -1,3 +1,7 @@
+## 8.3.0
+
+Add `editors_note` field to the edition model
+
 ## 8.2.0
 * Added support for publishing editions in the future
 * Removed #capitalized_state_name, in favor of #status_text which shows a publish_at time for editions scheduled for publishing
