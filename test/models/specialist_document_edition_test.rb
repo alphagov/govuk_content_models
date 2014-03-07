@@ -18,6 +18,15 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
     }
   end
 
+  setup do
+    @original_asset_api_client = Attachable.asset_api_client
+    Attachable.asset_api_client = stub("asset_api_client")
+  end
+
+  teardown do
+    Attachable.asset_api_client = @original_asset_api_client
+  end
+
   should "have correct fields" do
     edition = SpecialistDocumentEdition.new(basic_edition_fields)
 
@@ -31,29 +40,44 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
     assert_equal found.attributes, edition.attributes
   end
 
-  should "build attachments" do
-    edition = SpecialistDocumentEdition.new
-    file = OpenStruct.new(original_filename: "document.pdf")
+  context "building attachments" do
+    should "build an attachment" do
+      edition = SpecialistDocumentEdition.new
+      file = OpenStruct.new(original_filename: "document.pdf")
 
-    edition.build_attachment(title: "baz", file: file)
+      edition.build_attachment(title: "baz", file: file)
 
-    attachment = edition.attachments.first
-    assert_equal "baz", attachment.title
-    assert_equal "document.pdf", attachment.filename
-    assert_equal file, attachment.instance_variable_get(:@file_file)
-  end
+      attachment = edition.attachments.first
+      assert_equal "baz", attachment.title
+      assert_equal "document.pdf", attachment.filename
+      assert_equal file, attachment.instance_variable_get(:@file_file)
+    end
 
-  should "be able to persist attachment" do
-    edition = SpecialistDocumentEdition.new(basic_edition_fields)
-    file = OpenStruct.new(original_filename: "document.pdf")
+    should "persist attachment record when document saved" do
+      Attachable.asset_api_client.stubs(:create_asset)
 
-    edition.build_attachment(title: "baz", file: file)
-    edition.save!
+      edition = SpecialistDocumentEdition.new(basic_edition_fields)
+      file = OpenStruct.new(original_filename: "document.pdf")
 
-    found = SpecialistDocumentEdition.where(slug: edition.slug).first
+      edition.build_attachment(title: "baz", file: file)
+      edition.save!
 
-    assert_equal 1, found.attachments.count
-    assert_equal "baz", found.attachments.first.title
+      found = SpecialistDocumentEdition.where(slug: edition.slug).first
+
+      assert_equal 1, found.attachments.count
+      assert_equal "baz", found.attachments.first.title
+    end
+
+    should "transmit attached file to asset manager when document saved" do
+      edition = SpecialistDocumentEdition.new(basic_edition_fields)
+      file = OpenStruct.new(original_filename: "document.pdf")
+
+      success_response = stub("asset manager response", id: "/test-id")
+      Attachable.asset_api_client.expects(:create_asset).with(file: file).returns(success_response)
+
+      edition.build_attachment(title: "baz", file: file)
+      edition.save!
+    end
   end
 end
 

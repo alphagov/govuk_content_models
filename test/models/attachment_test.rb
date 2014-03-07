@@ -6,7 +6,12 @@ class AttachmentTest < ActiveSupport::TestCase
   include GdsApi::TestHelpers::AssetManager
 
   setup do
-    Attachable.
+    @original_asset_api_client = Attachable.asset_api_client
+    Attachable.asset_api_client = stub("asset_api_client")
+  end
+
+  teardown do
+    Attachable.asset_api_client = @original_asset_api_client
   end
 
   should "generate a snippet" do
@@ -20,21 +25,19 @@ class AttachmentTest < ActiveSupport::TestCase
   end
 
   should "return the url via #url" do
-    url = "http://fooey.gov.uk/media/photo.jpg"
-    asset_manager_has_an_asset(
-      "test-id",
-      "name" => "photo.jpg",
-      "content_type" => "image/jpeg",
-      "file_url" => url,
-    )
-
     attachment = Attachment.new(
       title: "Photo of me",
       filename: "photo.jpg",
-    ).tap do |attachment|
-      attachment.instance_variable_set(:@file_id, "test-id")
-    end
+      file_id: "test-id"
+    )
 
-    assert_equal url, attachment.url
+    asset_url = stub("asset url")
+    asset_response = stub("asset response", file_url: asset_url)
+    Attachable.asset_api_client
+      .stubs(:asset)
+      .with(attachment.file_id)
+      .returns(asset_response)
+
+    assert_equal asset_url, attachment.url
   end
 end
