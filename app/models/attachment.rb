@@ -11,6 +11,11 @@ class Attachment
 
   validates_with SafeHtml
 
+  def url
+    file.file_url
+  end
+
+  # TODO: Move this to a domain object in specialist publisher
   def snippet
     "[InlineAttachment:#{filename}]"
   end
