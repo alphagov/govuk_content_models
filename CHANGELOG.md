@@ -1,3 +1,7 @@
+## 8.3.1
+
+Added `Edition#locked_for_edits?`
+
 ## 8.3.0
 
 Add `editors_note` field to the edition model
