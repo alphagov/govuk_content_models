@@ -1,3 +1,8 @@
+## 8.4.1
+
+* Bugfix: Prevent rails dev-mode reloading from clearing configuration of
+  Attachable api client.
+
 ## 8.4.0
 
 Add support for attachments to SpecialistDocumentEdition.
