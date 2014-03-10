@@ -1,8 +1,6 @@
 module Attachable
   class ApiClientNotPresent < StandardError; end
 
-  @asset_api_client = nil
-
   def self.asset_api_client
     @asset_api_client
   end
