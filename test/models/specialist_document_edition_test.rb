@@ -1,22 +1,10 @@
 # encoding: UTF-8
 
 require "test_helper"
+require "fixtures/specialist_document_fixtures"
 
 class SpecialistDocumentEditionTest < ActiveSupport::TestCase
-  def basic_edition_fields
-    {
-      slug: 'cma-cases/merger-investigation-2014',
-      title: "Merger Investigation 2014",
-      summary: "This is the summary of stuff going on in the Merger Investigation 2014",
-      state: "published",
-      body: "A body",
-      opened_date: '2012-04-21',
-      document_id: 'a-document-id',
-      market_sector: 'oil-and-gas',
-      case_type: 'some-case-type',
-      case_state: 'open'
-    }
-  end
+  include SpecialistDocumentFixtures
 
   setup do
     @original_asset_api_client = Attachable.asset_api_client
@@ -28,13 +16,13 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct fields" do
-    edition = SpecialistDocumentEdition.new(basic_edition_fields)
+    edition = SpecialistDocumentEdition.new(basic_specialist_document_fields)
 
-    assert_equal basic_edition_fields[:title], edition.title
+    assert_equal basic_specialist_document_fields[:title], edition.title
   end
 
   should "be persistable" do
-    edition = SpecialistDocumentEdition.create!(basic_edition_fields)
+    edition = SpecialistDocumentEdition.create!(basic_specialist_document_fields)
 
     found = SpecialistDocumentEdition.where(slug: edition.slug).first
     assert_equal found.attributes, edition.attributes
@@ -56,7 +44,7 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
     should "persist attachment record when document saved" do
       Attachable.asset_api_client.stubs(:create_asset)
 
-      edition = SpecialistDocumentEdition.new(basic_edition_fields)
+      edition = SpecialistDocumentEdition.new(basic_specialist_document_fields)
       file = OpenStruct.new(original_filename: "document.pdf")
 
       edition.build_attachment(title: "baz", file: file)
@@ -69,7 +57,7 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
     end
 
     should "transmit attached file to asset manager when document saved" do
-      edition = SpecialistDocumentEdition.new(basic_edition_fields)
+      edition = SpecialistDocumentEdition.new(basic_specialist_document_fields)
       file = OpenStruct.new(original_filename: "document.pdf")
 
       success_response = stub("asset manager response", id: "/test-id")
