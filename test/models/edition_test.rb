@@ -984,9 +984,9 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  context "Editors note" do
+  context "Important note" do
     def set_note(edition, note)
-      edition.editors_note = note
+      edition.important_note = note
       edition.save
       edition.reload
     end
@@ -996,18 +996,18 @@ class EditionTest < ActiveSupport::TestCase
       set_note(@edition, "This is an important note.")
     end
 
-    should "be able to add an editors note to an edition" do
-      assert_equal "This is an important note.", @edition.editors_note
+    should "be able to add a important note to an edition" do
+      assert_equal "This is an important note.", @edition.important_note
     end
 
-    should "be able to update an existing editors note" do
+    should "be able to update an existing important note" do
       set_note(@edition, "New note.")
-      assert_equal "New note.", @edition.editors_note
+      assert_equal "New note.", @edition.important_note
     end
 
     should "should not exist when creating new editions" do
       Edition.subclasses.each do |klass|
-        refute klass.fields_to_clone.include?(:editors_note), "Editors note is cloned in a #{klass}"
+        refute klass.fields_to_clone.include?(:important_note), "Important note is cloned in a #{klass}"
       end
     end
   end
