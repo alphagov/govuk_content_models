@@ -59,22 +59,18 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
       body: original_body,
     }
 
-    RenderedSpecialistDocument.create_or_update_by_slug!(version1_attrs)
+    created = RenderedSpecialistDocument.create_or_update_by_slug!(version1_attrs)
 
-    version1 = RenderedSpecialistDocument.where(slug: slug).first
-
-    assert_not_nil version1
+    assert created.is_a?(RenderedSpecialistDocument)
+    assert created.persisted?
 
     version2_attrs = version1_attrs.merge(
       body: "Updated body",
     )
 
-    RenderedSpecialistDocument.create_or_update_by_slug!(version2_attrs)
+    version2 = RenderedSpecialistDocument.create_or_update_by_slug!(version2_attrs)
 
-    version2 = RenderedSpecialistDocument.where(slug: slug).first
-
-    assert_not_nil version2
-
+    assert version2.persisted?
     assert_equal "Updated body", version2.body
   end
 
