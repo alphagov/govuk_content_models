@@ -1,3 +1,7 @@
+## 8.6.0
+
+* add `RenderedSpecialistDocument#create_or_update_by_slug!` and `RenderedSpecialistDocument#find_by_slug`
+
 ## 8.4.1
 
 * Bugfix: Prevent rails dev-mode reloading from clearing configuration of
