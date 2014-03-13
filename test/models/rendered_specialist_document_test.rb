@@ -49,4 +49,39 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
     found = RenderedSpecialistDocument.where(slug: r.slug).first
     assert_equal sample_headers, found.headers
   end
+
+  test ".create_or_update_by_slug!" do
+    slug = "a-slug"
+    original_body = "Original body"
+
+    version1_attrs= {
+      slug: slug,
+      body: original_body,
+    }
+
+    RenderedSpecialistDocument.create_or_update_by_slug!(version1_attrs)
+
+    version1 = RenderedSpecialistDocument.where(slug: slug).first
+
+    assert_not_nil version1
+
+    version2_attrs = version1_attrs.merge(
+      body: "Updated body",
+    )
+
+    RenderedSpecialistDocument.create_or_update_by_slug!(version2_attrs)
+
+    version2 = RenderedSpecialistDocument.where(slug: slug).first
+
+    assert_not_nil version2
+
+    assert_equal "Updated body", version2.body
+  end
+
+  test ".find_by_slug" do
+    created = RenderedSpecialistDocument.create!(slug: "find-by-this-slug")
+    found = RenderedSpecialistDocument.find_by_slug("find-by-this-slug")
+
+    assert_equal created, found
+  end
 end
