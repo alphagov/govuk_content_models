@@ -9,6 +9,8 @@ class Attachment
   field :filename
   attaches :file
 
+  embedded_in :specialist_document_edition
+
   validates_with SafeHtml
 
   def url

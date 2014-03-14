@@ -8,7 +8,9 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
 
   setup do
     @original_asset_api_client = Attachable.asset_api_client
+    @success_response = stub("asset manager response", id: "/test-id")
     Attachable.asset_api_client = stub("asset_api_client")
+    Attachable.asset_api_client.stubs(:create_asset).returns(@success_response)
   end
 
   teardown do
@@ -60,12 +62,24 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
       edition = SpecialistDocumentEdition.new(basic_specialist_document_fields)
       file = OpenStruct.new(original_filename: "document.pdf")
 
-      success_response = stub("asset manager response", id: "/test-id")
-      Attachable.asset_api_client.expects(:create_asset).with(file: file).returns(success_response)
+      Attachable.asset_api_client.expects(:create_asset).with(file: file).returns(@success_response)
 
       edition.build_attachment(title: "baz", file: file)
       edition.save!
     end
+
+    should "be able to remove an attachment from the list of attachments" do
+      attributes = basic_specialist_document_fields.merge(
+        attachments: [Attachment.new(title: "example", filename: "example.pdf")]
+      )
+      edition = SpecialistDocumentEdition.create!(attributes)
+      assert_equal 1, edition.attachments.count
+
+      edition.attachments = []
+      edition.save!
+
+      edition.reload
+      assert_equal [], edition.attachments
+    end
   end
 end
-
