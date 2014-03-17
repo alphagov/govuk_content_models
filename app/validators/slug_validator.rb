@@ -39,7 +39,10 @@ protected
     end
 
     def valid_slug?(url_part)
-      ActiveSupport::Inflector.parameterize(url_part.to_s) == url_part.to_s
+      # Regex taken from ActiveSupport::Inflector.parameterize
+      # We don't want to use this method because it also does a number of cosmetic tidy-ups
+      # which lead to false-positives (eg merging consecutive '-'s)
+      ! url_part.to_s.match(/[^a-z0-9\-_]/)
     end
   end
 

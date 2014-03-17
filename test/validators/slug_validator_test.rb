@@ -29,6 +29,11 @@ class SlugTest < ActiveSupport::TestCase
       assert document_with_slug("normal-slug").valid?
     end
 
+    should "allow consecutive dashes in a slug" do
+      # Gems like friendly_id use -- to de-dup slug collisions
+      assert document_with_slug("normal-slug--1").valid?
+    end
+
     should "allow a done page slug" do
       assert document_with_slug("done/normal-slug").valid?
     end
@@ -64,10 +69,6 @@ class SlugTest < ActiveSupport::TestCase
     should "allow abritrarily deep slugs" do
       assert document_with_slug("government/test/foo", kind: "policy").valid?
       assert document_with_slug("government/test/foo/bar", kind: "policy").valid?
-    end
-
-    should "allow friendly_id suffixes to pass" do
-      assert document_with_slug("government/policy/test--3", kind: "policy").valid?
     end
   end
 
