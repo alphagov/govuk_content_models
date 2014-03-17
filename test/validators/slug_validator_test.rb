@@ -28,6 +28,20 @@ class SlugTest < ActiveSupport::TestCase
     should "allow a normal slug" do
       assert document_with_slug("normal-slug").valid?
     end
+
+    should "allow a done page slug" do
+      assert document_with_slug("done/normal-slug").valid?
+    end
+  end
+
+  context "Foreign travel advice pages" do
+    should "allow a travel-advice page to start with 'foreign-travel-advice/'" do
+      assert document_with_slug("foreign-travel-advice/aruba", kind: "travel-advice").valid?
+    end
+
+    should "not allow other types to start with 'foreign-travel-advice/'" do
+      refute document_with_slug("foreign-travel-advice/aruba", kind: "answer").valid?
+    end
   end
 
   context "Help pages" do
@@ -35,12 +49,21 @@ class SlugTest < ActiveSupport::TestCase
       refute document_with_slug("test", kind: "help_page").valid?
       assert document_with_slug("help/test", kind: "help_page").valid?
     end
+
+    should "not allow non-help pages to start with help/" do
+      refute document_with_slug("help/test", kind: "answer").valid?
+    end
   end
 
   context "Inside government slugs" do
     should "allow slug starting government/" do
       refute document_with_slug("test", kind: "policy").valid?
       assert document_with_slug("government/test", kind: "policy").valid?
+    end
+
+    should "allow abritrarily deep slugs" do
+      assert document_with_slug("government/test/foo", kind: "policy").valid?
+      assert document_with_slug("government/test/foo/bar", kind: "policy").valid?
     end
 
     should "allow friendly_id suffixes to pass" do
