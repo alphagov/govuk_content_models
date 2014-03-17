@@ -70,6 +70,10 @@ class SlugTest < ActiveSupport::TestCase
       assert document_with_slug("government/test/foo", kind: "policy").valid?
       assert document_with_slug("government/test/foo/bar", kind: "policy").valid?
     end
+
+    should "allow . in slugs" do
+      assert document_with_slug("government/world-location-news/221033.pt", kind: "news_story").valid?
+    end
   end
 
   context "Specialist documents" do

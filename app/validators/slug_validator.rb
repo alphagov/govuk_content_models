@@ -77,6 +77,11 @@ protected
   end
 
   class GovernmentPageValidator < InstanceValidator
+    def url_parts
+      # Some inside govt slugs have a . in them (eg news articles with no english translation)
+      super.map {|part| part.gsub(/\./, '') }
+    end
+
     def applicable?
       record.respond_to?(:kind) && prefixed_whitehall_format_names.include?(record.kind)
     end
