@@ -5,7 +5,6 @@ class SlugValidator < ActiveModel::EachValidator
       DonePageValidator,
       ForeignTravelAdvicePageValidator,
       HelpPageValidator,
-      DetailedGuidePageValidator,
       GovernmentPageValidator,
       SpecialistDocumentPageValidator,
       DefaultValidator
@@ -39,7 +38,10 @@ protected
     end
 
     def valid_slug?(url_part)
-      ActiveSupport::Inflector.parameterize(url_part.to_s) == url_part.to_s
+      # Regex taken from ActiveSupport::Inflector.parameterize
+      # We don't want to use this method because it also does a number of cosmetic tidy-ups
+      # which lead to false-positives (eg merging consecutive '-'s)
+      ! url_part.to_s.match(/[^a-z0-9\-_]/)
     end
   end
 
@@ -74,45 +76,21 @@ protected
     end
   end
 
-  class WhitehallFormatValidator < InstanceValidator
+  class GovernmentPageValidator < InstanceValidator
     def url_parts
-      normalize_last_part_for_friendly_id(super)
+      # Some inside govt slugs have a . in them (eg news articles with no english translation)
+      super.map {|part| part.gsub(/\./, '') }
     end
 
-    def validate!
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << "must be usable in a URL"
-      end
-    end
-
-  protected
-
-    def normalize_last_part_for_friendly_id(url_parts)
-      url_parts[0...-1] + url_parts[-1..-1].map do |url_part|
-        normalize_for_friendly_id(url_part)
-      end
-    end
-
-    def normalize_for_friendly_id(url_part)
-      url_part.sub('--', '-')
-    end
-
-  end
-
-  class DetailedGuidePageValidator < WhitehallFormatValidator
-    def applicable?
-      of_kind?('detailed_guide')
-    end
-  end
-
-  class GovernmentPageValidator < WhitehallFormatValidator
     def applicable?
       record.respond_to?(:kind) && prefixed_whitehall_format_names.include?(record.kind)
     end
 
     def validate!
       record.errors[attribute] << "Inside Government slugs must have a government/ prefix" unless starts_with?('government/')
-      super
+      unless url_parts.all? { |url_part| valid_slug?(url_part) }
+        record.errors[attribute] << "must be usable in a URL"
+      end
     end
 
   protected
@@ -121,7 +99,7 @@ protected
     end
   end
 
-  class SpecialistDocumentPageValidator < WhitehallFormatValidator
+  class SpecialistDocumentPageValidator < InstanceValidator
     def applicable?
       of_kind?('specialist-document')
     end
