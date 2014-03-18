@@ -1,3 +1,7 @@
+## 8.8.0
+
+* Add two new formats from Whitehall; Notice and Decision.
+
 ## 8.6.0
 
 * add `RenderedSpecialistDocument#create_or_update_by_slug!` and `RenderedSpecialistDocument#find_by_slug`
