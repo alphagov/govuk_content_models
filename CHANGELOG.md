@@ -1,3 +1,7 @@
+## 8.9.0
+
+* Add label fields to RenderedSpecialistDocument
+
 ## 8.8.0
 
 * Add two new formats from Whitehall; Notice and Decision.
