@@ -2,6 +2,7 @@ class RenderedSpecialistDocument
   include Mongoid::Document
   include Mongoid::Timestamps
 
+  field :document_id,            type: String
   field :slug,                   type: String
   field :title,                  type: String
   field :summary,                type: String
