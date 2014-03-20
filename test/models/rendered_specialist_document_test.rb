@@ -4,9 +4,19 @@ require "fixtures/specialist_document_fixtures"
 class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
   include SpecialistDocumentFixtures
 
+  def label_fields
+    {
+      case_type_label: "Some case type",
+      case_state_label: "Open",
+      market_sector_label: "Oil and gas",
+      outcome_type_label: "Referred"
+    }
+  end
+
   def rendered_specialist_document_attributes
     basic_specialist_document_fields
       .reject { |k,v| k == :state }
+      .merge(label_fields)
   end
 
   test "can instantiate with basic attributes" do
