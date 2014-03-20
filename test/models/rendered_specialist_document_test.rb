@@ -20,6 +20,18 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
     end
   end
 
+  test "can assign basic attributes" do
+    r = RenderedSpecialistDocument.new
+    rendered_specialist_document_attributes.each do |k,v|
+      r.send(:"#{k}=", v)
+      if (k =~ /date$/)
+        assert_equal Date.parse(v), r.send(k.to_sym)
+      else
+        assert_equal v, r.send(k.to_sym)
+      end
+    end
+  end
+
   test "can persist" do
     r = RenderedSpecialistDocument.new(rendered_specialist_document_attributes)
     r.save!
