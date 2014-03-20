@@ -23,9 +23,9 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
     r = RenderedSpecialistDocument.new(rendered_specialist_document_attributes)
     rendered_specialist_document_attributes.each do |k,v|
       if (k =~ /date$/)
-        assert_equal Date.parse(v), r.send(k.to_sym)
+        assert_equal Date.parse(v), r.public_send(k.to_sym)
       else
-        assert_equal v, r.send(k.to_sym)
+        assert_equal v, r.public_send(k.to_sym)
       end
     end
   end
@@ -33,11 +33,11 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
   test "can assign basic attributes" do
     r = RenderedSpecialistDocument.new
     rendered_specialist_document_attributes.each do |k,v|
-      r.send(:"#{k}=", v)
+      r.public_send(:"#{k}=", v)
       if (k =~ /date$/)
-        assert_equal Date.parse(v), r.send(k.to_sym)
+        assert_equal Date.parse(v), r.public_send(k.to_sym)
       else
-        assert_equal v, r.send(k.to_sym)
+        assert_equal v, r.public_send(k.to_sym)
       end
     end
   end
