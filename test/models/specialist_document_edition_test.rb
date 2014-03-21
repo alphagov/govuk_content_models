@@ -8,7 +8,7 @@ class SpecialistDocumentEditionTest < ActiveSupport::TestCase
 
   setup do
     @original_asset_api_client = Attachable.asset_api_client
-    @success_response = stub("asset manager response", id: "/test-id")
+    @success_response = stub("asset manager response", id: "/test-id", file_url: "/test-id/document.pdf")
     Attachable.asset_api_client = stub("asset_api_client")
     Attachable.asset_api_client.stubs(:create_asset).returns(@success_response)
   end

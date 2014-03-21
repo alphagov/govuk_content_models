@@ -11,9 +11,23 @@ module Attachable
 
   module ClassMethods
     def attaches(*fields)
+      if fields.last.is_a?(Hash)
+        options = fields.pop
+      else
+        options = {}
+      end
+      attaches_with_options(fields, options)
+    end
+
+  private
+
+    def attaches_with_options(fields, options = {})
       fields.map(&:to_s).each do |field|
         before_save "upload_#{field}".to_sym, :if => "#{field}_has_changed?".to_sym
         self.field "#{field}_id".to_sym, type: String
+        if options[:with_url_field]
+          self.field "#{field}_url".to_sym, type: String
+        end
 
         define_method(field) do
           raise ApiClientNotPresent unless Attachable.asset_api_client
@@ -42,6 +56,7 @@ module Attachable
           raise ApiClientNotPresent unless Attachable.asset_api_client
           begin
             response = Attachable.asset_api_client.create_asset(:file => instance_variable_get("@#{field}_file"))
+            self.send("#{field}_url=", response.file_url) if self.respond_to?("#{field}_url=")
             self.send("#{field}_id=", response.id.split('/').last)
           rescue StandardError
             errors.add("#{field}_id".to_sym, "could not be uploaded")
