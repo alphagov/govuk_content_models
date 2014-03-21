@@ -12,10 +12,19 @@ class ModelWithAttachments
   attaches :image
 end
 
+class ModelWithAttachmentsAndUrl
+  include Attachable
+  include Mongoid::Document
+
+  field :title, type: String
+  attaches :image, with_url_field: true
+end
+
 class AttachableTest < ActiveSupport::TestCase
 
   setup do
     @edition = ModelWithAttachments.new
+    @edition_with_url_field = ModelWithAttachmentsAndUrl.new
     @previous_api_client = Attachable.asset_api_client
     Attachable.asset_api_client = MockAssetApi.new
   end
@@ -64,7 +73,10 @@ class AttachableTest < ActiveSupport::TestCase
   context "saving an edition" do
     setup do
       @file = File.open(File.expand_path("../../fixtures/uploads/image.jpg", __FILE__))
-      @asset = OpenStruct.new(:id => 'http://asset-manager.dev.gov.uk/assets/an_image_id')
+      @asset = OpenStruct.new(
+        id: 'http://asset-manager.dev.gov.uk/assets/an_image_id',
+        file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
+      )
     end
 
     should "upload the asset" do
@@ -86,6 +98,24 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.save!
 
       assert_equal "an_image_id", @edition.image_id
+    end
+
+    should "assign the asset url to the attachment url attribute if requested" do
+      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+
+      @edition_with_url_field.image = @file
+      @edition_with_url_field.save!
+
+      assert_equal 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg', @edition_with_url_field.image_url
+    end
+
+    should "not create the attachment url attribute if not requested" do
+      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+
+      @edition.image = @file
+      @edition.save!
+
+      refute @edition.respond_to?(:image_url)
     end
 
     should "raise an exception if there is no api client present" do
