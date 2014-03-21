@@ -1,3 +1,9 @@
+## 8.10.0
+
+* Adds a flag to `attaches` to have the `Attachable`
+mixin add a {field}_url attribute containing the
+attachment's public URL.
+
 ## 8.9.0
 
 * Add label fields to RenderedSpecialistDocument
