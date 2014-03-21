@@ -42,7 +42,7 @@ module Attachable
           raise ApiClientNotPresent unless Attachable.asset_api_client
           begin
             response = Attachable.asset_api_client.create_asset(:file => instance_variable_get("@#{field}_file"))
-            self.send("#{field}_id=", response.id.match(/\/([^\/]+)\z/) {|m| m[1] })
+            self.send("#{field}_id=", response.id.split('/').last)
           rescue StandardError
             errors.add("#{field}_id".to_sym, "could not be uploaded")
           end
