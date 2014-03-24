@@ -33,7 +33,12 @@ class Artefact
   field "owning_app",           type: String
   field "rendering_app",        type: String
   field "active",               type: Boolean, default: false
+
+  # will be removed once multiple need_ids
+  # gets deployed and tested.
   field "need_id",              type: String
+
+  field "need_ids",             type: Array, default: []
   field "fact_checkers",        type: String
   field "publication_id",       type: String
   field "description",          type: String

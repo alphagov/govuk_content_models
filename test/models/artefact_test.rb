@@ -92,6 +92,17 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  context "#need_ids" do
+    should "be empty by default" do
+      assert_empty FactoryGirl.build(:artefact).need_ids
+    end
+
+    should "store multiple needs related to an artefact" do
+      artefact = FactoryGirl.create(:artefact, need_ids: ["B1231", "B1232"])
+      assert_equal ["B1231", "B1232"], artefact.reload.need_ids
+    end
+  end
+
   context "validating paths and prefixes" do
     setup do
       @a = FactoryGirl.build(:artefact)

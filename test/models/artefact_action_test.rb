@@ -22,6 +22,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
     "active" => false,
     "tag_ids" => [],
     "tags" => [],
+    "need_ids" => [],
     "state" => "draft",
     "related_artefact_ids" => [],
     "paths" => [],
