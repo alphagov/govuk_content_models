@@ -107,7 +107,6 @@ FactoryGirl.define do
   end
 
   factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
-    sequence(:business_support_identifier) {|n| "identifier-#{n}" }
   end
 
   factory :guide_edition do |ge|

@@ -20,7 +20,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.continuation_link = "http://www.gov.uk"
     support.will_continue_on = "The GOVUK website"
     support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
-    support.business_support_identifier = "123-4-5"
 
     support.priority = 2
     support.business_sizes << "up-to-249"
@@ -48,7 +47,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal "http://www.gov.uk", support.continuation_link
     assert_equal "The GOVUK website", support.will_continue_on
     assert_equal "123 The Street, Townsville, UK. 07324 123456", support.contact_details
-    assert_equal "123-4-5", support.business_support_identifier
 
     assert_equal 2, support.priority
     assert_equal ["up-to-249"], support.business_sizes
@@ -68,33 +66,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.max_value = 50
 
     refute support.valid?
-  end
-
-  should "require a business_support_identifier" do
-    support = FactoryGirl.build(:business_support_edition, :business_support_identifier => '')
-    assert ! support.valid?, "expected business support edition not to be valid"
-  end
-
-  context "business support identifier uniqueness" do
-    setup do
-      @support = FactoryGirl.build(:business_support_edition, panopticon_id: @artefact.id)
-      @another_artefact = FactoryGirl.create(:artefact)
-    end
-    should "have a unique business support identifier" do
-      another_support = FactoryGirl.create(:business_support_edition, panopticon_id: @another_artefact.id,
-                                          :business_support_identifier => "this-should-be-unique")
-      @support.business_support_identifier = "this-should-be-unique"
-      assert !@support.valid?, "business_support_identifier should be unique"
-      @support.business_support_identifier = "this-is-different"
-      assert @support.valid?, "business_support_identifier should be unique"
-    end
-
-    should "not consider archived editions when evaluating uniqueness" do
-      another_support = FactoryGirl.create(:business_support_edition, panopticon_id: @another_artefact.id,
-                                           :business_support_identifier => "this-should-be-unique", :state => "archived")
-      @support.business_support_identifier = "this-should-be-unique"
-      assert @support.valid?, "business_support should be valid"
-    end
   end
 
   context "numeric field validations" do
@@ -154,7 +125,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support = FactoryGirl.create(:business_support_edition,
                                  :panopticon_id => @artefact.id,
                                  :state => "published",
-                                 :business_support_identifier => "1234",
                                  :short_description => "Short description of support format",
                                  :body => "Body to be cloned",
                                  :min_value => 1,
@@ -179,7 +149,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
 
     new_support = support.build_clone
 
-    assert_equal support.business_support_identifier, new_support.business_support_identifier
     assert_equal support.short_description, new_support.short_description
     assert_equal support.body, new_support.body
     assert_equal support.min_value, new_support.min_value

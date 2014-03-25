@@ -17,7 +17,6 @@ class BusinessSupportEdition < Edition
   field :continuation_link, type: String
   field :will_continue_on, type: String
   field :contact_details, type: String
-  field :business_support_identifier, type: String
 
   field :priority,        type: Integer, default: 1
   field :business_types,  type: Array, default: []
@@ -30,13 +29,9 @@ class BusinessSupportEdition < Edition
   field :start_date,      type: Date
   field :end_date,        type: Date
 
-  index :business_support_identifier
-
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
 
   validate :min_must_be_less_than_max
-  validates :business_support_identifier, :presence => true
-  validate :business_support_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
   # https://github.com/mongoid/mongoid/issues/1735 Really Mongoid‽
@@ -44,10 +39,8 @@ class BusinessSupportEdition < Edition
 
   @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
       :eligibility, :evaluation, :additional_information, :continuation_link,
-      :will_continue_on, :contact_details, :short_description,
-      :business_support_identifier, :priority, :business_sizes,
-      :locations, :purposes, :sectors, :stages, :support_types,
-      :start_date, :end_date]
+      :will_continue_on, :contact_details, :short_description, :priority, :business_sizes,
+      :locations, :purposes, :sectors, :stages, :support_types, :start_date, :end_date]
 
   scope :for_facets, lambda { |facets|
     where({ "$and" => facets_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
@@ -64,13 +57,6 @@ class BusinessSupportEdition < Edition
     if !min_value.nil? && !max_value.nil? && min_value > max_value
       errors[:min_value] << "Min value must be smaller than max value"
       errors[:max_value] << "Max value must be larger than min value"
-    end
-  end
-
-  def business_support_identifier_unique
-    if self.class.without_state('archived').where(:business_support_identifier => business_support_identifier,
-                        :panopticon_id.ne => panopticon_id).any?
-      errors.add(:business_support_identifier, :taken)
     end
   end
 
