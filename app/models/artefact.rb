@@ -354,6 +354,13 @@ class Artefact
     attributes.except "_id", "created_at", "updated_at", "actions"
   end
 
+  def need_id=(new_need_id)
+    super
+
+    need_ids << new_need_id if new_need_id.present? && ! need_ids.include?(new_need_id)
+    new_need_id
+  end
+
   private
 
   def validate_prefixes_and_paths

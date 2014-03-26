@@ -125,6 +125,41 @@ class ArtefactTest < ActiveSupport::TestCase
 
       assert artefact.valid?
     end
+
+    context "for backwards compatibility" do
+      setup do
+        @artefact = FactoryGirl.create(:artefact)
+      end
+
+      should "append to need_ids when need_id is assigned" do
+        @artefact.need_id = "100045"
+
+        assert_equal "100045", @artefact.need_id
+        assert_includes @artefact.need_ids, "100045"
+      end
+
+      should "append to existing need_ids when need_id is assigned" do
+        @artefact.set(:need_ids, ["100044"])
+        @artefact.set(:need_id, "100044")
+
+        @artefact.need_id = "100045"
+
+        assert_equal "100045", @artefact.need_id
+        assert_equal ["100044", "100045"], @artefact.need_ids
+      end
+
+      # this should only matter till the time we have both fields
+      # need_id and need_ids. can delete this test once we unset need_id.
+      should "keep need_ids unchanged when need_id is removed" do
+        @artefact.set(:need_ids, ["100044", "100045"])
+        @artefact.set(:need_id, "100044")
+
+        @artefact.need_id = nil
+
+        assert_equal nil, @artefact.need_id
+        assert_equal ["100044", "100045"], @artefact.need_ids
+      end
+    end
   end
 
   context "validating paths and prefixes" do
