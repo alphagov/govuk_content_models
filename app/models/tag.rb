@@ -1,4 +1,5 @@
 require "safe_html"
+require 'tag_id_validator'
 
 class Tag
   include Mongoid::Document
@@ -17,6 +18,7 @@ class Tag
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
+  validates_with TagIdValidator
   validates_with SafeHtml
 
   class MissingTags < RuntimeError

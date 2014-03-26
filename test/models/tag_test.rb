@@ -101,4 +101,8 @@ class TagTest < ActiveSupport::TestCase
 
     assert_equal %w{Business Chips Crime Pie}, tags.map(&:title).sort
   end
+
+  test "should validate with TagIdValidator" do
+    assert_includes Tag.validators.map(&:class), TagIdValidator
+  end
 end
