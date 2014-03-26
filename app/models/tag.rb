@@ -18,6 +18,7 @@ class Tag
   index :tag_type
 
   validates_presence_of :tag_id, :title, :tag_type
+  validates_uniqueness_of :tag_id, scope: :tag_type
   validates_with TagIdValidator
   validates_with SafeHtml
 

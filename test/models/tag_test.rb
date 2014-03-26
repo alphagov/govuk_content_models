@@ -102,6 +102,16 @@ class TagTest < ActiveSupport::TestCase
     assert_equal %w{Business Chips Crime Pie}, tags.map(&:title).sort
   end
 
+  test "should be invalid when tag id already exists for the tag type" do
+    Tag.create!(tag_id: "cars", tag_type: "vehicles", title: "Cars")
+    Tag.create!(tag_id: "cars", tag_type: "gary-numan-songs", title: "Cars")
+
+    tag = Tag.new(tag_id: "cars", tag_type: "vehicles")
+
+    refute tag.valid?
+    assert tag.errors.has_key?(:tag_id)
+  end
+
   test "should validate with TagIdValidator" do
     assert_includes Tag.validators.map(&:class), TagIdValidator
   end
