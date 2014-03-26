@@ -147,6 +147,7 @@ class Artefact
     reject_if: proc { |attrs| attrs["title"].blank? && attrs["url"].blank?  }
 
   before_validation :normalise, on: :create
+  before_validation :filter_out_empty_need_ids, if: :need_ids_changed?
   before_create :record_create_action
   before_update :record_update_action
   after_update :update_editions
@@ -159,6 +160,7 @@ class Artefact
   validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
   validate :validate_prefixes_and_paths
+  validate :format_of_new_need_ids, if: :need_ids_changed?
 
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
@@ -365,6 +367,16 @@ class Artefact
         errors.add(:paths, "are not all valid absolute URL paths")
       end
     end
+  end
+
+  def filter_out_empty_need_ids
+    need_ids.reject!(&:blank?)
+  end
+
+  def format_of_new_need_ids
+    # http://api.rubyonrails.org/classes/ActiveModel/Dirty.html
+    new_need_ids = need_ids_was.blank? ? need_ids : need_ids - need_ids_was
+    errors.add(:need_ids, "must be six-digit integers") if new_need_ids.any? {|need_id| need_id !~ /^\d{6}$/ }
   end
 
   def valid_url_path?(path)

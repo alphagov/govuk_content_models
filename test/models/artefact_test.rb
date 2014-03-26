@@ -97,9 +97,33 @@ class ArtefactTest < ActiveSupport::TestCase
       assert_empty FactoryGirl.build(:artefact).need_ids
     end
 
+    should "filter out empty strings" do
+      artefact = FactoryGirl.create(:artefact, need_ids: ["", "100002"])
+      assert_equal ["100002"], artefact.reload.need_ids
+    end
+
     should "store multiple needs related to an artefact" do
-      artefact = FactoryGirl.create(:artefact, need_ids: ["B1231", "B1232"])
-      assert_equal ["B1231", "B1232"], artefact.reload.need_ids
+      artefact = FactoryGirl.create(:artefact, need_ids: ["100001", "100002"])
+      assert_equal ["100001", "100002"], artefact.reload.need_ids
+    end
+
+    should "be six-digit integers" do
+      artefact = FactoryGirl.build(:artefact, need_ids: ["B1231"])
+
+      refute artefact.valid?
+      assert_includes artefact.errors[:need_ids], "must be six-digit integers"
+    end
+
+    should "not validate need ids that were migrated from the singular need_id field" do
+      artefact = FactoryGirl.create(:artefact)
+      # simulate what happened during migration
+      artefact.set(:need_ids, ['As an employer
+                                I need to know which type of DBS check an employee needs
+                                so that I can apply for the correct one'])
+
+      artefact.need_ids << "100045"
+
+      assert artefact.valid?
     end
   end
 
@@ -178,9 +202,9 @@ class ArtefactTest < ActiveSupport::TestCase
   end
 
   test "should store and return related artefacts in order" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
-    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
+    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
+    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
 
     a.related_artefacts = [b, c]
     a.save!
@@ -190,9 +214,9 @@ class ArtefactTest < ActiveSupport::TestCase
   end
 
   test "should store and return related artefacts in order, even when not in natural order" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
-    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
+    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
+    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
 
     a.related_artefacts = [c, b]
     a.save!
@@ -202,10 +226,10 @@ class ArtefactTest < ActiveSupport::TestCase
   end
 
   test "should store and return related artefacts in order, with a scope" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
-    b = Artefact.create!(state: "live", slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
-    d = Artefact.create!(state: "live", slug: "d", name: "d", kind: "place", need_id: 3, owning_app: "x")
+    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
+    b = Artefact.create!(state: "live", slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
+    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
+    d = Artefact.create!(state: "live", slug: "d", name: "d", kind: "place", need_ids: ["100001"], owning_app: "x")
 
     a.related_artefacts = [d, c, b]
     a.save!
@@ -520,7 +544,7 @@ class ArtefactTest < ActiveSupport::TestCase
       FactoryGirl.create(:tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits", :parent_id => "fruit")
       FactoryGirl.create(:tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
 
-      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_id: 1, owning_app: "x")
+      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_ids: ["100001"], owning_app: "x")
     end
 
     context "when related items are present in all groups" do
@@ -528,9 +552,9 @@ class ArtefactTest < ActiveSupport::TestCase
         @artefact.sections = ["fruit/simple"]
 
         @artefact.related_artefacts = [
-          Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_id: 4, owning_app: "x"),
-          Artefact.create!(slug: "pineapple", name: "Pineapple", kind: "guide", sections: ["fruit/aggregate"], need_id: 2, owning_app: "x"),
-          Artefact.create!(slug: "broccoli", name: "Broccoli", kind: "guide", sections: ["vegetables"], need_id: 3, owning_app: "x")
+          Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x"),
+          Artefact.create!(slug: "pineapple", name: "Pineapple", kind: "guide", sections: ["fruit/aggregate"], need_ids: ["100001"], owning_app: "x"),
+          Artefact.create!(slug: "broccoli", name: "Broccoli", kind: "guide", sections: ["vegetables"], need_ids: ["100001"], owning_app: "x")
         ]
         @artefact.save!
         @artefact.reload
@@ -552,9 +576,9 @@ class ArtefactTest < ActiveSupport::TestCase
       end
 
       should "return related artefacts in order, with a scope" do
-        a = Artefact.create!(state: "live", slug: "a", name: "a", kind: "place", need_id: 1, owning_app: "x")
-        b = Artefact.create!(slug: "b", name: "b", kind: "place", need_id: 2, owning_app: "x")
-        c = Artefact.create!(state: "live", slug: "c", name: "c", kind: "place", need_id: 3, owning_app: "x")
+        a = Artefact.create!(state: "live", slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
+        b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
+        c = Artefact.create!(state: "live", slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
 
         @artefact.related_artefacts = [c,b,a]
         @artefact.save!
@@ -574,8 +598,8 @@ class ArtefactTest < ActiveSupport::TestCase
 
     should "return all related artefacts in 'other' when an artefact has no sections" do
       @artefact.related_artefacts = [
-        Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_id: 4, owning_app: "x"),
-        Artefact.create!(slug: "banana", name: "Banana", kind: "guide", sections: ["fruit/simple"], need_id: 6, owning_app: "x")
+        Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x"),
+        Artefact.create!(slug: "banana", name: "Banana", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x")
       ]
 
       assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
@@ -588,8 +612,8 @@ class ArtefactTest < ActiveSupport::TestCase
 
       @artefact.primary_section = "fruit/multiple"
       @artefact.related_artefacts = [
-        Artefact.create!(slug: "fig", name: "Fig", kind: "guide", sections: ["fruit/multiple"], need_id: 4, owning_app: "x"),
-        Artefact.create!(slug: "strawberry", name: "Strawberry", kind: "guide", sections: ["fruit/simple"], need_id: 6, owning_app: "x")
+        Artefact.create!(slug: "fig", name: "Fig", kind: "guide", sections: ["fruit/multiple"], need_ids: ["100001"], owning_app: "x"),
+        Artefact.create!(slug: "strawberry", name: "Strawberry", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x")
       ]
       @artefact.save!
 
