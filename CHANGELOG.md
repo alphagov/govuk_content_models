@@ -1,3 +1,7 @@
+## 9.0.0
+
+* Removes `business_support_identifier` field from BusinessSupportEdition.
+
 ## 8.10.0
 
 * Adds a flag to `attaches` to have the `Attachable`
