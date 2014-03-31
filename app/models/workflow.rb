@@ -186,7 +186,7 @@ module Workflow
   end
 
   def edition_changes
-    if self.whole_body.empty?
+    if self.whole_body.blank?
       false
     else
       my_body, their_body = [self, self.published_edition].map do |edition|
