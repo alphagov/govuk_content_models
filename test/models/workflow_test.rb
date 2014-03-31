@@ -347,6 +347,11 @@ class WorkflowTest < ActiveSupport::TestCase
     assert_equal "badger\n\nmushroom\n\nsnake\n\nend", edition_two.edition_changes.to_s
   end
 
+  test "edition_changes should return false if the whole body is nil" do
+    edition = FactoryGirl.create(:completed_transaction_edition, body: nil)
+    refute edition.edition_changes
+  end
+
   test "an edition can be moved into archive state" do
     user, other_user = template_users
 
