@@ -1,3 +1,7 @@
+## 9.0.1
+
+* Bugfix: `whole_body` can return nil for CompletedTransactionEdition because the body field is no longer used.
+
 ## 9.0.0
 
 * Removes `business_support_identifier` field from BusinessSupportEdition.
