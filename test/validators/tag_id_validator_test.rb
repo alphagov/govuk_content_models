@@ -51,4 +51,10 @@ class TagIdValidatorTest < ActiveSupport::TestCase
     assert dummy.errors.has_key?(:tag_id)
   end
 
+  should "not permit a slash at the end of a tag id" do
+    dummy = Dummy.new(tag_id: "parent-tag-id/")
+    refute dummy.valid?
+    assert dummy.errors.has_key?(:tag_id)
+  end
+
 end

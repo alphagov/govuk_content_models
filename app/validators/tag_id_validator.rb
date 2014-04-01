@@ -9,7 +9,9 @@ class TagIdValidator < ActiveModel::Validator
   private
 
   def valid_tag_id?(tag_id)
-    tag_id.to_s.match(/\A[a-z0-9\-\/]+\Z/) && tag_id.to_s.count('/') <= 1
+    tag_id.to_s.match(/\A[a-z0-9\-\/]+\Z/) &&
+      tag_id.to_s.count('/') <= 1 &&
+      ! tag_id.to_s.end_with?('/')
   end
 
 end
