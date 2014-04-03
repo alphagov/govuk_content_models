@@ -1,3 +1,7 @@
+## 10.0.0
+
+* Add validation for tag IDs
+
 ## 9.0.1
 
 * Bugfix: `whole_body` can return nil for CompletedTransactionEdition because the body field is no longer used.
