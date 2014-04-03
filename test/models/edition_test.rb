@@ -542,6 +542,23 @@ class EditionTest < ActiveSupport::TestCase
     assert edition.new_action(user, "note", comment: "Something important")
   end
 
+  test "first edition has no previous edition diffrences" do
+    first_edition = template_published_answer
+
+    assert_nil first_edition.previous_edition_differences
+  end
+
+  test "can access the changes since the last version" do
+    first_edition = template_published_answer
+    second_edition = first_edition.build_clone(AnswerEdition)
+    second_edition.body = "Test Body 2"
+    second_edition.save
+    second_edition.reload
+
+    assert_equal("{\"Lots of info\" >> \"Test Body 2\"}",
+                 second_edition.previous_edition_differences)
+  end
+
   test "status should not be affected by notes" do
     user = User.create(name: "bob")
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
