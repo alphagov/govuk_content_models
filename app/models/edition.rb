@@ -289,7 +289,7 @@ class Edition
     if version_number == history.length && version_number > 1
       edition_changes.to_s # diff of current changes
     elsif version_number > 1
-      actions.last.diff # diff with previous published version
+      actions.select { |a| a.request_type == 'publish' }.last.diff # diff with previous published version
     end
   end
 end
