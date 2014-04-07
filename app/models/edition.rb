@@ -286,9 +286,11 @@ class Edition
   end
 
   def previous_edition_differences
-    if version_number == history.length && version_number > 1
+    return if version_number <= 1
+
+    if in_progress?
       edition_changes.to_s # diff of current changes
-    elsif version_number > 1
+    else
       actions.select { |a| a.request_type == 'publish' }.last.diff # diff with previous published version
     end
   end
