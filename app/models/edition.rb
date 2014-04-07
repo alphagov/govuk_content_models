@@ -284,4 +284,14 @@ class Edition
       Artefact.find(self.panopticon_id).destroy
     end
   end
+
+  def previous_edition_differences
+    return if version_number <= 1
+
+    if in_progress?
+      edition_changes.to_s # diff of current changes
+    else
+      actions.select { |a| a.request_type == 'publish' }.last.diff # diff with previous published version
+    end
+  end
 end

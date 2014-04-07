@@ -40,6 +40,14 @@ class EditionTest < ActiveSupport::TestCase
     template_answer(version_number)
   end
 
+  def draft_second_edition_from(published_edition)
+    published_edition.build_clone(AnswerEdition).tap { |edition|
+      edition.body = "Test Body 2"
+      edition.save
+      edition.reload
+    }
+  end
+
   test "it must have a title" do
     a = LocalTransactionEdition.new
     refute a.valid?
@@ -540,6 +548,31 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     user = User.new
     assert edition.new_action(user, "note", comment: "Something important")
+  end
+
+  test "first edition has no previous edition diffrences" do
+    first_edition = template_published_answer
+
+    assert_nil first_edition.previous_edition_differences
+  end
+
+  test "can access the changes since the last version" do
+    second_edition = draft_second_edition_from(template_published_answer)
+
+    assert_equal("{\"Lots of info\" >> \"Test Body 2\"}",
+                 second_edition.previous_edition_differences)
+  end
+
+  test "can show the differences between published editions" do
+    second_edition = draft_second_edition_from(template_published_answer)
+    second_edition.update_attribute(:state, "ready")
+    second_edition.save!
+
+    user = User.create(name: "bob")
+    user.publish second_edition, comment: "Published comment"
+
+    assert_equal("{\"Lots of info\" >> \"Test Body 2\"}",
+                 second_edition.previous_edition_differences)
   end
 
   test "status should not be affected by notes" do
