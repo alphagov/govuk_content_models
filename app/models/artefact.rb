@@ -33,7 +33,12 @@ class Artefact
   field "owning_app",           type: String
   field "rendering_app",        type: String
   field "active",               type: Boolean, default: false
+
+  # will be removed once multiple need_ids
+  # gets deployed and tested.
   field "need_id",              type: String
+
+  field "need_ids",             type: Array, default: []
   field "fact_checkers",        type: String
   field "publication_id",       type: String
   field "description",          type: String
@@ -142,6 +147,7 @@ class Artefact
     reject_if: proc { |attrs| attrs["title"].blank? && attrs["url"].blank?  }
 
   before_validation :normalise, on: :create
+  before_validation :filter_out_empty_need_ids, if: :need_ids_changed?
   before_create :record_create_action
   before_update :record_update_action
   after_update :update_editions
@@ -154,6 +160,7 @@ class Artefact
   validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
   validate :validate_prefixes_and_paths
+  validate :format_of_new_need_ids, if: :need_ids_changed?
 
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
@@ -347,6 +354,13 @@ class Artefact
     attributes.except "_id", "created_at", "updated_at", "actions"
   end
 
+  def need_id=(new_need_id)
+    super
+
+    need_ids << new_need_id if new_need_id.present? && ! need_ids.include?(new_need_id)
+    new_need_id
+  end
+
   private
 
   def validate_prefixes_and_paths
@@ -360,6 +374,16 @@ class Artefact
         errors.add(:paths, "are not all valid absolute URL paths")
       end
     end
+  end
+
+  def filter_out_empty_need_ids
+    need_ids.reject!(&:blank?)
+  end
+
+  def format_of_new_need_ids
+    # http://api.rubyonrails.org/classes/ActiveModel/Dirty.html
+    new_need_ids = need_ids_was.blank? ? need_ids : need_ids - need_ids_was
+    errors.add(:need_ids, "must be six-digit integers") if new_need_ids.any? {|need_id| need_id !~ /^\d{6}$/ }
   end
 
   def valid_url_path?(path)
