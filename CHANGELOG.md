@@ -1,3 +1,7 @@
+## 10.1.1
+
+* Allow an artefact to be associated with multiple needs
+
 ## 10.0.0
 
 * Add validation for tag IDs
