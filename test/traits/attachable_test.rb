@@ -1,9 +1,5 @@
 require 'test_helper'
 
-class MockAssetApi
-  class MockError < StandardError; end
-end
-
 class ModelWithAttachments
   include Attachable
   include Mongoid::Document
@@ -35,7 +31,7 @@ class AttachableTest < ActiveSupport::TestCase
     @edition_with_url_field = ModelWithAttachmentsAndUrl.new
     @edition_with_update_option = ModelWithUpdatableAttachments.new
     @previous_api_client = Attachable.asset_api_client
-    @mock_asset_api = MockAssetApi.new
+    @mock_asset_api = mock("mock_asset_api")
     Attachable.asset_api_client = @mock_asset_api
   end
 
@@ -57,7 +53,7 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.image_id = "an_image_id"
 
       asset = OpenStruct.new(:file_url => "/path/to/image")
-      MockAssetApi.any_instance.expects(:asset).with("an_image_id").returns(asset)
+      @mock_asset_api.expects(:asset).with("an_image_id").returns(asset)
 
       assert_equal "/path/to/image", @edition.image.file_url
     end
@@ -66,7 +62,7 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.image_id = "an_image_id"
 
       asset = OpenStruct.new(:something => "one", :something_else => "two")
-      MockAssetApi.any_instance.expects(:asset).once.with("an_image_id").returns(asset)
+      @mock_asset_api.expects(:asset).once.with("an_image_id").returns(asset)
 
       assert_equal "one", @edition.image.something
       assert_equal "two", @edition.image.something_else
@@ -91,26 +87,24 @@ class AttachableTest < ActiveSupport::TestCase
     should "create another asset even if an asset already exists" do
       @edition.image_id = "foo"
       @mock_asset_api.expects(:create_asset).returns(@asset)
-      @mock_asset_api.expects(:update_asset).never
 
       @edition.image = @file
       @edition.save!
     end
 
     should "create an asset when one does not exist" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
     end
 
     should "not upload an asset if it has not changed" do
-      ModelWithAttachments.any_instance.expects(:upload_image).never
       @edition.save!
     end
 
     should "assign the asset id to the attachment id attribute" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
@@ -119,7 +113,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "assign the asset url to the attachment url attribute if requested" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition_with_url_field.image = @file
       @edition_with_url_field.save!
@@ -128,7 +122,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "not create the attachment url attribute if not requested" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
@@ -146,7 +140,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "catch any errors raised by the api client" do
-      MockAssetApi.any_instance.expects(:create_asset).raises(MockAssetApi::MockError)
+      @mock_asset_api.expects(:create_asset).raises(StandardError)
 
       assert_nothing_raised do
         @edition.image = @file
@@ -157,7 +151,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "not stop the edition from being saved when an uploading error is raised" do
-      MockAssetApi.any_instance.expects(:create_asset).raises(MockAssetApi::MockError)
+      @mock_asset_api.expects(:create_asset).raises(StandardError)
 
       @edition.image = @file
       @edition.title = "foo"
@@ -203,7 +197,6 @@ class AttachableTest < ActiveSupport::TestCase
     context "saving an edition without an existing asset" do
       should "create a new asset" do
         @mock_asset_api.expects(:create_asset).with(:file => @file).returns(@asset_response)
-        @mock_asset_api.expects(:update_asset).never
 
         @edition_with_update_option.image = @file
         @edition_with_update_option.save!
@@ -233,7 +226,6 @@ class AttachableTest < ActiveSupport::TestCase
 
       should "update the asset on save" do
         @mock_asset_api.expects(:update_asset).with(@asset_id, :file => @file).returns(@asset_response)
-        @mock_asset_api.expects(:create_asset).never
 
         @edition_with_update_option.image = @file
         @edition_with_update_option.save!
