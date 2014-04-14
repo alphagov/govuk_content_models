@@ -1,6 +1,14 @@
+## 10.1.2
+
+* Use `\A\z` anchors instead of `^$` in need ID validation regex
+
 ## 10.1.1
 
 * Allow an artefact to be associated with multiple needs
+
+## 10.1.0
+
+* Add `previous_edition_differences` method to simplify working with change histories.
 
 ## 10.0.0
 
