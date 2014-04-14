@@ -383,7 +383,7 @@ class Artefact
   def format_of_new_need_ids
     # http://api.rubyonrails.org/classes/ActiveModel/Dirty.html
     new_need_ids = need_ids_was.blank? ? need_ids : need_ids - need_ids_was
-    errors.add(:need_ids, "must be six-digit integers") if new_need_ids.any? {|need_id| need_id !~ /^\d{6}$/ }
+    errors.add(:need_ids, "must be six-digit integers") if new_need_ids.any? {|need_id| need_id !~ /\A\d{6}\z/ }
   end
 
   def valid_url_path?(path)
