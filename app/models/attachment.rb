@@ -7,7 +7,7 @@ class Attachment
 
   field :title
   field :filename
-  attaches :file, with_url_field: true
+  attaches :file, with_url_field: true, update_existing: true
 
   embedded_in :specialist_document_edition
 
