@@ -1,3 +1,7 @@
+## 10.2.0
+
+* Adding a nil check around `need_ids` field in validations and using the correct gem version number to reflect the new feature that got added in 10.1.1.
+
 ## 10.1.2
 
 * Use `\A\z` anchors instead of `^$` in need ID validation regex
