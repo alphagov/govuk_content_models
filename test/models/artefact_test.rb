@@ -97,6 +97,13 @@ class ArtefactTest < ActiveSupport::TestCase
       assert_empty FactoryGirl.build(:artefact).need_ids
     end
 
+    should "do validations if nil" do
+      artefact = FactoryGirl.create(:artefact, need_ids: ["100001"])
+      artefact.need_ids = nil
+
+      assert_nothing_raised { artefact.valid? }
+    end
+
     should "filter out empty strings" do
       artefact = FactoryGirl.create(:artefact, need_ids: ["", "100002"])
       assert_equal ["100002"], artefact.reload.need_ids

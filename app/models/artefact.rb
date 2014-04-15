@@ -377,10 +377,13 @@ class Artefact
   end
 
   def filter_out_empty_need_ids
+    return if need_ids.blank?
     need_ids.reject!(&:blank?)
   end
 
   def format_of_new_need_ids
+    return if need_ids.blank?
+
     # http://api.rubyonrails.org/classes/ActiveModel/Dirty.html
     new_need_ids = need_ids_was.blank? ? need_ids : need_ids - need_ids_was
     errors.add(:need_ids, "must be six-digit integers") if new_need_ids.any? {|need_id| need_id !~ /^\d{6}$/ }
