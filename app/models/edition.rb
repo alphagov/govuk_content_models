@@ -46,7 +46,7 @@ class Edition
   }
 
   validates :title, presence: true
-  validates :version_number, presence: true
+  validates :version_number, presence: true, uniqueness: {scope: :panopticon_id}
   validates :panopticon_id, presence: true
   validates_with SafeHtml
 
@@ -54,7 +54,7 @@ class Edition
   before_destroy :destroy_artefact
 
   index "assigned_to_id"
-  index "panopticon_id"
+  index [["panopticon_id", Mongo::ASCENDING], ["version_number", Mongo::ASCENDING]], :unique => true
   index "state"
 
   class << self; attr_accessor :fields_to_clone end

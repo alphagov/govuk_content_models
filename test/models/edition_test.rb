@@ -505,7 +505,7 @@ class EditionTest < ActiveSupport::TestCase
     stub_request(:get, %r{http://panopticon\.test\.gov\.uk/artefacts/.*\.js}).
         to_return(status: 200, body: "{}", headers: {})
 
-    a, b = 2.times.map { |i| GuideEdition.create!(panopticon_id: @artefact.id, title: "Guide #{i}", slug: "guide-#{i}") }
+    a, b = 2.times.map { |i| FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id) }
 
     alice, bob, charlie = %w[ alice bob charlie ].map { |s|
       FactoryGirl.create(:user, name: s)
@@ -916,27 +916,27 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should update previous editions when new edition is added" do
     @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
     @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     @new_edition = @published_edition.build_clone
-    @new_edition.save
+    @new_edition.save!
     @published_edition.reload
 
-    assert_equal 2, @new_edition.version_number
-    assert_equal 2, @published_edition.sibling_in_progress
+    assert_equal 3, @new_edition.version_number
+    assert_equal 3, @published_edition.sibling_in_progress
   end
 
   test "should update previous editions when new edition is published" do
     @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
     @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
     @new_edition = @published_edition.build_clone
-    @new_edition.save
+    @new_edition.save!
     @new_edition.update_attribute(:state, "ready")
     @user.publish(@new_edition, comment: "Publishing this")
     @published_edition.reload
 
-    assert_equal 2, @new_edition.version_number
+    assert_equal 3, @new_edition.version_number
     assert_nil @new_edition.sibling_in_progress
     assert_nil @published_edition.sibling_in_progress
   end
@@ -980,6 +980,40 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should return related artefact" do
     assert_equal "Foo bar", template_published_answer.artefact.name
+  end
+
+  context "validating version_number" do
+    should "be required" do
+      ed = FactoryGirl.build(:edition, :panopticon_id => @artefact.id)
+      ed.version_number = nil
+      assert ! ed.valid?, "Expected edition not to be valid with no version_number"
+    end
+
+    should "be unique" do
+      ed1 = FactoryGirl.create(:edition, :panopticon_id => @artefact.id)
+      ed2 = FactoryGirl.build(:edition, :panopticon_id => @artefact.id)
+      ed2.version_number = ed1.version_number
+
+      assert ! ed2.valid?, "Expected edition not to be valid with conflicting version_number"
+    end
+
+    should "allow editions belonging to different artefacts to have matching version_numbers" do
+      ed1 = FactoryGirl.create(:edition, :panopticon_id => @artefact.id)
+      ed2 = FactoryGirl.build(:edition, :panopticon_id => FactoryGirl.create(:artefact).id)
+      ed2.version_number = ed1.version_number
+
+      assert ed2.valid?, "Expected edition to be valid"
+    end
+
+    should "have a database-level constraint on the uniqueness" do
+      ed1 = FactoryGirl.create(:edition, :panopticon_id => @artefact.id)
+      ed2 = FactoryGirl.build(:edition, :panopticon_id => @artefact.id)
+      ed2.version_number = ed1.version_number
+
+      assert_raises Mongo::OperationFailure do
+        ed2.safely.save! :validate => false
+      end
+    end
   end
 
   context "indexable_content" do
