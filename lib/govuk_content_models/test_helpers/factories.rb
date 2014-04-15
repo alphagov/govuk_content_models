@@ -80,6 +80,12 @@ FactoryGirl.define do
 
     section "test:subsection test"
 
+    after :build do |ed|
+      if previous = ed.series.order(version_number: "desc").first
+        ed.version_number = previous.version_number + 1
+      end
+    end
+
     trait :scheduled_for_publishing do
       state 'scheduled_for_publishing'
       publish_at 1.day.from_now
