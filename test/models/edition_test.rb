@@ -1004,6 +1004,16 @@ class EditionTest < ActiveSupport::TestCase
 
       assert ed2.valid?, "Expected edition to be valid"
     end
+
+    should "have a database-level constraint on the uniqueness" do
+      ed1 = FactoryGirl.create(:edition, :panopticon_id => @artefact.id)
+      ed2 = FactoryGirl.build(:edition, :panopticon_id => @artefact.id)
+      ed2.version_number = ed1.version_number
+
+      assert_raises Mongo::OperationFailure do
+        ed2.safely.save! :validate => false
+      end
+    end
   end
 
   context "indexable_content" do
