@@ -80,8 +80,6 @@ FactoryGirl.define do
 
     section "test:subsection test"
 
-    association :assigned_to, factory: :user
-
     trait :scheduled_for_publishing do
       state 'scheduled_for_publishing'
       publish_at 1.day.from_now
@@ -109,28 +107,15 @@ FactoryGirl.define do
   factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
   end
 
-  factory :guide_edition do |ge|
-    panopticon_id {
-        a = create(:artefact)
-        a.id
-      }
-    ge.sequence(:title)  { |n| "Test guide #{n}" }
-    ge.sequence(:slug) { |ns| "slug-#{ns}"}
-    section { "test:subsection test" }
+  factory :guide_edition, :parent => :edition, :class => "GuideEdition" do
+    sequence(:title)  { |n| "Test guide #{n}" }
   end
 
-  factory :programme_edition do |edition|
-    panopticon_id {
-        a = create(:artefact)
-        a.id
-      }
-    edition.sequence(:title) { |n| "Test programme #{n}" }
-    edition.sequence(:slug) { |ns| "slug-#{ns}"}
-    section { "test:subsection test" }
+  factory :programme_edition, :parent => :edition, :class => "ProgrammeEdition" do
+    sequence(:title) { |n| "Test programme #{n}" }
   end
 
   factory :programme_edition_with_multiple_parts, parent: :programme_edition do
-    title "a title"
     after :create do |getp|
       getp.parts.build(title: "PART !", body: "This is some programme version text.",
                        slug: "part-one")
@@ -141,7 +126,6 @@ FactoryGirl.define do
   end
 
   factory :guide_edition_with_two_parts, parent: :guide_edition do
-    title "a title"
     after :create do |getp|
       getp.parts.build(title: "PART !", body: "This is some version text.",
                        slug: "part-one")
@@ -152,7 +136,6 @@ FactoryGirl.define do
   end
 
   factory :guide_edition_with_two_govspeak_parts, parent: :guide_edition do
-    title "A title for govspeak parts"
     after :create do |getp|
       getp.parts.build(title: "Some Part Title!",
                        body: "This is some **version** text.", slug: "part-one")
@@ -162,26 +145,13 @@ FactoryGirl.define do
     end
   end
 
-  factory :local_transaction_edition do |lte|
-    panopticon_id {
-        a = create(:artefact)
-        a.id
-      }
-    title  { "Test title" }
-    version_number 1
-    lte.sequence(:slug) { |ns| "slug-#{ns}"}
-    lte.sequence(:lgsl_code) { |nlgsl| nlgsl }
+  factory :local_transaction_edition, :parent => :edition, :class => "LocalTransactionEdition" do
+    sequence(:lgsl_code) { |nlgsl| nlgsl }
     introduction { "Test introduction" }
     more_information { "This is more information" }
   end
 
-  factory :transaction_edition do |te|
-    panopticon_id {
-        a = create(:artefact)
-        a.id
-      }
-    title  { "Test title" }
-    version_number 1
+  factory :transaction_edition, :parent => :edition, :class => "TransactionEdition" do
     introduction { "Test introduction" }
     more_information { "This is more information" }
     link "http://continue.com"
@@ -279,11 +249,7 @@ FactoryGirl.define do
     case_state 'open'
   end
 
-  factory :simple_smart_answer_edition do
-    panopticon_id {
-      a = create(:artefact)
-      a.id
-    }
+  factory :simple_smart_answer_edition, :parent => :edition, :class => "SimpleSmartAnswerEdition" do
     title "Simple smart answer"
     body "Introduction to the smart answer"
   end
