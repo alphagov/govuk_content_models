@@ -59,8 +59,12 @@ module Taggable
     # as documented on http://mongoid.org/en/mongoid/docs/documents.html
     tags
 
+    # Make sure that 'values' is an array. This stops the method blowing up
+    # if nil is provided.
+    values_as_array = Array(values)
+
     # This will raise a Tag::MissingTags exception unless all the tags exist
-    new_tags = Tag.by_tag_ids!(values, tag_type)
+    new_tags = Tag.by_tag_ids!(values_as_array, tag_type)
 
     @tags.reject! { |t| t.tag_type == tag_type }
     @tags += new_tags

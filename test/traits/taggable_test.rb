@@ -111,4 +111,16 @@ class TaggableTest < ActiveSupport::TestCase
 
     assert_equal ['bacon'], @item.keyword_ids
   end
+
+  test "can set tags of type to be nil" do
+    @item.section_ids = nil
+    @item.save!
+
+    assert_equal [], @item.section_ids
+
+    @item.sections = nil
+    @item.save!
+
+    assert_equal [], @item.section_ids
+  end
 end
