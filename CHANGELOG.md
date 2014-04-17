@@ -1,3 +1,7 @@
+## 10.2.2
+
+-  Prevent a Mongo error when tag_ids are set to nil 
+
 ## 10.2.0
 
 * Adding a nil check around `need_ids` field in validations and using the correct gem version number to reflect the new feature that got added in 10.1.1.
