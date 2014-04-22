@@ -122,7 +122,8 @@ class Artefact
                                   "transparency",
                                   "world_location_news_article",
                                   "worldwide_priority",
-                                  "written_statement"]
+                                  "written_statement"],
+    "panopticon"              => ["specialist_sector"],
   }.freeze
 
   FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
