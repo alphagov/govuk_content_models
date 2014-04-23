@@ -6,7 +6,7 @@ class TagIdValidator < ActiveModel::Validator
     end
   end
 
-  private
+private
 
   def valid_tag_id?(tag_id)
     tag_id.to_s.match(/\A[a-z0-9\-\/]+\Z/) &&
