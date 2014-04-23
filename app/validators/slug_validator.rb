@@ -121,7 +121,7 @@ protected
     end
 
     def validate!
-      unless (1..2).include?(url_parts.size)
+      unless [1, 2].include?(url_parts.size)
         record.errors[attribute] << "must contains one or two path parts"
       end
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
