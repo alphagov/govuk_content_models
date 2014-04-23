@@ -1,3 +1,7 @@
+## 10.4.0
+
+* Add support for updating existing attachments
+
 ## 10.3.0
 
 *  Add artefacts for specialist sector tags
