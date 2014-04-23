@@ -648,20 +648,5 @@ class ArtefactTest < ActiveSupport::TestCase
       assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
       assert_equal ["pear", "banana"], @artefact.related_artefacts_grouped_by_distance["other"].map(&:slug)
     end
-
-    should "return no section level related artefacts if the primary section has no parent_id" do
-      FactoryGirl.create(:tag, :tag_id => "fruit/multiple", :tag_type => 'section', :title => "Multiple fruits", :parent_id => nil)
-
-      @artefact.primary_section = "fruit/multiple"
-      @artefact.related_artefacts = [
-        Artefact.create!(slug: "fig", name: "Fig", kind: "guide", sections: ["fruit/multiple"], need_ids: ["100001"], owning_app: "x"),
-        Artefact.create!(slug: "strawberry", name: "Strawberry", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x")
-      ]
-      @artefact.save!
-
-      assert_equal ["fig"], @artefact.related_artefacts_grouped_by_distance["subsection"].map(&:slug)
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
-      assert_equal ["strawberry"], @artefact.related_artefacts_grouped_by_distance["other"].map(&:slug)
-    end
   end
 end
