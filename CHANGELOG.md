@@ -1,6 +1,6 @@
 ## 10.2.2
 
--  Prevent a Mongo error when tag_ids are set to nil 
+-  Prevent a Mongo error when tag_ids are set to nil
 
 ## 10.2.0
 
