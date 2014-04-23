@@ -1,3 +1,7 @@
+## 10.3.0
+
+*  Add artefacts for specialist sector tags
+
 ## 10.2.2
 
 -  Prevent a Mongo error when tag_ids are set to nil
