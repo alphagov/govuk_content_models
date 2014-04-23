@@ -1,9 +1,5 @@
 require 'test_helper'
 
-class MockAssetApi
-  class MockError < StandardError; end
-end
-
 class ModelWithAttachments
   include Attachable
   include Mongoid::Document
@@ -20,13 +16,23 @@ class ModelWithAttachmentsAndUrl
   attaches :image, with_url_field: true
 end
 
+class ModelWithUpdatableAttachments
+  include Attachable
+  include Mongoid::Document
+
+  field :title, type: String
+  attaches :image, update_existing: true, with_url_field: true
+end
+
 class AttachableTest < ActiveSupport::TestCase
 
   setup do
     @edition = ModelWithAttachments.new
     @edition_with_url_field = ModelWithAttachmentsAndUrl.new
+    @edition_with_update_option = ModelWithUpdatableAttachments.new
     @previous_api_client = Attachable.asset_api_client
-    Attachable.asset_api_client = MockAssetApi.new
+    @mock_asset_api = mock("mock_asset_api")
+    Attachable.asset_api_client = @mock_asset_api
   end
 
   teardown do
@@ -47,7 +53,7 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.image_id = "an_image_id"
 
       asset = OpenStruct.new(:file_url => "/path/to/image")
-      MockAssetApi.any_instance.expects(:asset).with("an_image_id").returns(asset)
+      @mock_asset_api.expects(:asset).with("an_image_id").returns(asset)
 
       assert_equal "/path/to/image", @edition.image.file_url
     end
@@ -56,7 +62,7 @@ class AttachableTest < ActiveSupport::TestCase
       @edition.image_id = "an_image_id"
 
       asset = OpenStruct.new(:something => "one", :something_else => "two")
-      MockAssetApi.any_instance.expects(:asset).once.with("an_image_id").returns(asset)
+      @mock_asset_api.expects(:asset).once.with("an_image_id").returns(asset)
 
       assert_equal "one", @edition.image.something
       assert_equal "two", @edition.image.something_else
@@ -64,13 +70,12 @@ class AttachableTest < ActiveSupport::TestCase
 
     should "assign a file and detect it has changed" do
       file = File.open(File.expand_path("../../fixtures/uploads/image.jpg", __FILE__))
-
       @edition.image = file
       assert @edition.image_has_changed?
     end
   end
 
-  context "saving an edition" do
+  context "saving an edition without update_existing set" do
     setup do
       @file = File.open(File.expand_path("../../fixtures/uploads/image.jpg", __FILE__))
       @asset = OpenStruct.new(
@@ -79,20 +84,27 @@ class AttachableTest < ActiveSupport::TestCase
       )
     end
 
-    should "upload the asset" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+    should "create another asset even if an asset already exists" do
+      @edition.image_id = "foo"
+      @mock_asset_api.expects(:create_asset).returns(@asset)
+
+      @edition.image = @file
+      @edition.save!
+    end
+
+    should "create an asset when one does not exist" do
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
     end
 
     should "not upload an asset if it has not changed" do
-      ModelWithAttachments.any_instance.expects(:upload_image).never
       @edition.save!
     end
 
     should "assign the asset id to the attachment id attribute" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
@@ -101,7 +113,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "assign the asset url to the attachment url attribute if requested" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition_with_url_field.image = @file
       @edition_with_url_field.save!
@@ -110,7 +122,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "not create the attachment url attribute if not requested" do
-      MockAssetApi.any_instance.expects(:create_asset).with({ :file => @file }).returns(@asset)
+      @mock_asset_api.expects(:create_asset).with({ :file => @file }).returns(@asset)
 
       @edition.image = @file
       @edition.save!
@@ -128,7 +140,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "catch any errors raised by the api client" do
-      MockAssetApi.any_instance.expects(:create_asset).raises(MockAssetApi::MockError)
+      @mock_asset_api.expects(:create_asset).raises(StandardError)
 
       assert_nothing_raised do
         @edition.image = @file
@@ -139,7 +151,7 @@ class AttachableTest < ActiveSupport::TestCase
     end
 
     should "not stop the edition from being saved when an uploading error is raised" do
-      MockAssetApi.any_instance.expects(:create_asset).raises(MockAssetApi::MockError)
+      @mock_asset_api.expects(:create_asset).raises(StandardError)
 
       @edition.image = @file
       @edition.title = "foo"
@@ -170,4 +182,63 @@ class AttachableTest < ActiveSupport::TestCase
     end
   end
 
+  context "with update_existing option set" do
+    setup do
+      @file = File.open(File.expand_path("../../fixtures/uploads/image.jpg", __FILE__))
+
+      @asset_id = 'an_image_id'
+
+      @asset_response = OpenStruct.new(
+        id: "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
+        file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
+      )
+    end
+
+    context "saving an edition without an existing asset" do
+      should "create a new asset" do
+        @mock_asset_api.expects(:create_asset).with(:file => @file).returns(@asset_response)
+
+        @edition_with_update_option.image = @file
+        @edition_with_update_option.save!
+      end
+
+      should "assign the asset id and file url" do
+        @mock_asset_api.stubs(:create_asset).returns(@asset_response)
+
+        @edition_with_update_option.image = @file
+        @edition_with_update_option.save!
+
+        assert_equal @asset_id, @edition_with_update_option.image_id
+        assert_equal @asset_response.file_url, @edition_with_update_option.image_url
+      end
+    end
+
+    context "saving an edition with and existing asset" do
+      setup do
+        @existing_asset = OpenStruct.new(
+          id: "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
+          file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/old_image.jpg'
+        )
+
+        @edition_with_update_option.image_id = @asset_id
+        @edition_with_update_option.image_url = @existing_asset.file_url
+      end
+
+      should "update the asset on save" do
+        @mock_asset_api.expects(:update_asset).with(@asset_id, :file => @file).returns(@asset_response)
+
+        @edition_with_update_option.image = @file
+        @edition_with_update_option.save!
+      end
+
+      should "update the file url for the asset" do
+        @mock_asset_api.stubs(:update_asset).returns(@asset_response)
+
+        @edition_with_update_option.image = @file
+        @edition_with_update_option.save!
+
+        assert_equal @asset_response.file_url, @edition_with_update_option.image_url
+      end
+    end
+  end
 end
