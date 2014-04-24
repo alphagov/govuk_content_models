@@ -30,6 +30,10 @@ class SpecialistDocumentEdition
       transition draft: :published
     end
 
+    event :withdraw do
+      transition published: :withdrawn
+    end
+
     event :archive do
       transition all => :archived, :unless => :archived?
     end

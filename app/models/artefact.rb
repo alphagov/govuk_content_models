@@ -156,7 +156,7 @@ class Artefact
   validates :name, presence: true
   validates :slug, presence: true, uniqueness: true, slug: true
   validates :kind, inclusion: { in: lambda { |x| FORMATS } }
-  validates :state, inclusion: { in: ["draft", "live", "archived"] }
+  validates :state, inclusion: { in: ["draft", "live", "archived", "withdrawn"] }
   validates :owning_app, presence: true
   validates :language, inclusion: { in: ["en", "cy"] }
   validates_with CannotEditSlugIfEverPublished
