@@ -40,13 +40,19 @@ class TagIdValidatorTest < ActiveSupport::TestCase
     assert dummy.errors.has_key?(:tag_id)
   end
 
-  should "permit a tag id containing a slash" do
-    dummy = Dummy.new(tag_id: "parent-tag-id/child-tag-id")
+  should "permit a child tag id containing a slash" do
+    dummy = Dummy.new(tag_id: "parent-tag-id/child-tag-id", parent_id: 1)
     assert dummy.valid?
   end
 
-  should "not permit more than one slash in a tag id" do
-    dummy = Dummy.new(tag_id: "parent-tag-id/more/than/one/slash")
+  should "not permit a parent tag id containing a slash" do
+    dummy = Dummy.new(tag_id: "an-invalid/parent-tag-id", parent_id: nil)
+    refute dummy.valid?
+    assert dummy.errors.has_key?(:tag_id)
+  end
+
+  should "not permit a child tag id with more than one slash" do
+    dummy = Dummy.new(tag_id: "parent-tag-id/two/slashes", parent_id: 1)
     refute dummy.valid?
     assert dummy.errors.has_key?(:tag_id)
   end
