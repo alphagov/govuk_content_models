@@ -1,3 +1,7 @@
+## 10.4.1
+
+*  Fix tag validation; tags slugs may only contain `/` if they're a child tag.
+
 ## 10.4.0
 
 * Add support for updating existing attachments
