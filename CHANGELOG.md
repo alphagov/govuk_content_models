@@ -1,3 +1,7 @@
+## 10.4.2
+
+*  Making Artefact.relatable_items a scope so that it can be chained.
+
 ## 10.4.1
 
 *  Fix tag validation; tags slugs may only contain `/` if they're a child tag.
