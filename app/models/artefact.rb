@@ -163,21 +163,17 @@ class Artefact
   validate :validate_prefixes_and_paths
   validate :format_of_new_need_ids, if: :need_ids_changed?
 
+  scope :relatable_items, proc {
+    where(:kind.ne => "completed_transaction", :state.ne => "archived")
+      .order_by([[:name, :asc]])
+  }
+
   def self.in_alphabetical_order
     order_by([[:name, :asc]])
   end
 
   def self.find_by_slug(s)
     where(slug: s).first
-  end
-
-  def self.relatable_items
-    # Only retrieving the name field, because that's all we use in Panopticon's
-    # helper method (the only place we use this), and it means the index can
-    # cover the query entirely
-    self.in_alphabetical_order
-        .where(:kind.ne => "completed_transaction", :state.ne => "archived")
-        .only(:name)
   end
 
   # The old-style section string identifier, of the form 'Crime:Prisons'
