@@ -10,4 +10,6 @@ class ManualEdition
   field :state, type: String, default: 'draft'
 
   field :summary, type: String
+
+  validates_with SafeHtml
 end
