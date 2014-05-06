@@ -1,3 +1,7 @@
+## 10.5.0
+
+*  Add Corporate information pages to Whitehall formats.
+
 ## 10.4.2
 
 *  Making Artefact.relatable_items a scope so that it can be chained.
