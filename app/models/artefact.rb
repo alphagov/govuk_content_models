@@ -88,6 +88,7 @@ class Artefact
                                   "authored_article",
                                   "case_study",
                                   "consultation",
+                                  "corporate_information_page",
                                   "corporate_report",
                                   "correspondence",
                                   "decision",
