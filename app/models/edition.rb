@@ -1,5 +1,4 @@
 require "workflow"
-require "fact_check_address"
 
 class Edition
   include Mongoid::Document
@@ -104,10 +103,6 @@ class Edition
 
   def meta_data
     PublicationMetadata.new self
-  end
-
-  def fact_check_email_address
-    FactCheckAddress.new.for_edition(self)
   end
 
   def get_next_version_number

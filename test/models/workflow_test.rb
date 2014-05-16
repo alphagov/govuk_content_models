@@ -181,7 +181,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user.receive_fact_check(edition, {comment: "Text.<l>content that the SafeHtml validator would catch</l>"})
     user.send_fact_check(edition,{comment: "Out of office reply triggered receive_fact_check", email_addresses: "test@test.com"})
 
-    assert(edition.actions.last.comment.include? "Out of office reply triggered receive_fact_check\n\nResponses should be sent to:")
+    assert(edition.actions.last.comment.include? "Out of office reply triggered receive_fact_check")
   end
 
   test "when processing fact check, an edition can request for amendments" do
