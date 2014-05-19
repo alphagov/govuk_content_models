@@ -1,3 +1,8 @@
+## 11.0.0
+
+*  Remove fact check logic from the `Edition` model, since it only belongs in
+   Publisher.
+
 ## 10.5.0
 
 *  Add Corporate information pages to Whitehall formats.
