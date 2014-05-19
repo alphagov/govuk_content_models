@@ -89,8 +89,6 @@ module WorkflowActor
     return false if details[:email_addresses].blank?
 
     details[:comment] ||= "Fact check requested"
-    details[:comment] += "\n\nResponses should be sent to: " +
-                         edition.fact_check_email_address
 
     take_action(edition, __method__, details)
   end
