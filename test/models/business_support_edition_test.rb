@@ -22,6 +22,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
 
     support.priority = 2
+    support.areas = ["123","345","45","9"]
     support.business_sizes << "up-to-249"
     support.business_types << "charity"
     support.locations = ["scotland", "england"]
@@ -49,6 +50,8 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal "123 The Street, Townsville, UK. 07324 123456", support.contact_details
 
     assert_equal 2, support.priority
+
+    assert_equal ["123","345","45","9"], support.areas
     assert_equal ["up-to-249"], support.business_sizes
     assert_equal ["charity"], support.business_types
     assert_equal ["scotland", "england"], support.locations
@@ -138,6 +141,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
                                  :continuation_link => "http://www.gov.uk",
                                  :contact_details => "Contact details to be cloned",
                                  :priority => 2,
+                                 :areas => ['123','9999'],
                                  :business_sizes => ['up-to-249'],
                                  :locations => ['london'],
                                  :purposes => ['start-up'],
@@ -163,6 +167,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal support.contact_details, new_support.contact_details
 
     assert_equal support.priority, new_support.priority
+    assert_equal support.areas, new_support.areas
     assert_equal support.business_sizes, new_support.business_sizes
     assert_equal support.locations, new_support.locations
     assert_equal support.purposes, new_support.purposes
@@ -176,16 +181,19 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   context "for facets" do
     setup do
       @e1 = FactoryGirl.create(:business_support_edition,
+                              :areas => ['2345', '1234'],
                               :business_sizes => ['1', 'up-to-1000000'],
                               :locations => ['narnia'], :purposes => ['world-domination'],
                               :sectors => ['agriculture', 'healthcare'],
                               :stages => ['pivoting'], :support_types => ['award', 'grant', 'loan'])
       @e2 = FactoryGirl.create(:business_support_edition,
+                              :areas => ['1212', '1234', '999'],
                               :business_sizes => ['1', 'up-to-1000000'],
                               :locations => ['hades', 'narnia'], :purposes => ['business-growth-and-expansion'],
                               :sectors => ['education', 'healthcare'],
                               :stages => ['start-up', 'pivoting'], :support_types => ['grant', 'loan', 'equity'])
       @e3 = FactoryGirl.create(:business_support_edition,
+                              :areas => ['1234'],
                               :business_sizes => ['up-to-249', 'up-to-1000000'],
                               :locations => ['hades', 'chicken-town'], :purposes => ['making-the-most-of-the-internet'],
                               :sectors => ['utilities'], :stages => ['start-up'], :support_types => ['grant'])
@@ -198,7 +206,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       assert_equal [@e1, @e2], editions
     end
     should "support searching with all the facet values" do
-      editions = BusinessSupportEdition.for_facets({:business_sizes => 'up-to-1000000', :locations => 'narnia,hades,chicken-town',
+      editions = BusinessSupportEdition.for_facets({:areas => '1234', :business_sizes => 'up-to-1000000', :locations => 'narnia,hades,chicken-town',
                                                     :purposes => 'business-growth-and-expansion,making-the-most-of-the-internet,world-domination',
                                                     :sectors => 'agriculture,healthcare,utilities', :stages => 'pivoting,start-up',
                                                     :support_types => 'award,grant,loan'})

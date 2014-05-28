@@ -28,6 +28,7 @@ class BusinessSupportEdition < Edition
   field :support_types,   type: Array, default: []
   field :start_date,      type: Date
   field :end_date,        type: Date
+  field :areas,           type: Array, default: []
 
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
 
@@ -39,8 +40,9 @@ class BusinessSupportEdition < Edition
 
   @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
       :eligibility, :evaluation, :additional_information, :continuation_link,
-      :will_continue_on, :contact_details, :short_description, :priority, :business_sizes,
-      :locations, :purposes, :sectors, :stages, :support_types, :start_date, :end_date]
+      :will_continue_on, :contact_details, :short_description, :priority, :areas,
+      :business_sizes, :locations, :purposes, :sectors, :stages, :support_types,
+      :start_date, :end_date]
 
   scope :for_facets, lambda { |facets|
     where({ "$and" => facets_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
