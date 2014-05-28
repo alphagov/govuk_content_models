@@ -9,6 +9,7 @@ module Workflow
   included do
     validate :not_editing_published_item
     before_destroy :check_can_delete_and_notify
+    after_destroy :notify_siblings_of_published_edition
 
     before_save :denormalise_users
     after_create :notify_siblings_of_new_edition

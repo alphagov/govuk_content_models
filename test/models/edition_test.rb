@@ -473,6 +473,22 @@ class EditionTest < ActiveSupport::TestCase
     assert_nil loaded_answer
   end
 
+  test "deleting a newer draft of a published edition removes sibling information" do
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition.update_attribute(:state, "published")
+    second_edition = edition.build_clone
+    second_edition.save!
+    edition.reload
+
+    assert edition.sibling_in_progress
+
+    second_edition.destroy
+    edition.reload
+
+    assert_nil edition.sibling_in_progress
+  end
+
   test "should also delete associated artefact" do
     
     FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
