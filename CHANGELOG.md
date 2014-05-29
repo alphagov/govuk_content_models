@@ -1,3 +1,7 @@
+## 11.0.1
+
+*  Destroyng an edition lets siblings know
+
 ## 11.0.0
 
 *  Remove fact check logic from the `Edition` model, since it only belongs in
