@@ -489,6 +489,18 @@ class EditionTest < ActiveSupport::TestCase
     assert_nil edition.sibling_in_progress
   end
 
+  test "the latest edition should remove sibling_in_progress details if it is present" do
+    user1 = FactoryGirl.create(:user)
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition.update_attribute(:state, "published")
+
+    # simulate a document having a newer edition destroyed (previous behaviour).
+    edition.sibling_in_progress = 2
+    edition.save(validate: false)
+
+    assert edition.can_create_new_edition?
+  end
+
   test "should also delete associated artefact" do
     
     FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
