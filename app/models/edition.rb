@@ -98,7 +98,6 @@ class Edition
   end
 
   def can_create_new_edition?
-    fix_sibling_information!
     !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
   end
 
@@ -288,16 +287,6 @@ class Edition
       edition_changes.to_s # diff of current changes
     else
       actions.select { |a| a.request_type == 'publish' }.last.diff # diff with previous published version
-    end
-  end
-
-  private
-
-  def fix_sibling_information!
-    latest_edition = history.first
-    if latest_edition && latest_edition.sibling_in_progress.present?
-      update_sibling_in_progress(nil)
-      notify_siblings_of_published_edition
     end
   end
 end
