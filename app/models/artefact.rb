@@ -82,7 +82,9 @@ class Artefact
     "smartanswers"            => ["smart-answer"],
     "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
     "travel-advice-publisher" => ["travel-advice"],
-    "specialist-publisher"    => ["specialist-document"],
+    "specialist-publisher"    => ["manual",
+                                  "manual-section",
+                                  "specialist-document"],
     "finder-api"              => ["finder"],
     "whitehall"               => ["announcement",
                                   "authored_article",
