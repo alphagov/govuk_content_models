@@ -103,4 +103,22 @@ class SlugTest < ActiveSupport::TestCase
       refute document_with_slug("oil-and-gas/not.a.valid.slug", kind: "specialist_sector").valid?
     end
   end
+
+  context "Manual pages" do
+    should "allow slugs starting guidance/" do
+      refute document_with_slug("manuals/a-manual", kind: "manual").valid?
+      assert document_with_slug("guidance/a-manual", kind: "manual").valid?
+    end
+
+    should "allow two or three path parts" do
+      refute document_with_slug("guidance", kind: "manual").valid?
+      assert document_with_slug("guidance/a-manual", kind: "manual").valid?
+      assert document_with_slug("guidance/a-manual/a-section", kind: "manual-section").valid?
+      refute document_with_slug("guidance/a-manual/a-section/a-subsection", kind: "manual-section").valid?
+    end
+
+    should "not allow invalid path segments" do
+      refute document_with_slug("guidance/bad.manual.slug", kind: "manual").valid?
+    end
+  end
 end
