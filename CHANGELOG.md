@@ -1,6 +1,14 @@
+## 11.2.0
+
+* Added manual and manual-section formats with custom slug validation.
+
+## 11.1.0
+
+* Add area field to business support editions.
+
 ## 11.0.1
 
-*  Destroyng an edition lets siblings know
+*  Destroying an edition lets siblings know.
 
 ## 11.0.0
 
