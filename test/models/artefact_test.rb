@@ -306,29 +306,36 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
-  test "on save update metadata with associated publication" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
-        department: "Test dept",
-        owning_app: "publisher",
-    )
+  should "update the edition's slug when a draft artefact is saved" do
+    artefact = FactoryGirl.create(:draft_artefact)
+    edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id)
 
-    user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
-
-    assert_equal artefact.name, edition.title
-    assert_equal artefact.section, edition.section
-
-    artefact.name = "Babar"
-    artefact.save
+    artefact.slug = "something-something-draft"
+    artefact.save!
 
     edition.reload
-    assert_equal artefact.name, edition.title
+    assert_equal artefact.slug, edition.slug
+  end
+
+  should "not update the edition's slug when a live artefact is saved" do
+    artefact = FactoryGirl.create(:live_artefact, slug: "something-something-live")
+    edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id, slug: "something-else")
+
+    artefact.save!
+
+    edition.reload
+    assert_equal "something-else", edition.slug
+  end
+
+  should "not update the edition's slug when an archived artefact is saved" do
+    artefact = FactoryGirl.create(:live_artefact, slug: "something-something-live")
+    edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id, slug: "something-else")
+
+    artefact.state = 'archived'
+    artefact.save!
+
+    edition.reload
+    assert_equal "something-else", edition.slug
   end
 
   test "should not let you edit the slug if the artefact is live" do

@@ -375,33 +375,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal artefact.department, publication.department
   end
 
-  # TODO: come back and remove this one.
-  test "should not change edition name if published" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-    artefact = FactoryGirl.create(:artefact,
-        slug: "foo-bar",
-        kind: "answer",
-        name: "Foo bar",
-        department: "Test dept",
-        owning_app: "publisher",
-    )
-
-    guide = FactoryGirl.create(:guide_edition,
-      panopticon_id: artefact.id,
-      title: "Original title",
-      slug: "original-title"
-    )
-    guide.state = "ready"
-    guide.save!
-    User.create(name: "Winston").publish(guide, comment: "testing")
-    artefact.name = "New title"
-    artefact.primary_section = "test-section"
-    artefact.save
-
-    assert_equal "Original title", guide.reload.title
-    assert_equal "Test section", guide.reload.section
-  end
-
   test "should not change edition metadata if archived" do
     FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,

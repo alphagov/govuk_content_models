@@ -239,12 +239,8 @@ class Edition
     notify_siblings_of_published_edition
   end
 
-  def update_from_artefact(artefact)
-    self.title = artefact.name unless published?
+  def update_slug_from_artefact(artefact)
     self.slug = artefact.slug
-    self.section = artefact.section
-    self.department = artefact.department
-    self.business_proposition = artefact.business_proposition
     self.save!
   end
 
