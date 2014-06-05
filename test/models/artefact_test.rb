@@ -306,7 +306,7 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
-  test "should update a draft artefact's slug with its associated editions" do
+  should "update the edition's slug when a draft artefact is saved" do
     artefact = FactoryGirl.create(:draft_artefact)
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id)
 
@@ -317,7 +317,7 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal artefact.slug, edition.slug
   end
 
-  test "should not update a live artefact's slug with its associated editions" do
+  should "not update the edition's slug when a live artefact is saved" do
     artefact = FactoryGirl.create(:live_artefact, slug: "something-something-live")
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id, slug: "something-else")
 
@@ -327,7 +327,7 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal "something-else", edition.slug
   end
 
-  test "should not update an archived artefact's slug with its associated editions" do
+  should "not update the edition's slug when an archived artefact is saved" do
     artefact = FactoryGirl.create(:live_artefact, slug: "something-something-live")
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id, slug: "something-else")
 
