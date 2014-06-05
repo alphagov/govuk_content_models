@@ -1,6 +1,9 @@
+require "prerendered_entity"
+
 class RenderedSpecialistDocument
   include Mongoid::Document
   include Mongoid::Timestamps
+  extend PrerenderedEntity
 
   field :document_id,            type: String
   field :slug,                   type: String
@@ -25,16 +28,4 @@ class RenderedSpecialistDocument
 
   validates :slug, uniqueness: true
   validates_with SafeHtml
-
-  def self.create_or_update_by_slug!(attributes)
-    RenderedSpecialistDocument.find_or_initialize_by(
-      slug: attributes.fetch(:slug)
-    ).tap do |doc|
-      doc.update_attributes!(attributes)
-    end
-  end
-
-  def self.find_by_slug(slug)
-    where(slug: slug).first
-  end
 end

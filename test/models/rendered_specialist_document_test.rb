@@ -1,8 +1,14 @@
 require "test_helper"
 require "fixtures/specialist_document_fixtures"
+require "models/prerendered_entity_tests"
 
 class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
   include SpecialistDocumentFixtures
+  include PrerenderedEntityTests
+
+  def model_class
+    RenderedSpecialistDocument
+  end
 
   def label_fields
     {
@@ -49,18 +55,6 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
     assert_equal 1, RenderedSpecialistDocument.where(slug: r.slug).count
   end
 
-  test "duplicate slugs disallowed" do
-    RenderedSpecialistDocument.create(slug: "my-slug")
-    second = RenderedSpecialistDocument.create(slug: "my-slug")
-
-    refute second.valid?
-    assert_equal 1, RenderedSpecialistDocument.count
-  end
-
-  test "has no govspeak fields" do
-    assert_equal [], RenderedSpecialistDocument::GOVSPEAK_FIELDS
-  end
-
   test "can store headers hash" do
     sample_headers = [
       {
@@ -75,36 +69,5 @@ class RenderedSpecialistDocumentTest < ActiveSupport::TestCase
 
     found = RenderedSpecialistDocument.where(slug: r.slug).first
     assert_equal sample_headers, found.headers
-  end
-
-  test ".create_or_update_by_slug!" do
-    slug = "a-slug"
-    original_body = "Original body"
-
-    version1_attrs= {
-      slug: slug,
-      body: original_body,
-    }
-
-    created = RenderedSpecialistDocument.create_or_update_by_slug!(version1_attrs)
-
-    assert created.is_a?(RenderedSpecialistDocument)
-    assert created.persisted?
-
-    version2_attrs = version1_attrs.merge(
-      body: "Updated body",
-    )
-
-    version2 = RenderedSpecialistDocument.create_or_update_by_slug!(version2_attrs)
-
-    assert version2.persisted?
-    assert_equal "Updated body", version2.body
-  end
-
-  test ".find_by_slug" do
-    created = RenderedSpecialistDocument.create!(slug: "find-by-this-slug")
-    found = RenderedSpecialistDocument.find_by_slug("find-by-this-slug")
-
-    assert_equal created, found
   end
 end
