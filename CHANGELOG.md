@@ -1,3 +1,9 @@
+## 11.3.0
+
+* When an artefact is saved, no longer attempt to update attributes on the
+  edition model - with the exception of the slug field, which will only be
+  updated when the artefact is in draft state.
+
 ## 11.2.0
 
 * Added manual and manual-section formats with custom slug validation.
