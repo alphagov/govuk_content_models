@@ -233,17 +233,6 @@ FactoryGirl.define do
     end
   end
 
-  factory :specialist_document_edition do
-    sequence(:slug) {|n| "test-specialist-document-#{n}" }
-    sequence(:title) {|n| "Test Specialist Document #{n}" }
-    summary "My summary"
-    body "My body"
-    opened_date '2013-04-20'
-    market_sector 'some-market-sector'
-    case_type 'a-case-type'
-    case_state 'open'
-  end
-
   factory :rendered_specialist_document do
     sequence(:slug) {|n| "test-rendered-specialist-document-#{n}" }
     sequence(:title) {|n| "Test Rendered Specialist Document #{n}" }
