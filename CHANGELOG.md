@@ -1,3 +1,7 @@
+## 11.4.0
+
+* Add `RenderedManual` model.
+
 ## 11.3.0
 
 * When an artefact is saved, no longer attempt to update attributes on the
