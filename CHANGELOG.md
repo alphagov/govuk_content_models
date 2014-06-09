@@ -1,3 +1,9 @@
+## 12.0.0
+
+* Remove `SpecialistDocumentEdition` model. It is only used by the
+  specialist-publisher and is a concern of that application and how it handles
+  versioning documents.
+
 ## 11.4.0
 
 * Add `RenderedManual` model.
