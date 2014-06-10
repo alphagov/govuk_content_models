@@ -25,4 +25,5 @@ class Part
   validates_exclusion_of :slug, in: ["video"], message: "Can not be video"
   validates_format_of :slug, with: /^[a-z0-9\-]+$/i
   validates_with SafeHtml
+  validates_with LinkValidator
 end

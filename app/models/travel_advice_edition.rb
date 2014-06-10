@@ -47,6 +47,7 @@ class TravelAdviceEdition
   validate :alert_status_contains_valid_values
   validate :first_version_cant_be_minor_update
   validates_with SafeHtml
+  validates_with LinkValidator
 
   scope :published, where(:state => "published")
 
