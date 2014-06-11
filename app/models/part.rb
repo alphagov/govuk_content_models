@@ -1,5 +1,4 @@
 require "safe_html"
-require 'govspeak_smart_quotes_fixer'
 
 class Part
   include Mongoid::Document
@@ -17,8 +16,6 @@ class Part
   field :created_at, type: DateTime, default: lambda { Time.zone.now }
 
   GOVSPEAK_FIELDS = [:body]
-
-  include GovspeakSmartQuotesFixer
 
   validates_presence_of :title
   validates_presence_of :slug

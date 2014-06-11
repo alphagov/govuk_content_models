@@ -2,7 +2,6 @@ require 'attachable'
 require 'parted'
 require 'state_machine'
 require 'safe_html'
-require 'govspeak_smart_quotes_fixer'
 
 class TravelAdviceEdition
   include Mongoid::Document
@@ -38,7 +37,6 @@ class TravelAdviceEdition
     "avoid_all_travel_to_whole_country",
   ]
 
-  include GovspeakSmartQuotesFixer
   before_validation :populate_version_number, :on => :create
 
   validates_presence_of :country_slug, :title
