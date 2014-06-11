@@ -18,7 +18,7 @@ class SlugValidator < ActiveModel::EachValidator
 protected
   class InstanceValidator < Struct.new(:record, :attribute, :value)
     def starts_with?(expected_prefix)
-      value.to_s[0...expected_prefix.size] == expected_prefix
+      value.to_s.start_with?(expected_prefix)
     end
 
     def of_kind?(expected_kind)
