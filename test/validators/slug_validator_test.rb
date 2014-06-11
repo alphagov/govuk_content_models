@@ -104,6 +104,38 @@ class SlugTest < ActiveSupport::TestCase
     end
   end
 
+  context "Manual change notes" do
+    should "allow slugs of the form guidance/manual-slug/updates" do
+      assert document_with_slug("guidance/a-manual/updates",
+                                kind: "manual-change-notes").valid?
+    end
+
+    should "refuse slugs that don't start with guidance/" do
+      refute document_with_slug("manuals/a-manual/updates",
+                                kind: "manual-change-notes").valid?
+    end
+
+    should "refuse slugs that don't end with /updates" do
+      refute document_with_slug("guidance/a-manual/change-notes",
+                                kind: "manual-change-notes").valid?
+    end
+
+    should "refuse slugs that don't have a manual-slug" do
+      refute document_with_slug("guidance/change-notes",
+                                kind: "manual-change-notes").valid?
+    end
+
+    should "refuse slugs that have extra sections" do
+      refute document_with_slug("guidance/a-manual/a-section/updates",
+                                kind: "manual-change-notes").valid?
+    end
+
+    should "not allow invalid path segments" do
+      refute document_with_slug("guidance/bad.manual.slug/updates",
+                                kind: "manual-change-notes").valid?
+    end
+  end
+
   context "Manual pages" do
     should "allow slugs starting guidance/" do
       refute document_with_slug("manuals/a-manual", kind: "manual").valid?
