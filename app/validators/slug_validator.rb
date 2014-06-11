@@ -7,6 +7,7 @@ class SlugValidator < ActiveModel::EachValidator
       HelpPageValidator,
       GovernmentPageValidator,
       ManualPageValidator,
+      ManualChangeNotesValidator,
       SpecialistDocumentPageValidator,
       BrowsePageValidator,
       DefaultValidator
@@ -19,6 +20,10 @@ protected
   class InstanceValidator < Struct.new(:record, :attribute, :value)
     def starts_with?(expected_prefix)
       value.to_s.start_with?(expected_prefix)
+    end
+
+    def ends_with?(expected_suffix)
+      value.to_s.end_with?(expected_suffix)
     end
 
     def of_kind?(expected_kind)
@@ -122,6 +127,44 @@ protected
     def validate_guidance_prefix!
       unless starts_with?('guidance/')
         record.errors[attribute] << 'must have a guidance/ prefix'
+      end
+    end
+
+    def validate_parts_as_slugs!
+      unless url_parts.all? { |url_part| valid_slug?(url_part) }
+        record.errors[attribute] << 'must be usable in a URL'
+      end
+    end
+  end
+
+  class ManualChangeNotesValidator < InstanceValidator
+    def applicable?
+      of_kind?('manual-change-notes')
+    end
+
+    def validate!
+      validate_number_of_parts!
+      validate_guidance_prefix!
+      validate_updates_suffix!
+      validate_parts_as_slugs!
+    end
+
+  private
+    def validate_number_of_parts!
+      unless url_parts.size == 3
+        record.errors[attribute] << 'must contain three path parts'
+      end
+    end
+
+    def validate_guidance_prefix!
+      unless starts_with?('guidance/')
+        record.errors[attribute] << 'must have a guidance/ prefix'
+      end
+    end
+
+    def validate_updates_suffix!
+      unless ends_with?('/updates')
+        record.errors[attribute] << 'must have a /updates suffix'
       end
     end
 
