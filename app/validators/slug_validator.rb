@@ -121,7 +121,7 @@ protected
 
     def validate_guidance_prefix!
       unless starts_with?('guidance/')
-        record.errors[attribute] << 'Manual slugs must have a guidance/ prefix'
+        record.errors[attribute] << 'must have a guidance/ prefix'
       end
     end
 
