@@ -83,6 +83,7 @@ class Artefact
     "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
     "travel-advice-publisher" => ["travel-advice"],
     "specialist-publisher"    => ["manual",
+                                  "manual-change-history",
                                   "manual-section",
                                   "specialist-document"],
     "finder-api"              => ["finder"],
