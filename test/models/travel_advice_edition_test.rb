@@ -213,28 +213,6 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
   end
 
-  context "fixing user input" do
-    setup do
-      @ed = FactoryGirl.build(:travel_advice_edition)
-    end
-
-    should "convert smart quotes in the summary field" do
-      @ed.summary = "This is a [link](https://www.gov.uk/ “link”)"
-      @ed.save!
-
-      @ed.reload
-      assert_equal 'This is a [link](https://www.gov.uk/ "link")', @ed.summary
-    end
-
-    should "convert smart quotes in part bodies" do
-      @ed.parts.build(:title => 'One', :slug => 'one', :body => "This is a [link](https://www.gov.uk/ “link”)")
-      @ed.save!
-
-      @ed.reload
-      assert_equal 'This is a [link](https://www.gov.uk/ "link")', @ed.parts.first.body
-    end
-  end
-
   should "have a published scope" do
     e1 = FactoryGirl.create(:draft_travel_advice_edition)
     e2 = FactoryGirl.create(:published_travel_advice_edition)

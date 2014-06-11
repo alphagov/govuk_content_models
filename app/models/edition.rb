@@ -48,6 +48,7 @@ class Edition
   validates :version_number, presence: true, uniqueness: {scope: :panopticon_id}
   validates :panopticon_id, presence: true
   validates_with SafeHtml
+  validates_with LinkValidator
 
   before_save :check_for_archived_artefact
   before_destroy :destroy_artefact

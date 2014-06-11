@@ -1,5 +1,4 @@
 require "safe_html"
-require 'govspeak_smart_quotes_fixer'
 
 class Part
   include Mongoid::Document
@@ -18,11 +17,10 @@ class Part
 
   GOVSPEAK_FIELDS = [:body]
 
-  include GovspeakSmartQuotesFixer
-
   validates_presence_of :title
   validates_presence_of :slug
   validates_exclusion_of :slug, in: ["video"], message: "Can not be video"
   validates_format_of :slug, with: /^[a-z0-9\-]+$/i
   validates_with SafeHtml
+  validates_with LinkValidator
 end
