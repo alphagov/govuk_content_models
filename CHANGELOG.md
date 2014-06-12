@@ -1,3 +1,10 @@
+## 12.1.0
+
+* Add LinkValidator, which checks that links in Govspeak fields are properly
+  formed and do not contain title text or rel=external. Remove
+  GovspeakSmartQuotesFixer which is irrelevant now title text is no longer
+  allowed.
+
 ## 12.0.0
 
 * Remove `SpecialistDocumentEdition` model. It is only used by the
