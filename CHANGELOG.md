@@ -1,3 +1,7 @@
+## 12.2.0
+
+* Add ManualChangeHistory model and artefact kind.
+
 ## 12.1.0
 
 * Add LinkValidator, which checks that links in Govspeak fields are properly
