@@ -1,3 +1,7 @@
+## 12.3.0
+
+* Show all relevant errors in LinkValidator.
+
 ## 12.2.0
 
 * Add ManualChangeHistory model and artefact kind.
