@@ -18,21 +18,22 @@ class LinkValidator < ActiveModel::Validator
       (\{:rel=["']external["']\})?  # optional :rel=external in literal curly brackets.
     }x
 
-    errors = []
+    errors = Set.new
 
     string.scan(link_regex) do |match|
 
-      error = if match[0] !~ %r{^(?:https?://|mailto:|/)}
-        'Internal links must start with a forward slash eg [link text](/link-destination). External links must start with http://, https://, or mailto: eg [external link text](https://www.google.co.uk)'
-      elsif match[1]
-        %q-Don't include hover text in links. Delete the text in quotation marks eg "This appears when you hover over the link."-
-      elsif match[2]
-        'Delete {:rel="external"} in links.'
+      if match[0] !~ %r{^(?:https?://|mailto:|/)}
+        errors << 'Internal links must start with a forward slash eg [link text](/link-destination). External links must start with http://, https://, or mailto: eg [external link text](https://www.google.co.uk).'
+      end
+      if match[1]
+        errors << %q-Don't include hover text in links. Delete the text in quotation marks eg "This appears when you hover over the link."-
+      end
+      if match[2]
+        errors << 'Delete {:rel="external"} in links.'
       end
 
-      errors << error if error
     end
-    errors
+    errors.to_a
   end
 
   protected
