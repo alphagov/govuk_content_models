@@ -12,6 +12,15 @@ class LinkValidatorTest < ActiveSupport::TestCase
   end
 
   context "links" do
+    should "not be verified for blank govspeak fields" do
+      doc = Dummy.new(body: nil)
+
+      assert_nothing_raised do
+        doc.valid?
+      end
+      assert_empty doc.errors
+    end
+
     should "start with http[s]://, mailto: or /" do
       doc = Dummy.new(body: "abc [external](external.com)")
       assert doc.invalid?

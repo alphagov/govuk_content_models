@@ -1,7 +1,10 @@
 class LinkValidator < ActiveModel::Validator
   def validate(record)
     govspeak_field_names(record).each do |govspeak_field_name|
-      messages = errors(record.read_attribute(govspeak_field_name))
+      govspeak_field_value = record.read_attribute(govspeak_field_name)
+      next if govspeak_field_value.blank?
+
+      messages = errors(govspeak_field_value)
       record.errors[govspeak_field_name] << messages if messages
     end
   end
