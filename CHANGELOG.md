@@ -1,3 +1,8 @@
+## 12.4.0
+
+* Allow new drafts to be created from published
+  editions having link validation errors.
+
 ## 12.3.0
 
 * Show all relevant errors in LinkValidator.
