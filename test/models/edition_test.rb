@@ -83,6 +83,23 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal programme.parts.count, ProgrammeEdition::DEFAULT_PARTS.length
   end
 
+  context "link validation" do
+    should "not be done when the edition is created" do
+      assert_difference 'AnswerEdition.count', 1 do
+        FactoryGirl.create(:answer_edition, body: 'abc [foobar](http://foobar.com "hover")')
+      end
+    end
+
+    should "be done when an existing edition is updated" do
+      edition = FactoryGirl.create(:answer_edition, body: 'abc [foobar](http://foobar.com "hover")')
+
+      edition.body += "some update"
+
+      refute edition.valid?
+      assert_include edition.errors.full_messages, %q<Body ["Don't include hover text in links. Delete the text in quotation marks eg \\"This appears when you hover over the link.\\""]>
+    end
+  end
+
   test "it should build a clone" do
     edition = FactoryGirl.create(:guide_edition,
                                   state: "published",
