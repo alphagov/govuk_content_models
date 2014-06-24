@@ -1,10 +1,8 @@
 class LinkValidator < ActiveModel::Validator
   def validate(record)
-    record.changes.each do |field_name, (_, new_value)|
-      if govspeak_fields(record).include?(field_name.to_sym)
-        messages = errors(new_value)
-        record.errors[field_name] << messages if messages
-      end
+    govspeak_field_names(record).each do |govspeak_field_name|
+      messages = errors(record.read_attribute(govspeak_field_name))
+      record.errors[govspeak_field_name] << messages if messages
     end
   end
 
@@ -38,7 +36,7 @@ class LinkValidator < ActiveModel::Validator
 
   protected
 
-  def govspeak_fields(record)
+  def govspeak_field_names(record)
     if record.class.const_defined?(:GOVSPEAK_FIELDS)
       record.class.const_get(:GOVSPEAK_FIELDS)
     else
