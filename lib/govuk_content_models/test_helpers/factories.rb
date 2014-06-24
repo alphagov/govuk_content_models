@@ -238,10 +238,12 @@ FactoryGirl.define do
     sequence(:title) {|n| "Test Rendered Specialist Document #{n}" }
     summary "My summary"
     body "<p>My body</p>"
-    opened_date '2013-04-20'
-    market_sector 'some-market-sector'
-    case_type 'a-case-type'
-    case_state 'open'
+    details({
+      "opened_date" => "2013-04-20",
+      "market_sector" => "some-market-sector",
+      "case_type" => "a-case-type",
+      "case_state" => "open",
+    })
   end
 
   factory :rendered_manual do
