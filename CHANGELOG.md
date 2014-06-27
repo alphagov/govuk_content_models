@@ -1,3 +1,8 @@
+## 13.0.0
+
+* Bundle metadata fields for `RenderedSpecialistDocument` into a single
+  `details` hash.
+
 ## 12.4.0
 
 * Allow new drafts to be created from published
