@@ -1,3 +1,8 @@
+## 13.1.0
+
+* Perform link validation everytime an edition is saved,
+  irrespective of which fields changed.
+
 ## 13.0.0
 
 * Bundle metadata fields for `RenderedSpecialistDocument` into a single
