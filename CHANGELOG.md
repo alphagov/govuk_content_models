@@ -1,3 +1,9 @@
+## 13.2.0
+
+* Denormalising users doesn't require the entire edition
+  to be validated and saved. Hence replacing it with a
+  set operation.
+
 ## 13.1.0
 
 * Perform link validation everytime an edition is saved,
