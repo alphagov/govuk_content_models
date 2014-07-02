@@ -11,7 +11,7 @@ module Workflow
     before_destroy :check_can_delete_and_notify
     after_destroy :notify_siblings_of_published_edition
 
-    before_save :denormalise_users
+    before_save :denormalise_users!
     after_create :notify_siblings_of_new_edition
 
     field :state, type: String, default: "draft"
@@ -113,13 +113,13 @@ module Workflow
       # collections, but share a model and relationships with eg actions.
       # Therefore, Panopticon might not find a user for an action.
       if action.requester
-        self[property] = action.requester.name
+        set(property, action.requester.name)
       end
     end
   end
 
-  def denormalise_users
-    self.assignee = assigned_to.name if assigned_to
+  def denormalise_users!
+    set(:assignee, assigned_to.name) if assigned_to
     update_user_action("creator",   [Action::CREATE, Action::NEW_VERSION])
     update_user_action("publisher", [Action::PUBLISH])
     update_user_action("archiver",  [Action::ARCHIVE])

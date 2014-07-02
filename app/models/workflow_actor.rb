@@ -18,14 +18,14 @@ module WorkflowActor
   def record_action(edition, type, options={})
     type = Action.const_get(type.to_s.upcase)
     action = edition.new_action(self, type, options)
-    edition.save! # force callbacks for denormalisation
+    edition.denormalise_users!
     action
   end
 
   def record_action_without_validation(edition, type, options={})
     type = Action.const_get(type.to_s.upcase)
     action = edition.new_action_without_validation(self, type, options)
-    edition.save! # force callbacks for denormalisation
+    edition.denormalise_users!
     action
   end
 
