@@ -286,4 +286,5 @@ class Edition
       actions.select { |a| a.request_type == 'publish' }.last.diff # diff with previous published version
     end
   end
+
 end

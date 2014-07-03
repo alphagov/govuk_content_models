@@ -217,4 +217,23 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       assert_empty editions
     end
   end
+
+  context "scheme dates" do
+    should "should have year with 4 digits length" do
+      invalid_edition = FactoryGirl.build(:business_support_edition, start_date: Date.new(99, 12, 31), end_date: Date.new(99, 12, 31))
+
+      refute invalid_edition.valid?
+
+      edition_errors = invalid_edition.errors.full_messages
+      assert_includes edition_errors, "Start date year must be 4 digits"
+      assert_includes edition_errors, "End date year must be 4 digits"
+    end
+
+    should "have start date earlier than end date" do
+      invalid_edition = FactoryGirl.build(:business_support_edition, start_date: 1.week.ago, end_date: 2.weeks.ago)
+
+      refute invalid_edition.valid?
+      assert_includes invalid_edition.errors.full_messages, "Start date can't be later than end date"
+    end
+  end
 end

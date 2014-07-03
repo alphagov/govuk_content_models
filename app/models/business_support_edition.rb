@@ -32,6 +32,7 @@ class BusinessSupportEdition < Edition
 
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
 
+  validate :scheme_dates
   validate :min_must_be_less_than_max
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
@@ -69,5 +70,14 @@ class BusinessSupportEdition < Edition
       criteria << { facet_name => { "$in" => slugs } } unless slugs.empty?
     end
     criteria
+  end
+
+  def scheme_dates
+    errors.add(:start_date, "year must be 4 digits") if start_date.present? && start_date.year.to_s.length != 4
+    errors.add(:end_date, "year must be 4 digits") if end_date.present? && end_date.year.to_s.length != 4
+
+    if start_date.present? && end_date.present? && start_date > end_date
+      errors.add(:start_date, "can't be later than end date")
+    end
   end
 end
