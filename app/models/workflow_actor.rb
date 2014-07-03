@@ -139,13 +139,8 @@ module WorkflowActor
   end
 
   def assign(edition, recipient)
-    edition.assigned_to_id = recipient.id
-
-    # We're saving the edition here as the controller treats assignment as a
-    # special case.
-    # The controller saves the publication, then updates assignment.
-    edition.save! and edition.reload
-    record_action edition, __method__, recipient: recipient
+    edition.set(:assigned_to_id, recipient.id)
+    record_action edition.reload, __method__, recipient: recipient
   end
 
   private
