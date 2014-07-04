@@ -1,3 +1,7 @@
+## 13.3.0
+
+* Adds a `state` field to `Tag`.
+
 ## 13.2.1
 
 * Assigning an edition doesn't require the entire edition
