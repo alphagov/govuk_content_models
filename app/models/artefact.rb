@@ -82,10 +82,12 @@ class Artefact
     "smartanswers"            => ["smart-answer"],
     "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
     "travel-advice-publisher" => ["travel-advice"],
-    "specialist-publisher"    => ["manual",
+    "specialist-publisher"    => ["aaib_report",
+                                  "cma_case",
+                                  "manual",
                                   "manual-change-history",
                                   "manual-section",
-                                  "specialist-document"],
+                                  "specialist-document"], # Deprecated: Leaving in place for legacy reasons. In future use explicit document_type
     "finder-api"              => ["finder"],
     "whitehall"               => ["announcement",
                                   "authored_article",

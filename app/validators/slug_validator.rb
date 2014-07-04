@@ -177,7 +177,7 @@ protected
 
   class SpecialistDocumentPageValidator < InstanceValidator
     def applicable?
-      of_kind?('specialist-document')
+      of_kind?(acceptable_formats)
     end
 
     def validate!
@@ -187,6 +187,19 @@ protected
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
         record.errors[attribute] << "must be usable in a URL"
       end
+    end
+
+  private
+    def acceptable_formats
+      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["specialist-publisher"] - unacceptable_formats
+    end
+
+    def unacceptable_formats
+      [
+        "manual",
+        "manual-change-history",
+        "manual-section",
+      ]
     end
   end
 
