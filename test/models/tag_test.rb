@@ -115,4 +115,38 @@ class TagTest < ActiveSupport::TestCase
   test "should validate with TagIdValidator" do
     assert_includes Tag.validators.map(&:class), TagIdValidator
   end
+
+  context "state" do
+    setup do
+      @atts = { tag_type: 'section', tag_id: 'test', title: 'Test' }
+    end
+
+    should "be created in live state" do
+      tag = Tag.create(@atts.merge(state: 'live'))
+
+      assert tag.persisted?
+      assert_equal 'live', tag.state
+    end
+
+    should "be created in draft state" do
+      tag = Tag.create(@atts.merge(state: 'draft'))
+
+      assert tag.persisted?
+      assert_equal 'draft', tag.state
+    end
+
+    should "not be created in another state" do
+      tag = Tag.create(@atts.merge(state: 'foo'))
+
+      assert !tag.valid?
+      assert tag.errors.has_key?(:state)
+    end
+
+    should "be created in live state by default" do
+      tag = Tag.create(@atts)
+
+      assert tag.persisted?
+      assert_equal 'live', tag.state
+    end
+  end
 end

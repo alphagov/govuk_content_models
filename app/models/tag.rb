@@ -3,15 +3,17 @@ require 'tag_id_validator'
 
 class Tag
   include Mongoid::Document
-  field :tag_id,   type: String
-  field :title,    type: String
-  field :tag_type, type: String #TODO: list of accepted types?
-  field :description, type: String
+  
+  field :tag_id,            type: String
+  field :title,             type: String
+  field :tag_type,          type: String #TODO: list of accepted types?
+  field :description,       type: String
   field :short_description, type: String
-
-  field :parent_id, type: String
+  field :parent_id,         type: String
+  field :state,             type: String, default: 'live'
 
   GOVSPEAK_FIELDS = []
+  STATES = ['draft', 'live']
 
   index :tag_id
   index [ [:tag_id, Mongo::ASCENDING], [:tag_type, Mongo::ASCENDING] ], unique: true
@@ -21,6 +23,8 @@ class Tag
   validates_uniqueness_of :tag_id, scope: :tag_type
   validates_with TagIdValidator
   validates_with SafeHtml
+
+  validates :state, inclusion: { in: STATES }
 
   class MissingTags < RuntimeError
     attr_reader :tag_ids
