@@ -1,3 +1,7 @@
+## 13.4.0
+
+* Allow new formats for aaib_report and cma_case for an Artefact
+
 ## 13.3.0
 
 * Adds a `state` field to `Tag`.
