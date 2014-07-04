@@ -1,3 +1,9 @@
+## 13.2.1
+
+* Assigning an edition doesn't require the entire edition
+  to be validated and saved. Hence replacing it with a
+  set operation.
+
 ## 13.2.0
 
 * Denormalising users doesn't require the entire edition
