@@ -1,3 +1,6 @@
+## 14.0.0
+* Remove `Attachment` model.
+
 ## 13.4.0
 
 * Allow new formats for aaib_report and cma_case for an Artefact
