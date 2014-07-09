@@ -98,7 +98,7 @@ module WorkflowActor
     # advance state if possible (i.e. if in "fact_check" state),
     # save separately without validation
     # http://rubydoc.info/github/pluginaweek/state_machine/StateMachine/Machine:event
-    edition.state_event = :receive_fact_check
+    edition.receive_fact_check(false)
     edition.save(validate: false)
     # Fact checks are processed async, so the user doesn't get an opportunity
     # to retry without the content that (inadvertantly) fails validation, which happens frequently.

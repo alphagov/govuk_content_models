@@ -59,14 +59,25 @@ class WorkflowActorTest < ActiveSupport::TestCase
   end
 
   context "#receive_fact_check" do
-    should "transition an edition with link validation errors to fact_check_received state" do
-      edition = FactoryGirl.create(:guide_edition_with_two_parts, state: :fact_check)
+    setup do
+      @edition = FactoryGirl.create(:guide_edition_with_two_parts, state: :fact_check)
       # Internal links must start with a forward slash eg [link text](/link-destination)
-      edition.parts.first.update_attribute(:body, "[register and tax your vehicle](registering-an-imported-vehicle)")
+      @edition.parts.first.update_attribute(:body,
+        "[register and tax your vehicle](registering-an-imported-vehicle)")
+    end
 
-      assert edition.invalid?
-      assert User.new.receive_fact_check(edition, {})
-      assert_equal "fact_check_received", edition.reload.state
+    should "transition an edition with link validation errors to fact_check_received state" do
+      assert @edition.invalid?
+      assert User.new.receive_fact_check(@edition, {})
+      assert_equal "fact_check_received", @edition.reload.state
+    end
+
+    should "record the action" do
+      user = User.new
+      user.receive_fact_check(@edition, {})
+
+      assert_equal 1, @edition.actions.count
+      assert_equal "receive_fact_check", @edition.actions.last.request_type
     end
   end
 
