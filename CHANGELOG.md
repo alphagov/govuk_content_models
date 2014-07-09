@@ -1,3 +1,7 @@
+## 14.1.1
+* Use another way to transition Editions without
+  validation
+
 ## 14.1.0
 * Edition errors should not block receiving of
   fact check response, and related state transition.
