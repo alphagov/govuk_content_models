@@ -1,3 +1,7 @@
+## 14.1.0
+* Edition errors should not block receiving of
+  fact check response, and related state transition.
+
 ## 14.0.1
 * Valdations for Business support scheme dates.
 
