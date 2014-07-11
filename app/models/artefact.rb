@@ -212,7 +212,8 @@ class Artefact
   def as_json(options={})
     super.tap { |hash|
       if hash["tag_ids"]
-        hash["tags"] = Tag.by_tag_ids!(hash["tag_ids"]).map(&:as_json)
+        Tag.validate_tag_ids(hash["tag_ids"])
+        hash["tags"] = Tag.by_tag_ids(hash["tag_ids"]).map(&:as_json)
       else
         hash["tag_ids"] = []
         hash["tags"] = []
@@ -354,7 +355,6 @@ class Artefact
   end
 
   def snapshot
-    reconcile_tag_ids
     attributes.except "_id", "created_at", "updated_at", "actions"
   end
 

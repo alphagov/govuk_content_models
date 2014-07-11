@@ -55,13 +55,11 @@ class TagTest < ActiveSupport::TestCase
     )
   end
 
-  test "should return nil for missing tags" do
-    tag_ids = %w(crime business batman housing)
+  test "should not return missing tags" do
+    tag_ids = %w(crime business not_a_real_tag housing)
     tags = Tag.by_tag_ids(tag_ids)
-    assert_nil tags[2]
-    [0, 1, 3].each do |i|
-      assert_equal tag_ids[i], tags[i].tag_id
-    end
+
+    assert_equal %w(crime business housing), tags.map(&:tag_id)
   end
 
   test "should return nil for tags of the wrong type" do
@@ -71,22 +69,15 @@ class TagTest < ActiveSupport::TestCase
     [0, 1].each do |i| assert_equal tag_ids[i], tags[i].tag_id end
   end
 
-  test "should return multiple tags from the bang method" do
-    assert_equal(
-      %w(Crime Business),
-      Tag.by_tag_ids!(%w(crime business)).map(&:title)
-    )
-  end
-
   test "should raise an exception if any tags are missing" do
     assert_raises Tag::MissingTags do
-      Tag.by_tag_ids!(%w(crime business batman))
+      Tag.validate_tag_ids(%w(crime business batman))
     end
   end
 
   test "should raise an exception with the wrong tag type" do
     assert_raises Tag::MissingTags do
-      Tag.by_tag_ids!(%w(crime business pie chips), "section")
+      Tag.validate_tag_ids(%w(crime business pie chips), "section")
     end
   end
 

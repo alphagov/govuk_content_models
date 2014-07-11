@@ -1,39 +1,47 @@
 module Taggable
   module ClassMethods
-    def stores_tags_for(*keys)
-      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+    def stores_tags_for(*tag_types)
+      tag_types = tag_types.map {|tag_type|
+        raise ArgumentError.new("Please provide tag types as symbols") unless tag_type.is_a?(Symbol)
+        tag_type.to_s
+      }
+
       class_attribute :tag_types
       self.tag_types = tag_types
 
-      tag_types.each do |k|
-        define_method "#{k}=" do |values|
-          set_tags_of_type(k, values)
+      tag_types.each do |tag_type|
+        define_method("#{tag_type}=") do |tag_ids|
+          set_tags_of_type(tag_type, tag_ids)
         end
-        alias_method :"#{k.singularize}_ids=", :"#{k}="
+        alias_method :"#{tag_type.singularize}_ids=", :"#{tag_type}="
 
-        define_method k do
-          tags_of_type(k.singularize)
+        define_method(tag_type) do |*args|
+          include_draft = args.first
+          tags_of_type(tag_type.singularize, include_draft)
         end
-        define_method "#{k.singularize}_ids" do
-          tags_of_type(k.singularize).collect(&:tag_id)
+
+        define_method("#{tag_type.singularize}_ids") do |*args|
+          send(tag_type, *args).map(&:tag_id)
         end
       end
     end
 
-    def has_primary_tag_for(*keys)
-      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+    def has_primary_tag_for(*tag_types)
+      tag_types = tag_types.map {|tag_type|
+        raise ArgumentError.new("Please provide tag types as symbols") unless tag_type.is_a?(Symbol)
+        tag_type.to_s
+      }
+
       class_attribute :primary_tag_types
       self.primary_tag_types = tag_types
 
-      tag_types.each do |key|
-        method_name = "primary_#{key}"
-
-        define_method "#{method_name}=" do |value|
-          set_primary_tag_of_type(key.to_s, value)
+      tag_types.each do |tag_type|
+        define_method("primary_#{tag_type}=") do |tag_id|
+          set_primary_tag_of_type(tag_type, tag_id)
         end
 
-        define_method method_name do
-          tags_of_type(key.to_s).first
+        define_method("primary_#{tag_type}") do
+          tags_of_type(tag_type).first
         end
       end
     end
@@ -49,74 +57,50 @@ module Taggable
     klass.__send__       :private, :tag_ids=
   end
 
-  def set_tags_of_type(collection_name, values)
+  def set_tags_of_type(collection_name, tag_ids)
     tag_type = collection_name.singularize
+    tag_ids = Array(tag_ids)
 
-    # Ensure all tags loaded from database. This feels inelegant
-    # but ensures integrity. It could go away if we moved to a more
-    # consistent repository approach to retrieving and constructing
-    # objects, or if we used a custom serialization type for tags
-    # as documented on http://mongoid.org/en/mongoid/docs/documents.html
-    tags
+    Tag.validate_tag_ids(tag_ids, tag_type)
 
-    # Make sure that 'values' is an array. This stops the method blowing up
-    # if nil is provided.
-    values_as_array = Array(values)
+    current_tags = attributes['tags'].reject {|t| t[:tag_type] == tag_type }
 
-    # This will raise a Tag::MissingTags exception unless all the tags exist
-    new_tags = Tag.by_tag_ids!(values_as_array, tag_type)
-
-    @tags.reject! { |t| t.tag_type == tag_type }
-    @tags += new_tags
+    self.tags = current_tags + tag_ids.map {|tag_id|
+      {tag_id: tag_id, tag_type: tag_type}
+    }
   end
 
   # The primary tag is simply the first one of its
   # type. If that tag is already applied this method
   # moves it to the start of the list. If it's not then
   # we add it at the start of the list.
-  def set_primary_tag_of_type(tag_type, value)
-    tags
+  def set_primary_tag_of_type(tag_type, tag_id)
+    Tag.validate_tag_ids([tag_id], tag_type)
 
-    tag = Tag.by_tag_id(value, tag_type)
-    raise "Missing tag" unless tag
-    raise "Wrong tag type" unless tag.tag_type == tag_type
+    tag_tuple = {tag_id: tag_id, tag_type: tag_type}
 
-    @tags -= [tag]
-    @tags.unshift(tag)
+    current_tags = attributes['tags'].dup
+    current_tags.delete(tag_tuple)
+
+    self.tags = current_tags.unshift(tag_tuple)
   end
 
-  def tags_of_type(tag_type)
-    tags.select { |t| t.tag_type == tag_type }
+  def tags_of_type(tag_type, include_draft = false)
+    tags(include_draft).select { |t| t.tag_type == tag_type }
   end
 
-  def reconcile_tag_ids
-    # Ensure tags are loaded so we don't accidentally
-    # remove all tagging in situations where tags haven't
-    # been accessed during the lifetime of the object
-    tags
-
-    self.tag_ids = @tags.collect(&:tag_id)
-    self.tags = @tags.map {|tag|
-      { tag_id: tag.tag_id, tag_type: tag.tag_type }
-    }
+  def tags=(new_tag_tuples)
+    self.tag_ids = new_tag_tuples.map {|tuple| tuple[:tag_id] }
+    super(new_tag_tuples)
   end
 
-  def tags
-    @tags ||= Tag.by_tag_ids(tag_ids).compact.to_a
-  end
+  def tags(include_draft = false)
+    all_tags = Tag.by_tag_ids(tag_ids)
 
-  def reload
-    @tags = nil
-    super
-  end
-
-  def save(options={})
-    reconcile_tag_ids
-    super(options)
-  end
-
-  def save!(options={})
-    reconcile_tag_ids
-    super(options)
+    if include_draft
+      all_tags
+    else
+      all_tags.reject {|tag| tag.state == 'draft' }
+    end
   end
 end

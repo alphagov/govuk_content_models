@@ -24,7 +24,6 @@ class ArtefactTagTest < ActiveSupport::TestCase
     a = FactoryGirl.create(:artefact)
     a.sections = ['crime', 'crime/the-police']
     a.primary_section = 'crime'
-    a.reconcile_tag_ids
 
     assert_equal 'Crime', a.section
   end
@@ -36,7 +35,6 @@ class ArtefactTagTest < ActiveSupport::TestCase
 
     a = FactoryGirl.create(:artefact)
     a.primary_section = child.tag_id
-    a.reconcile_tag_ids
 
     assert_equal "#{parent.title}:#{child.title}", a.section
   end
@@ -47,7 +45,6 @@ class ArtefactTagTest < ActiveSupport::TestCase
     a.sections = ['crime', 'crime/the-police']
     a.legacy_sources = ['businesslink']
     a.keywords = ['bacon']
-    a.reconcile_tag_ids
 
     expected_tags = [
       { tag_id: "crime", tag_type: "section" },
