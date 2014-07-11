@@ -3,7 +3,7 @@ require 'tag_id_validator'
 
 class Tag
   include Mongoid::Document
-  
+
   field :tag_id,            type: String
   field :title,             type: String
   field :tag_type,          type: String #TODO: list of accepted types?
