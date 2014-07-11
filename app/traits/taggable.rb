@@ -11,11 +11,13 @@ module Taggable
         end
         alias_method :"#{k.singularize}_ids=", :"#{k}="
 
-        define_method k do
-          tags_of_type(k.singularize)
+        define_method k do |*args|
+          include_draft = args.first
+          tags_of_type(k.singularize, include_draft)
         end
-        define_method "#{k.singularize}_ids" do
-          tags_of_type(k.singularize).collect(&:tag_id)
+
+        define_method "#{k.singularize}_ids" do |*args|
+          send(k, *args).map(&:tag_id)
         end
       end
     end
@@ -77,8 +79,8 @@ module Taggable
     self.tags = current_tags.unshift(tag_tuple)
   end
 
-  def tags_of_type(tag_type)
-    tags.select { |t| t.tag_type == tag_type }
+  def tags_of_type(tag_type, include_draft = false)
+    tags(include_draft).select { |t| t.tag_type == tag_type }
   end
 
   def tags=(new_tag_tuples)
@@ -86,7 +88,13 @@ module Taggable
     super(new_tag_tuples)
   end
 
-  def tags
-    Tag.by_tag_ids(tag_ids)
+  def tags(include_draft = false)
+    all_tags = Tag.by_tag_ids(tag_ids)
+
+    if include_draft
+      all_tags
+    else
+      all_tags.reject {|tag| tag.state == 'draft' }
+    end
   end
 end

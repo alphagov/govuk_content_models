@@ -6,9 +6,10 @@ class TaggableTest < ActiveSupport::TestCase
   TEST_KEYWORDS = [['cheese', 'Cheese'], ['bacon', 'Bacon']]
 
   setup do
-    parent_section = FactoryGirl.create(:tag, :tag_id => 'crime', :tag_type => 'section', :title => 'Crime')
-    FactoryGirl.create(:tag, :tag_id => 'crime/the-police', :tag_type => 'section', :title => 'The Police', :parent_id => parent_section.id)
-    FactoryGirl.create(:tag, :tag_id => 'crime/batman', :tag_type => 'section', :title => 'Batman', :parent_id => parent_section.id)
+    @parent_section = FactoryGirl.create(:tag, :tag_id => 'crime', :tag_type => 'section', :title => 'Crime')
+    FactoryGirl.create(:tag, :tag_id => 'crime/the-police', :tag_type => 'section', :title => 'The Police', :parent_id => @parent_section.id)
+    FactoryGirl.create(:tag, :tag_id => 'crime/batman', :tag_type => 'section', :title => 'Batman', :parent_id => @parent_section.id)
+    @draft_section = FactoryGirl.create(:tag, parent_id: @parent_section.id, state: 'draft')
 
     TEST_KEYWORDS.each do |tag_id, title|
       FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
@@ -116,5 +117,16 @@ class TaggableTest < ActiveSupport::TestCase
     @item.save!
 
     assert_equal [], @item.section_ids
+  end
+
+  test "returns draft tags only if requested" do
+    @item.section_ids = [@parent_section.tag_id, @draft_section.tag_id]
+    @item.save!
+
+    assert_equal [@parent_section.tag_id], @item.section_ids
+    assert_equal [@parent_section.tag_id, @draft_section.tag_id], @item.section_ids(draft: true)
+
+    assert_equal [@parent_section], @item.sections
+    assert_equal [@parent_section, @draft_section], @item.sections(draft: true)
   end
 end
