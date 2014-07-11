@@ -1,41 +1,47 @@
 module Taggable
   module ClassMethods
-    def stores_tags_for(*keys)
-      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+    def stores_tags_for(*tag_types)
+      tag_types = tag_types.map {|tag_type|
+        raise ArgumentError.new("Please provide tag types as symbols") unless tag_type.is_a?(Symbol)
+        tag_type.to_s
+      }
+
       class_attribute :tag_types
       self.tag_types = tag_types
 
-      tag_types.each do |k|
-        define_method "#{k}=" do |values|
-          set_tags_of_type(k, values)
+      tag_types.each do |tag_type|
+        define_method("#{tag_type}=") do |tag_ids|
+          set_tags_of_type(tag_type, tag_ids)
         end
-        alias_method :"#{k.singularize}_ids=", :"#{k}="
+        alias_method :"#{tag_type.singularize}_ids=", :"#{tag_type}="
 
-        define_method k do |*args|
+        define_method(tag_type) do |*args|
           include_draft = args.first
-          tags_of_type(k.singularize, include_draft)
+          tags_of_type(tag_type.singularize, include_draft)
         end
 
-        define_method "#{k.singularize}_ids" do |*args|
-          send(k, *args).map(&:tag_id)
+        define_method("#{tag_type.singularize}_ids") do |*args|
+          send(tag_type, *args).map(&:tag_id)
         end
       end
     end
 
-    def has_primary_tag_for(*keys)
-      tag_types = keys.to_a.flatten.compact.map(&:to_s)
+    def has_primary_tag_for(*tag_types)
+      tag_types = tag_types.map {|tag_type|
+        raise ArgumentError.new("Please provide tag types as symbols") unless tag_type.is_a?(Symbol)
+        tag_type.to_s
+      }
+
       class_attribute :primary_tag_types
       self.primary_tag_types = tag_types
 
-      tag_types.each do |key|
-        method_name = "primary_#{key}"
-
-        define_method "#{method_name}=" do |value|
-          set_primary_tag_of_type(key.to_s, value)
+      tag_types.each do |tag_type|
+        define_method("primary_#{tag_type}=") do |tag_id|
+          set_primary_tag_of_type(tag_type, tag_id)
         end
 
-        define_method method_name do
-          tags_of_type(key.to_s).first
+        define_method("primary_#{tag_type}") do
+          tags_of_type(tag_type).first
         end
       end
     end
