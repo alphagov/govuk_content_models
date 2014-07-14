@@ -65,12 +65,24 @@ class Tag
     title
   end
 
-  def self.by_tag_id(tag_id, tag_type = nil)
-    by_tag_ids([tag_id], tag_type).first
+  def self.by_tag_id(tag_id, tag_type_or_options = nil)
+    by_tag_ids([tag_id], tag_type_or_options).first
   end
 
-  def self.by_tag_ids(tag_id_list, tag_type = nil)
-    tag_scope = tag_type ? Tag.where(tag_type: tag_type) : Tag
+  def self.by_tag_ids(tag_id_list, tag_type_or_options = nil)
+    if tag_type_or_options.is_a?(String)
+      # Providing the type as a string argument is deprecated in favour of providing the type as an option
+      options = {type: tag_type_or_options}
+    else
+      options = tag_type_or_options || {}
+    end
+
+    tag_scope = options[:type] ? Tag.where(tag_type: options[:type]) : Tag
+
+    unless options[:draft]
+      tag_scope = tag_scope.where(:state.ne => 'draft')
+    end
+
     tag_scope = tag_scope.any_in(tag_id: tag_id_list)
 
     # Sort by id list because MongoID 2.x doesn't preserve order
@@ -85,9 +97,10 @@ class Tag
     any_of(list)
   end
 
-  # Retrieve a list of tags by tag ID. Any missing tags raise an exception.
+  # Validate a list of tags by tag ID. Any missing tags raise an exception.
+  # Draft tags are considered present for internal validation.
   def self.validate_tag_ids(tag_id_list, tag_type = nil)
-    found_tags = by_tag_ids(tag_id_list, tag_type)
+    found_tags = by_tag_ids(tag_id_list, type: tag_type, draft: true)
     missing_tag_ids = tag_id_list - found_tags.map(&:tag_id)
     raise MissingTags.new(missing_tag_ids) if missing_tag_ids.any?
   end

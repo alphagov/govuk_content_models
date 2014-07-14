@@ -37,7 +37,12 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "should load by tag ID and type" do
+    # This form is deprecated in favour of providing the type as an option
     assert_equal "Crime", Tag.by_tag_id("crime", "section").title
+  end
+
+  test "accepts the tag type as an option" do
+    assert_equal "Crime", Tag.by_tag_id("crime", type: "section").title
   end
 
   test "should not load an incorrectly-typed tag" do
@@ -60,6 +65,23 @@ class TagTest < ActiveSupport::TestCase
     tags = Tag.by_tag_ids(tag_ids)
 
     assert_equal %w(crime business housing), tags.map(&:tag_id)
+  end
+
+  test "should not return draft tags unless requested" do
+    draft_tag = FactoryGirl.create(:tag,
+      tag_id: "draft-tag",
+      tag_type: "section",
+      title: "A draft tag",
+      state: "draft"
+    )
+
+    tag_ids = %w(crime business draft-tag housing)
+
+    assert_equal %w(crime business housing).to_set, Tag.by_tag_ids(tag_ids).map(&:tag_id).to_set
+    assert_equal %w(crime business draft-tag housing).to_set, Tag.by_tag_ids(tag_ids, draft: true).map(&:tag_id).to_set
+
+    assert_nil Tag.by_tag_id('draft-tag')
+    assert_equal draft_tag, Tag.by_tag_id('draft-tag', draft: true)
   end
 
   test "should return nil for tags of the wrong type" do
