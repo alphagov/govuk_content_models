@@ -1,3 +1,7 @@
+## 15.0.0
+* Refactor tags.
+* Provide draft functionality in the `taggable` trait.
+
 ## 14.1.1
 * Use another way to transition Editions without
   validation
