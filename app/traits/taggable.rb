@@ -95,12 +95,6 @@ module Taggable
   end
 
   def tags(include_draft = false)
-    all_tags = Tag.by_tag_ids(tag_ids)
-
-    if include_draft
-      all_tags
-    else
-      all_tags.reject {|tag| tag.state == 'draft' }
-    end
+    Tag.by_tag_ids(tag_ids, draft: include_draft)
   end
 end
