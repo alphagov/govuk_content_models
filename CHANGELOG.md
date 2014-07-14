@@ -1,3 +1,8 @@
+## 15.1.0
+* Add draft tag functionality to `Tag.by_tag_id/s`.
+* Permit tag type to be provided via an options
+  hash, while retaining backwards compatibility.
+
 ## 15.0.0
 * Refactor tags.
 * Provide draft functionality in the `taggable` trait.
