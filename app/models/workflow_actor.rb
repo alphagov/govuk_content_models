@@ -95,11 +95,7 @@ module WorkflowActor
 
   # Always records the action.
   def receive_fact_check(edition, details)
-    # advance state if possible (i.e. if in "fact_check" state),
-    # save separately without validation
-    # http://rubydoc.info/github/pluginaweek/state_machine/StateMachine/Machine:event
-    edition.receive_fact_check(false)
-    edition.save(validate: false)
+    edition.perform_event_without_validations(:receive_fact_check)
     # Fact checks are processed async, so the user doesn't get an opportunity
     # to retry without the content that (inadvertantly) fails validation, which happens frequently.
     record_action_without_validation(edition, :receive_fact_check, details)
