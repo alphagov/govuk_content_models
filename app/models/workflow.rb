@@ -221,6 +221,13 @@ module Workflow
     published? ? 'Published editions' : 'Editions scheduled for publishing'
   end
 
+  def perform_event_without_validations(event)
+    # http://rubydoc.info/github/pluginaweek/state_machine/StateMachine/Machine:event
+    # pass false to transition state without performing state machine actions
+    public_send(event, false)
+    save(validate: false)
+  end
+
   private
 
     def publish_at_is_in_the_future

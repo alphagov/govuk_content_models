@@ -655,20 +655,23 @@ class EditionTest < ActiveSupport::TestCase
     assert_not_nil GuideEdition.where(state: "published", panopticon_id: edition.panopticon_id).first
   end
 
-  test "when an edition of a guide is published, all other published editions are archived" do
-    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+  test "should archive older editions, even if there are validation errors, when a new edition is published" do
+    edition = FactoryGirl.create(:guide_edition_with_two_parts, panopticon_id: @artefact.id, state: "ready")
 
     user = User.create name: "bob"
     user.publish edition, comment: "First publication"
 
     second_edition = edition.build_clone
-    second_edition.update_attribute(:state, "ready")
-    second_edition.save!
+    second_edition.state = "ready"
     user.publish second_edition, comment: "Second publication"
 
+    # simulate link validation errors in published edition
+    second_edition.parts.first.update_attribute(:body, "[register your vehicle](registering-an-imported-vehicle)")
+
     third_edition = second_edition.build_clone
-    third_edition.update_attribute(:state, "ready")
-    third_edition.save!
+    # fix link validation error in cloned edition by appending a '/' to the relative url
+    third_edition.parts.first.body = "[register your vehicle](/registering-an-imported-vehicle)"
+    third_edition.state = "ready"
     user.publish third_edition, comment: "Third publication"
 
     edition.reload

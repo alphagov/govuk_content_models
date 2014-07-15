@@ -236,7 +236,7 @@ class Edition
   end
 
   def was_published
-    previous_siblings.all.each(&:archive)
+    previous_siblings.each { |s| s.perform_event_without_validations(:archive) }
     notify_siblings_of_published_edition
   end
 
