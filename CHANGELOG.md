@@ -1,3 +1,6 @@
+## 15.1.1
+* Allow archiving of siblings with validation errors
+
 ## 15.1.0
 * Add draft tag functionality to `Tag.by_tag_id/s`.
 * Permit tag type to be provided via an options
