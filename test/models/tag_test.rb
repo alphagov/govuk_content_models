@@ -133,32 +133,56 @@ class TagTest < ActiveSupport::TestCase
       @atts = { tag_type: 'section', tag_id: 'test', title: 'Test' }
     end
 
-    should "be created in live state" do
-      tag = Tag.create(@atts.merge(state: 'live'))
-
-      assert tag.persisted?
-      assert_equal 'live', tag.state
-    end
-
-    should "be created in draft state" do
-      tag = Tag.create(@atts.merge(state: 'draft'))
-
-      assert tag.persisted?
-      assert_equal 'draft', tag.state
-    end
-
-    should "not be created in another state" do
-      tag = Tag.create(@atts.merge(state: 'foo'))
-
-      assert !tag.valid?
-      assert tag.errors.has_key?(:state)
-    end
-
     should "be created in draft state by default" do
       tag = Tag.create(@atts)
 
       assert tag.persisted?
       assert_equal 'draft', tag.state
+    end
+
+    should "be able to be set to live" do
+      tag = Tag.new(@atts)
+      tag.state = 'live'
+      tag.save
+
+      tag.reload
+      assert_equal 'live', tag.state
+    end
+
+    should "not mass-assign the state attribute" do
+      tag = Tag.create(@atts.merge(state: 'live'))
+      tag.reload
+
+      refute_equal 'live', tag.state
+    end
+
+    should "not be created in another state" do
+      tag = Tag.new(@atts)
+      tag.state = 'foo'
+
+      assert !tag.valid?
+      assert tag.errors.has_key?(:state)
+    end
+
+    should "be set to live when published" do
+      tag = Tag.create(@atts)
+
+      assert_equal 'draft', tag.state
+      tag.publish!
+
+      tag.reload
+      assert_equal 'live', tag.state
+    end
+
+    should "not be published more than once" do
+      tag = Tag.create(@atts)
+
+      tag.publish!
+      tag.reload
+
+      assert_raises StateMachine::InvalidTransition do
+        tag.publish!
+      end
     end
   end
 end

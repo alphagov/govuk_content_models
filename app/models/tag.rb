@@ -1,5 +1,6 @@
 require "safe_html"
 require 'tag_id_validator'
+require 'state_machine'
 
 class Tag
   include Mongoid::Document
@@ -24,6 +25,8 @@ class Tag
   validates_with TagIdValidator
   validates_with SafeHtml
 
+  attr_protected :state
+
   validates :state, inclusion: { in: STATES }
 
   class MissingTags < RuntimeError
@@ -38,6 +41,12 @@ class Tag
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually
   attr_accessor :uniquely_named
+
+  state_machine initial: :draft do
+    event :publish do
+      transition draft: :live
+    end
+  end
 
   def as_json(options = {})
     {
