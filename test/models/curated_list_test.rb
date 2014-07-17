@@ -9,7 +9,7 @@ class CuratedListTest < ActiveSupport::TestCase
 
   test "should include ability to have a section tag" do
     cl = FactoryGirl.create(:curated_list)
-    tag = FactoryGirl.create(:tag, tag_id: 'batman', title: 'Batman', tag_type: 'section')
+    tag = FactoryGirl.create(:live_tag, tag_id: 'batman', title: 'Batman', tag_type: 'section')
 
     cl.sections = ['batman']
     cl.save

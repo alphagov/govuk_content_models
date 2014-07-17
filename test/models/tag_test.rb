@@ -2,10 +2,10 @@ require "test_helper"
 
 class TagTest < ActiveSupport::TestCase
   test "should return a hash of the fields" do
-    tag = Tag.new(
+    tag = FactoryGirl.build(:live_tag,
       tag_id: "crime",
       tag_type: "section",
-      title: "Crime"
+      title: "Crime",
     )
     expected_hash = {
       id: "crime",
@@ -19,12 +19,12 @@ class TagTest < ActiveSupport::TestCase
 
   setup do
     %w(crime business housing).each do |section|
-      FactoryGirl.create(:tag, :tag_id => section, :title => section.capitalize)
+      FactoryGirl.create(:live_tag, :tag_id => section, :title => section.capitalize)
     end
 
     %w(pie mash chips).each do |keyword|
       FactoryGirl.create(
-        :tag,
+        :live_tag,
         :tag_id => keyword,
         :title => keyword.capitalize,
         :tag_type => "keyword"
@@ -68,11 +68,10 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "should not return draft tags unless requested" do
-    draft_tag = FactoryGirl.create(:tag,
+    draft_tag = FactoryGirl.create(:draft_tag,
       tag_id: "draft-tag",
       tag_type: "section",
       title: "A draft tag",
-      state: "draft"
     )
 
     tag_ids = %w(crime business draft-tag housing)

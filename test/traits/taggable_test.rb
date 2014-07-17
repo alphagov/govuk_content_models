@@ -6,13 +6,13 @@ class TaggableTest < ActiveSupport::TestCase
   TEST_KEYWORDS = [['cheese', 'Cheese'], ['bacon', 'Bacon']]
 
   setup do
-    @parent_section = FactoryGirl.create(:tag, :tag_id => 'crime', :tag_type => 'section', :title => 'Crime')
-    FactoryGirl.create(:tag, :tag_id => 'crime/the-police', :tag_type => 'section', :title => 'The Police', :parent_id => @parent_section.id)
-    FactoryGirl.create(:tag, :tag_id => 'crime/batman', :tag_type => 'section', :title => 'Batman', :parent_id => @parent_section.id)
-    @draft_section = FactoryGirl.create(:tag, parent_id: @parent_section.id, state: 'draft')
+    @parent_section = FactoryGirl.create(:live_tag, :tag_id => 'crime', :tag_type => 'section', :title => 'Crime')
+    FactoryGirl.create(:live_tag, :tag_id => 'crime/the-police', :tag_type => 'section', :title => 'The Police', :parent_id => @parent_section.id)
+    FactoryGirl.create(:live_tag, :tag_id => 'crime/batman', :tag_type => 'section', :title => 'Batman', :parent_id => @parent_section.id)
+    @draft_section = FactoryGirl.create(:draft_tag, parent_id: @parent_section.id)
 
     TEST_KEYWORDS.each do |tag_id, title|
-      FactoryGirl.create(:tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
+      FactoryGirl.create(:live_tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
     end
 
     @item = FactoryGirl.create(:artefact)

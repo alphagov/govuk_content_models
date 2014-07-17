@@ -356,7 +356,7 @@ class ArtefactTest < ActiveSupport::TestCase
   # should continue to work in the way it has been:
   # i.e. you can edit everything but the name/title for published content in panop
   test "on save title should not be applied to already published content" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
@@ -503,10 +503,10 @@ class ArtefactTest < ActiveSupport::TestCase
   context "returning json representation" do
     context "returning tags" do
       setup do
-        FactoryGirl.create(:tag, :tag_type => 'section', :tag_id => 'crime', :title => 'Crime')
-        FactoryGirl.create(:tag, :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice")
-        FactoryGirl.create(:tag, :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov')
-        FactoryGirl.create(:tag, :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link')
+        FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'crime', :title => 'Crime')
+        FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice")
+        FactoryGirl.create(:live_tag, :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov')
+        FactoryGirl.create(:live_tag, :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link')
 
         @a = FactoryGirl.create(:artefact, :slug => 'fooey')
       end
@@ -588,10 +588,10 @@ class ArtefactTest < ActiveSupport::TestCase
 
   context "related artefacts grouped by section tags" do
     setup do
-      FactoryGirl.create(:tag, :tag_id => "fruit", :tag_type => 'section', :title => "Fruit")
-      FactoryGirl.create(:tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits", :parent_id => "fruit")
-      FactoryGirl.create(:tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits", :parent_id => "fruit")
-      FactoryGirl.create(:tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
+      FactoryGirl.create(:live_tag, :tag_id => "fruit", :tag_type => 'section', :title => "Fruit")
+      FactoryGirl.create(:live_tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits", :parent_id => "fruit")
+      FactoryGirl.create(:live_tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits", :parent_id => "fruit")
+      FactoryGirl.create(:live_tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
 
       @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_ids: ["100001"], owning_app: "x")
     end
