@@ -10,7 +10,7 @@ class Tag
   field :description,       type: String
   field :short_description, type: String
   field :parent_id,         type: String
-  field :state,             type: String, default: 'live'
+  field :state,             type: String, default: 'draft'
 
   GOVSPEAK_FIELDS = []
   STATES = ['draft', 'live']

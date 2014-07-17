@@ -154,11 +154,11 @@ class TagTest < ActiveSupport::TestCase
       assert tag.errors.has_key?(:state)
     end
 
-    should "be created in live state by default" do
+    should "be created in draft state by default" do
       tag = Tag.create(@atts)
 
       assert tag.persisted?
-      assert_equal 'live', tag.state
+      assert_equal 'draft', tag.state
     end
   end
 end
