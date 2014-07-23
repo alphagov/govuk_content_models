@@ -63,10 +63,10 @@ module Taggable
 
     Tag.validate_tag_ids(tag_ids, tag_type)
 
-    current_tags = attributes['tags'].reject {|t| t[:tag_type] == tag_type }
+    current_tags = attributes['tags'].reject {|t| t['tag_type'] == tag_type }
 
     self.tags = current_tags + tag_ids.map {|tag_id|
-      {tag_id: tag_id, tag_type: tag_type}
+      {'tag_id' => tag_id, 'tag_type' => tag_type}
     }
   end
 
@@ -77,7 +77,7 @@ module Taggable
   def set_primary_tag_of_type(tag_type, tag_id)
     Tag.validate_tag_ids([tag_id], tag_type)
 
-    tag_tuple = {tag_id: tag_id, tag_type: tag_type}
+    tag_tuple = {'tag_id' => tag_id, 'tag_type' => tag_type}
 
     current_tags = attributes['tags'].dup
     current_tags.delete(tag_tuple)
@@ -90,7 +90,7 @@ module Taggable
   end
 
   def tags=(new_tag_tuples)
-    self.tag_ids = new_tag_tuples.map {|tuple| tuple[:tag_id] }
+    self.tag_ids = new_tag_tuples.map {|tuple| tuple['tag_id'] }
     super(new_tag_tuples)
   end
 
