@@ -47,10 +47,10 @@ class ArtefactTagTest < ActiveSupport::TestCase
     a.keywords = ['bacon']
 
     expected_tags = [
-      { tag_id: "crime", tag_type: "section" },
-      { tag_id: "crime/the-police", tag_type: "section" },
-      { tag_id: "businesslink", tag_type: "legacy_source" },
-      { tag_id: "bacon", tag_type: "keyword" },
+      { "tag_id" => "crime", "tag_type" => "section" },
+      { "tag_id" => "crime/the-police", "tag_type" => "section" },
+      { "tag_id" => "businesslink", "tag_type" => "legacy_source" },
+      { "tag_id" => "bacon", "tag_type" => "keyword" },
     ]
     assert_equal ["crime", "crime/the-police", "businesslink", "bacon"], a.tag_ids
     assert_equal expected_tags, a.attributes["tags"]
