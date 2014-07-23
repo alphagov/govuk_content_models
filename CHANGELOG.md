@@ -1,3 +1,7 @@
+## 15.1.2
+* Use string-based keys rather than symbols when manipulating
+  tuple hashes for tags on an artefact.
+
 ## 15.1.1
 * Allow archiving of siblings with validation errors
 
