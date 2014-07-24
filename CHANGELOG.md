@@ -1,3 +1,9 @@
+## 16.0.0
+
+* Adds a workflow for Tags.
+* BREAKING CHANGE: Tags are no longer live by default. Tests which create tags
+  should migrate to use the new `:live_tag` factory when creating stub data.
+
 ## 15.1.2
 * Use string-based keys rather than symbols when manipulating
   tuple hashes for tags on an artefact.
