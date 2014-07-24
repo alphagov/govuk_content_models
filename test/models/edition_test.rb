@@ -366,7 +366,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should create a publication based on data imported from panopticon" do
-    section = FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    section = FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
@@ -393,7 +393,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should not change edition metadata if archived" do
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
@@ -492,8 +492,8 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should also delete associated artefact" do
-    
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+
+    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
 
     user1 = FactoryGirl.create(:user)
     edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
@@ -504,8 +504,8 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should not delete associated artefact if there are other editions of this publication" do
-    
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+
+    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     user1 = FactoryGirl.create(:user)
     edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
     edition.update_attribute(:state, "published")
@@ -902,7 +902,7 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should denormalise a creator's name when an edition is created" do
     @user = FactoryGirl.create(:user)
-    FactoryGirl.create(:tag, tag_id: "test-section", title: "Test section", tag_type: "section")
+    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",

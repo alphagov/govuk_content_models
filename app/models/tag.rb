@@ -1,5 +1,6 @@
 require "safe_html"
 require 'tag_id_validator'
+require 'state_machine'
 
 class Tag
   include Mongoid::Document
@@ -10,7 +11,7 @@ class Tag
   field :description,       type: String
   field :short_description, type: String
   field :parent_id,         type: String
-  field :state,             type: String, default: 'live'
+  field :state,             type: String, default: 'draft'
 
   GOVSPEAK_FIELDS = []
   STATES = ['draft', 'live']
@@ -23,6 +24,8 @@ class Tag
   validates_uniqueness_of :tag_id, scope: :tag_type
   validates_with TagIdValidator
   validates_with SafeHtml
+
+  attr_protected :state
 
   validates :state, inclusion: { in: STATES }
 
@@ -38,6 +41,12 @@ class Tag
   # This doesn't get set automatically: the code that loads tags
   # should go through them and set this attribute manually
   attr_accessor :uniquely_named
+
+  state_machine initial: :draft do
+    event :publish do
+      transition draft: :live
+    end
+  end
 
   def as_json(options = {})
     {

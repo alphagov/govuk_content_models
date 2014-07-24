@@ -19,6 +19,17 @@ FactoryGirl.define do
     sequence(:tag_id) { |n| "crime-and-justice-#{n}" }
     sequence(:title) { |n| "The title #{n}" }
     tag_type "section"
+
+    trait :draft do
+      state "draft"
+    end
+
+    trait :live do
+      state "live"
+    end
+
+    factory :draft_tag, traits: [:draft]
+    factory :live_tag, traits: [:live]
   end
 
   factory :artefact do

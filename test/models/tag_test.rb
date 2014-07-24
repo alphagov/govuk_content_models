@@ -2,10 +2,10 @@ require "test_helper"
 
 class TagTest < ActiveSupport::TestCase
   test "should return a hash of the fields" do
-    tag = Tag.new(
+    tag = FactoryGirl.build(:live_tag,
       tag_id: "crime",
       tag_type: "section",
-      title: "Crime"
+      title: "Crime",
     )
     expected_hash = {
       id: "crime",
@@ -19,12 +19,12 @@ class TagTest < ActiveSupport::TestCase
 
   setup do
     %w(crime business housing).each do |section|
-      FactoryGirl.create(:tag, :tag_id => section, :title => section.capitalize)
+      FactoryGirl.create(:live_tag, :tag_id => section, :title => section.capitalize)
     end
 
     %w(pie mash chips).each do |keyword|
       FactoryGirl.create(
-        :tag,
+        :live_tag,
         :tag_id => keyword,
         :title => keyword.capitalize,
         :tag_type => "keyword"
@@ -68,11 +68,10 @@ class TagTest < ActiveSupport::TestCase
   end
 
   test "should not return draft tags unless requested" do
-    draft_tag = FactoryGirl.create(:tag,
+    draft_tag = FactoryGirl.create(:draft_tag,
       tag_id: "draft-tag",
       tag_type: "section",
       title: "A draft tag",
-      state: "draft"
     )
 
     tag_ids = %w(crime business draft-tag housing)
@@ -134,32 +133,56 @@ class TagTest < ActiveSupport::TestCase
       @atts = { tag_type: 'section', tag_id: 'test', title: 'Test' }
     end
 
-    should "be created in live state" do
-      tag = Tag.create(@atts.merge(state: 'live'))
-
-      assert tag.persisted?
-      assert_equal 'live', tag.state
-    end
-
-    should "be created in draft state" do
-      tag = Tag.create(@atts.merge(state: 'draft'))
+    should "be created in draft state by default" do
+      tag = Tag.create(@atts)
 
       assert tag.persisted?
       assert_equal 'draft', tag.state
     end
 
+    should "be able to be set to live" do
+      tag = Tag.new(@atts)
+      tag.state = 'live'
+      tag.save
+
+      tag.reload
+      assert_equal 'live', tag.state
+    end
+
+    should "not mass-assign the state attribute" do
+      tag = Tag.create(@atts.merge(state: 'live'))
+      tag.reload
+
+      refute_equal 'live', tag.state
+    end
+
     should "not be created in another state" do
-      tag = Tag.create(@atts.merge(state: 'foo'))
+      tag = Tag.new(@atts)
+      tag.state = 'foo'
 
       assert !tag.valid?
       assert tag.errors.has_key?(:state)
     end
 
-    should "be created in live state by default" do
+    should "be set to live when published" do
       tag = Tag.create(@atts)
 
-      assert tag.persisted?
+      assert_equal 'draft', tag.state
+      tag.publish!
+
+      tag.reload
       assert_equal 'live', tag.state
+    end
+
+    should "not be published more than once" do
+      tag = Tag.create(@atts)
+
+      tag.publish!
+      tag.reload
+
+      assert_raises StateMachine::InvalidTransition do
+        tag.publish!
+      end
     end
   end
 end
