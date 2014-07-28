@@ -128,6 +128,13 @@ class TagTest < ActiveSupport::TestCase
     assert_includes Tag.validators.map(&:class), TagIdValidator
   end
 
+  test "#parent returns the parent even if the parent is draft" do
+    parent = FactoryGirl.create(:tag, state: 'draft')
+    child = FactoryGirl.create(:tag, state: 'draft', parent_id: parent.tag_id)
+
+    assert_equal parent, child.parent
+  end
+
   context "state" do
     setup do
       @atts = { tag_type: 'section', tag_id: 'test', title: 'Test' }

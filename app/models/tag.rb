@@ -63,7 +63,7 @@ class Tag
   end
 
   def parent
-    Tag.by_tag_id(parent_id, self.tag_type) if has_parent?
+    Tag.by_tag_id(parent_id, type: self.tag_type, draft: true) if has_parent?
   end
 
   def unique_title
