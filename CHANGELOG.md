@@ -1,3 +1,7 @@
+## 16.1.1
+
+* Make Tag#parent return the tag's parent even if it is draft.
+
 ## 16.1.0
 
 * Add new format for international_development_fund for an Artefact
