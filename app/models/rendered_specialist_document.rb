@@ -9,6 +9,7 @@ class RenderedSpecialistDocument
   field :title,                  type: String
   field :summary,                type: String
   field :body,                   type: String
+  field :published_at,           type: DateTime
 
   field :details,                type: Hash
 
