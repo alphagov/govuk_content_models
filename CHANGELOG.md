@@ -1,3 +1,6 @@
+## 16.2.0
+* Add published_at field to RenderedSpecialistDocument
+
 ## 16.1.1
 
 * Make Tag#parent return the tag's parent even if it is draft.
