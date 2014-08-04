@@ -1,3 +1,8 @@
+## 17.0.0
+* BREAKING CHANGE: Upgrade govspeak gem dependency.
+  * This modifies how the SafeHtml validator will behave. It now permits tags
+    it didn't before.
+
 ## 16.2.0
 * Add published_at field to RenderedSpecialistDocument
 
