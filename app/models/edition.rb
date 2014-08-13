@@ -240,8 +240,11 @@ class Edition
     notify_siblings_of_published_edition
   end
 
-  def update_slug_from_artefact(artefact)
+  def update_fields_from_artefact(artefact)
+    # fields under metadata tab in Publisher
     self.slug = artefact.slug
+    self.section = artefact.section
+    self.department = artefact.department
     self.save!
   end
 

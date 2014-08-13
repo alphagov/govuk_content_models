@@ -287,7 +287,7 @@ class Artefact
     when 'draft'
       Edition.where(:state.nin => ["archived"],
                     panopticon_id: self.id).each do |edition|
-        edition.update_slug_from_artefact(self)
+        edition.update_fields_from_artefact(self)
       end
     when 'archived'
       archive_editions

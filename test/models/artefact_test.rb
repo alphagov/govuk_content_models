@@ -306,15 +306,20 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
-  should "update the edition's slug when a draft artefact is saved" do
+  should "update the edition's slug, primary section and department when a draft artefact is saved" do
+    tag = FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:draft_artefact)
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id)
 
     artefact.slug = "something-something-draft"
+    artefact.primary_section = "test-section"
+    artefact.department = "Test Department"
     artefact.save!
 
     edition.reload
     assert_equal artefact.slug, edition.slug
+    assert_equal artefact.section, edition.section
+    assert_equal artefact.department, edition.department
   end
 
   should "not update the edition's slug when a live artefact is saved" do
