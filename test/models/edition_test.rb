@@ -54,6 +54,14 @@ class EditionTest < ActiveSupport::TestCase
     assert a.errors[:title].any?
   end
 
+  test "it is not in beta by default" do
+    refute FactoryGirl.build(:guide_edition).in_beta?
+  end
+
+  test "it can be in beta" do
+    assert FactoryGirl.build(:guide_edition, in_beta: true).in_beta?
+  end
+
   test "it should give a friendly (legacy supporting) description of its format" do
     a = LocalTransactionEdition.new
     assert_equal "LocalTransaction", a.format

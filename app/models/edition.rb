@@ -11,6 +11,7 @@ class Edition
   field :business_proposition, type: Boolean,  default: false
 
   field :title,                type: String
+  field :in_beta,              type: Boolean,  default: false
   field :created_at,           type: DateTime, default: lambda { Time.zone.now }
   field :publish_at,           type: DateTime
   field :overview,             type: String
