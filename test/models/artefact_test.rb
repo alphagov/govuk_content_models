@@ -552,6 +552,13 @@ class ArtefactTest < ActiveSupport::TestCase
           ]
           assert_equal expected, hash['tags']
         end
+
+        should "omit non-existent tags referenced from the tag_ids array" do
+          @a.tag_ids << 'batman'
+          hash = @a.as_json
+
+          assert_equal %w(justice businesslink), hash['tags'].map {|t| t[:id] }
+        end
       end
     end
   end
