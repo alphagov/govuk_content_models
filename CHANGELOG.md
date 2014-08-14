@@ -1,3 +1,6 @@
+## 17.1.0
+* Added `in_beta` field to `Edition`
+
 ## 17.0.0
 * BREAKING CHANGE: Upgrade govspeak gem dependency.
   * This modifies how the SafeHtml validator will behave. It now permits tags
