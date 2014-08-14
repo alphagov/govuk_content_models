@@ -1,3 +1,7 @@
+## 17.1.1
+
+* Make `Artefact#as_json` handle missing tags gracefully
+
 ## 17.1.0
 * Added `in_beta` field to `Edition`
 
