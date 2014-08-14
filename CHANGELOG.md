@@ -1,3 +1,7 @@
+## 17.0.1
+* govspeak v2.0.0 unintentionally broke content models.
+  upgrading to a version that includes a compatibility fix.
+
 ## 17.0.0
 * BREAKING CHANGE: Upgrade govspeak gem dependency.
   * This modifies how the SafeHtml validator will behave. It now permits tags
