@@ -1,3 +1,8 @@
+## 18.0.0
+
+* BREAKING CHANGE: Remove specialist-document Artefact kind.
+* Add new format for medical_safety_alert for an Artefact.
+
 ## 17.2.1
 
 * Add new format for drug_safety_update for an Artefact
