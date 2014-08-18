@@ -58,6 +58,17 @@ class SafeHtmlTest < ActiveSupport::TestCase
       assert_includes dummy.errors.keys, :undeclared
     end
 
+    should "disallow images not hosted by us" do
+      dummy = Dummy.new(undeclared: '<img src="http://evil.com/trollface"/>')
+      assert dummy.invalid?
+      assert_includes dummy.errors.keys, :undeclared
+    end
+
+    should "allow images hosted by us" do
+      dummy = Dummy.new(undeclared: '<img src="http://www.dev.gov.uk/trollface"/>')
+      assert dummy.valid?
+    end
+
     should "allow plain text" do
       dummy = Dummy.new(declared: "foo bar")
       assert dummy.valid?
