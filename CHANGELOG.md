@@ -1,3 +1,7 @@
+## 17.2.1
+
+* Add new format for drug_safety_update for an Artefact
+
 ## 17.1.1
 
 * Make `Artefact#as_json` handle missing tags gracefully
