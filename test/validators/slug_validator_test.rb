@@ -78,11 +78,11 @@ class SlugTest < ActiveSupport::TestCase
 
   context "Specialist documents" do
     should "all url nested one level deep" do
-      assert document_with_slug("some-finder/my-specialist-document", kind: "specialist-document").valid?
+      assert document_with_slug("some-finder/my-specialist-document", kind: "cma_case").valid?;
     end
 
     should "not allow deeper nesting" do
-      refute document_with_slug("some-finder/my-specialist-document/not-allowed", kind: "specialist-document").valid?
+      refute document_with_slug("some-finder/my-specialist-document/not-allowed", kind: "cma_case").valid?
     end
   end
 
