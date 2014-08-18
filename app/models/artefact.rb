@@ -89,6 +89,7 @@ class Artefact
                                   "manual",
                                   "manual-change-history",
                                   "manual-section",
+                                  "medical-safety-alert",
                                   "specialist-document"], # Deprecated: Leaving in place for legacy reasons. In future use explicit document_type
     "finder-api"              => ["finder"],
     "whitehall"               => ["announcement",
