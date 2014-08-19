@@ -1,3 +1,8 @@
+## 19.0.0
+
+* BREAKING CHANGE: String fields can no longer include arbitrary images. They
+  must either be on a relative path, hosted on either www.gov.uk, assets.digital.cabinet-office.gov.uk or the equivalent domain for the local environment.
+
 ## 18.0.0
 
 * BREAKING CHANGE: Remove specialist-document Artefact kind.
