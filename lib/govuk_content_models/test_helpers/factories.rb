@@ -89,8 +89,6 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
     sequence(:title) { |n| "A key answer to your question #{n}" }
 
-    section "test:subsection test"
-
     after :build do |ed|
       if previous = ed.series.order(version_number: "desc").first
         ed.version_number = previous.version_number + 1

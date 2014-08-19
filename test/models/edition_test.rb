@@ -118,7 +118,6 @@ class EditionTest < ActiveSupport::TestCase
                                   alternative_title: "Alternative test title")
     clone_edition = edition.build_clone
     assert_equal clone_edition.department, "Test dept"
-    assert_equal clone_edition.section, "test:subsection test"
     assert_equal clone_edition.overview, "I am a test overview"
     assert_equal clone_edition.alternative_title, "Alternative test title"
     assert_equal clone_edition.version_number, 2
@@ -374,7 +373,6 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should create a publication based on data imported from panopticon" do
-    section = FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
@@ -382,13 +380,9 @@ class EditionTest < ActiveSupport::TestCase
         department: "Test dept",
         owning_app: "publisher",
     )
-    artefact.primary_section = section.tag_id
     artefact.save!
 
     a = Artefact.find(artefact.id)
-
-    assert_equal section.tag_id, artefact.primary_section.tag_id
-    assert_equal section.title, artefact.primary_section.title
     user = User.create
 
     publication = Edition.find_or_create_from_panopticon_data(artefact.id, user, {})
@@ -396,7 +390,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_kind_of AnswerEdition, publication
     assert_equal artefact.name, publication.title
     assert_equal artefact.id.to_s, publication.panopticon_id.to_s
-    assert_equal section.title, publication.section
     assert_equal artefact.department, publication.department
   end
 

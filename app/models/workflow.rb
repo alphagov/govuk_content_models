@@ -244,7 +244,7 @@ module Workflow
     end
 
     def disallowable_change?
-      allowed_to_change = %w(slug section publish_at department business_proposition)
+      allowed_to_change = %w(slug publish_at department business_proposition)
       (changes.keys - allowed_to_change).present?
     end
 end

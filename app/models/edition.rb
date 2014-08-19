@@ -17,7 +17,6 @@ class Edition
   field :overview,             type: String
   field :alternative_title,    type: String
   field :slug,                 type: String
-  field :section,              type: String
   field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
   field :tags,                 type: String
@@ -154,7 +153,7 @@ class Edition
 
     real_fields_to_merge = fields_to_copy(edition_class) +
                            [:panopticon_id, :overview, :alternative_title,
-                            :slug, :section, :department]
+                            :slug, :department]
 
     real_fields_to_merge.each do |attr|
       new_edition[attr] = read_attribute(attr)
@@ -188,7 +187,6 @@ class Edition
       panopticon_id: metadata.id,
       slug: metadata.slug,
       title: metadata.name,
-      section: metadata.section,
       department: metadata.department,
       business_proposition: metadata.business_proposition)
   end

@@ -373,7 +373,6 @@ class ArtefactTest < ActiveSupport::TestCase
     edition.save!
 
     assert_equal artefact.name, edition.title
-    assert_equal artefact.section, edition.section
 
     artefact.name = "Babar"
     artefact.save

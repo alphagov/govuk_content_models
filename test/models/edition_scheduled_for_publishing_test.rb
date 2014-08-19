@@ -53,15 +53,6 @@ class EditionScheduledForPublishingTest < ActiveSupport::TestCase
       assert_includes edition.errors.full_messages, "Editions scheduled for publishing can't be edited"
     end
 
-    should "allow editing fields like section" do
-      edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
-
-      edition.section = 'new section'
-
-      assert edition.save
-      assert_equal edition.reload.section, 'new section'
-    end
-
     should "return false for #can_destroy?" do
       edition = FactoryGirl.build(:edition, :scheduled_for_publishing)
       refute edition.can_destroy?
