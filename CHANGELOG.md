@@ -1,3 +1,7 @@
+## 20.0.0
+
+* Breaking change: Remove `section` field on `Edition`. This reduces coupling between Panopticon and Publisher apps. Section should be inferred from the edition's artefact instead.
+
 ## 19.0.0
 
 * BREAKING CHANGE: String fields can no longer include arbitrary images. They
