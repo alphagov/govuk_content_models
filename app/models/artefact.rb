@@ -120,6 +120,7 @@ class Artefact
                                   "press_release",
                                   "promotional",
                                   "publication",
+                                  "regulation",
                                   "research",
                                   "speaking_notes",
                                   "statistical_data_set",
