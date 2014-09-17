@@ -1,3 +1,7 @@
+## 20.1.0
+
+* Adds new Whitehall publication sub-type format of `regulation` for Artefact
+
 ## 20.0.0
 
 * Breaking change: Remove `section` field on `Edition`. This reduces coupling between Panopticon and Publisher apps. Section should be inferred from the edition's artefact instead.
