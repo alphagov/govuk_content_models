@@ -5,6 +5,7 @@ class SlugValidator < ActiveModel::EachValidator
       DonePageValidator,
       ForeignTravelAdvicePageValidator,
       HelpPageValidator,
+      FinderEmailSignupValidator,
       GovernmentPageValidator,
       ManualPageValidator,
       ManualChangeHistoryValidator,
@@ -65,6 +66,16 @@ protected
   class ForeignTravelAdvicePageValidator < InstanceValidator
     def applicable?
       starts_with?("foreign-travel-advice/") && of_kind?('travel-advice')
+    end
+
+    def validate!
+      url_after_first_slash_is_valid_slug!
+    end
+  end
+
+  class FinderEmailSignupValidator < InstanceValidator
+    def applicable?
+      of_kind?("finder_email_signup")
     end
 
     def validate!
