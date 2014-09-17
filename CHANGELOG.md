@@ -1,6 +1,6 @@
 ## 20.1.0
 
-* Adds new format `regulation` for Artefact
+* Adds new Whitehall publication sub-type format of `regulation` for Artefact
 
 ## 20.0.0
 
