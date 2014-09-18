@@ -1,3 +1,7 @@
+## 20.2.0
+
+* Adds new `finder_email_signup` Artefact kind and validator for finder e-mail signups.
+
 ## 20.1.0
 
 * Adds new Whitehall publication sub-type format of `regulation` for Artefact
