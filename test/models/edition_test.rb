@@ -545,7 +545,6 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "given multiple editions, can return the most recent published edition" do
-    
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, slug: "hedgehog-topiary", state: "published")
 
     second_edition = edition.build_clone
@@ -567,31 +566,6 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     user = User.new
     assert edition.new_action(user, "note", comment: "Something important")
-  end
-
-  test "first edition has no previous edition diffrences" do
-    first_edition = template_published_answer
-
-    assert_nil first_edition.previous_edition_differences
-  end
-
-  test "can access the changes since the last version" do
-    second_edition = draft_second_edition_from(template_published_answer)
-
-    assert_equal("{\"Lots of info\" >> \"Test Body 2\"}",
-                 second_edition.previous_edition_differences)
-  end
-
-  test "can show the differences between published editions" do
-    second_edition = draft_second_edition_from(template_published_answer)
-    second_edition.update_attribute(:state, "ready")
-    second_edition.save!
-
-    user = User.create(name: "bob")
-    user.publish second_edition, comment: "Published comment"
-
-    assert_equal("{\"Lots of info\" >> \"Test Body 2\"}",
-                 second_edition.previous_edition_differences)
   end
 
   test "status should not be affected by notes" do
@@ -770,30 +744,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.version_number, edition.sibling_in_progress
   end
 
-  test "a new guide edition with multiple parts creates a full diff when published" do
-    user = User.create name: "Roland"
-
-    edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: @artefact.id)
-    edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-one"
-    edition_one.parts.build title: "Part Two", body:"NYAN NYAN NYAN NYAN", slug: "part-two"
-    edition_one.save!
-
-    edition_one.state = :ready
-    user.publish edition_one, comment: "First edition"
-
-    edition_two = edition_one.build_clone
-    edition_two.save!
-    edition_two.parts.first.update_attribute :title, "Changed Title"
-    edition_two.parts.first.update_attribute :body, "Never gonna let you down"
-
-    edition_two.state = :ready
-    user.publish edition_two, comment: "Second edition"
-
-    publish_action = edition_two.actions.where(request_type: "publish").last
-
-    assert_equal "{\"# Part One\" >> \"# Changed Title\"}\n\n{\"Never gonna give you up\" >> \"Never gonna let you down\"}\n\n# Part Two\n\nNYAN NYAN NYAN NYAN", publish_action.diff
-  end
-
   test "a part's slug must be of the correct format" do
     edition_one = GuideEdition.new(title: "One", slug: "one", panopticon_id: @artefact.id)
     edition_one.parts.build title: "Part One", body:"Never gonna give you up", slug: "part-One-1"
@@ -823,28 +773,6 @@ class EditionTest < ActiveSupport::TestCase
     assert edition.can_request_review?
     user.request_review(edition,{comment: "Review this programme please."})
     assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
-  end
-
-  test "a new programme edition with multiple parts creates a full diff when published" do
-    user = User.create name: "Mazz"
-
-    edition_one = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
-    edition_one.parts.build title: "Part One", body:"Content for part one", slug: "part-one"
-    edition_one.parts.build title: "Part Two", body:"Content for part two", slug: "part-two"
-    edition_one.save!
-
-    edition_one.state = :ready
-    user.publish edition_one, comment: "First edition"
-
-    edition_two = edition_one.build_clone
-    edition_two.save!
-    edition_two.parts.first.update_attribute :body, "Some other content"
-    edition_two.state = :ready
-    user.publish edition_two, comment: "Second edition"
-
-    publish_action = edition_two.actions.where(request_type: "publish").last
-
-    assert_equal "# Part One\n\n{\"Content for part one\" >> \"Some other content\"}\n\n# Part Two\n\nContent for part two", publish_action.diff
   end
 
   test "a published publication with a draft edition is in progress" do

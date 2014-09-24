@@ -1,4 +1,3 @@
-require "differ"
 require "state_machine"
 require "action"
 
@@ -184,17 +183,6 @@ module Workflow
 
   def previous_edition
     self.previous_published_edition || false
-  end
-
-  def edition_changes
-    if self.whole_body.blank?
-      false
-    else
-      my_body, their_body = [self, self.published_edition].map do |edition|
-        edition.whole_body.gsub("\r\n", "\n")
-      end
-      Differ.diff_by_line(my_body, their_body)
-    end
   end
 
   def notify_siblings_of_new_edition

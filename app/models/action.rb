@@ -33,7 +33,6 @@ class Action
   field :approved,           type: DateTime
   field :comment,            type: String
   field :comment_sanitized,  type: Boolean, default: false
-  field :diff,               type: String
   field :request_type,       type: String
   field :email_addresses,    type: String
   field :customised_message, type: String
