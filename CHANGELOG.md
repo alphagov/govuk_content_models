@@ -1,3 +1,7 @@
+## 21.0.0
+
+* Remove diff-ing code from content models - diffs should now be calculated on the fly
+
 ## 20.2.0
 
 * Adds new `finder_email_signup` Artefact kind and validator for finder e-mail signups.
