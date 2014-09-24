@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = GovukContentModels::VERSION
 
   gem.add_dependency "bson_ext"
-  gem.add_dependency "differ"
   gem.add_dependency "gds-api-adapters", ">= 10.9.0"
 
   gem.add_dependency "gds-sso",          ">= 7.0.0", "< 10.0.0"

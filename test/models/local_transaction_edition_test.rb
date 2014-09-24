@@ -52,27 +52,4 @@ class LocalTransactionEditionTest < ActiveSupport::TestCase
     assert lt.valid?
     assert lt.persisted?
   end
-
-  test "should create a diff between the versions when publishing a new version" do
-    make_service(149, %w{county unitary})
-    edition_one = LocalTransactionEdition.new(title: "Transaction", slug: "transaction", lgsl_code: "149", panopticon_id: @artefact.id)
-    user = User.create name: "Thomas"
-
-    edition_one.introduction = "Test"
-    edition_one.state = :ready
-    edition_one.save!
-
-    user.publish edition_one, comment: "First edition"
-
-    edition_two = edition_one.build_clone
-    edition_two.introduction = "Testing"
-    edition_two.state = :ready
-    edition_two.save!
-
-    user.publish edition_two, comment: "Second edition"
-
-    publish_action = edition_two.actions.where(request_type: "publish").last
-
-    assert_equal "{\"Test\" >> \"Testing\"}", publish_action.diff
-  end
 end

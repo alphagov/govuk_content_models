@@ -307,51 +307,6 @@ class WorkflowTest < ActiveSupport::TestCase
     refute user.new_version(edition)
   end
 
-  test "a new edition of an answer creates a diff when published" do
-    without_metadata_denormalisation(AnswerEdition) do
-      edition_one = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
-      edition_one.body = "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood."
-      edition_one.state = :ready
-      edition_one.save!
-
-      user = User.create name: "Michael"
-      user.publish edition_one, comment: "First edition"
-
-      edition_two = edition_one.build_clone
-      edition_two.body = "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood.\nAlthough no more than 361 cubic centimetres per day."
-      edition_two.state = :ready
-      edition_two.save!
-
-      user.publish edition_two, comment: "Second edition"
-
-      publish_action = edition_two.actions.where(request_type: "publish").last
-
-      assert_equal "A woodchuck would chuck all the wood he could chuck if a woodchuck could chuck wood.{+\"\\nAlthough no more than 361 cubic centimetres per day.\"}", publish_action.diff
-    end
-  end
-
-  test "handles inconsistent newlines" do
-    # Differ tries to be smart when calculating changes, by searching for a matching line
-    # later in the texts. When we have predominantly Windows-style new lines (\r\n) with
-    # a few Unix-style new lines (\n), a Unix-style new line later in one document will be
-    # matched to a Unix-style new line in the other, causing large swathes of spurious diff.
-
-    edition_one = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
-    edition_one.body = "badger\n\nmushroom\r\n\r\nsnake\n\nend"
-
-    edition_two = AnswerEdition.new(title: "Chucking wood", slug: "woodchuck", panopticon_id: @artefact.id)
-    edition_two.body = "badger\r\n\r\nmushroom\r\n\r\nsnake\n\nend"
-    edition_two.stubs(:published_edition).returns(edition_one)
-
-    # Test that the diff output is simply the (normalised) string, with no diff markers
-    assert_equal "badger\n\nmushroom\n\nsnake\n\nend", edition_two.edition_changes.to_s
-  end
-
-  test "edition_changes should return false if the whole body is nil" do
-    edition = FactoryGirl.create(:completed_transaction_edition, body: nil)
-    refute edition.edition_changes
-  end
-
   test "an edition can be moved into archive state" do
     user, other_user = template_users
 
