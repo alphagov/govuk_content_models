@@ -1,3 +1,8 @@
+## 22.0.0
+
+* Remove old unused `tags` field from Edition
+* Add browse and topic collection associations to Edition
+
 ## 21.0.0
 
 * Remove diff-ing code from content models - diffs should now be calculated on the fly
