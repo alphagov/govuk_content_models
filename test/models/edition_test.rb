@@ -77,7 +77,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "it should be able to find its previous siblings" do
-    @artefact2 = FactoryGirl.create(:artefact)    
+    @artefact2 = FactoryGirl.create(:artefact)
     g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
     g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
     g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
