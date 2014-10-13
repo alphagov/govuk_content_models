@@ -19,8 +19,11 @@ class Edition
   field :slug,                 type: String
   field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
-  field :tags,                 type: String
   field :important_note,       type: String
+
+  field :browse_pages,         type: Array
+  field :primary_topic,        type: String
+  field :additional_topics,    type: Array
 
   field :assignee,             type: String
   field :creator,              type: String
@@ -49,6 +52,7 @@ class Edition
   validates :panopticon_id, presence: true
   validates_with SafeHtml
   validates_with LinkValidator, on: :update
+  validates_with TopicValidator, BrowsePageValidator
 
   before_save :check_for_archived_artefact
   before_destroy :destroy_artefact

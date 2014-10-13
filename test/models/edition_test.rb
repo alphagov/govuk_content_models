@@ -77,7 +77,7 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "it should be able to find its previous siblings" do
-    @artefact2 = FactoryGirl.create(:artefact)    
+    @artefact2 = FactoryGirl.create(:artefact)
     g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
     g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
     g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
@@ -1026,6 +1026,53 @@ class EditionTest < ActiveSupport::TestCase
       Edition.subclasses.each do |klass|
         refute klass.fields_to_clone.include?(:important_note), "Important note is cloned in a #{klass}"
       end
+    end
+  end
+
+  context "Tagging to collections" do
+    setup do
+      @edition = FactoryGirl.create(:guide_edition)
+    end
+
+    should "allow tagging to browse pages" do
+      sample_browse_pages = [
+        'education/school-admissions-transport',
+        'driving/drivers-lorries-buses'
+      ]
+
+      @edition.browse_pages = sample_browse_pages
+      @edition.save!; @edition.reload
+
+      assert_equal sample_browse_pages, @edition.browse_pages
+    end
+
+    should "allow tagging to a primary topic" do
+      sample_primary_topic = 'oil-and-gas/carbon-capture-and-storage'
+
+      @edition.primary_topic = sample_primary_topic
+      @edition.save!; @edition.reload
+
+      assert_equal sample_primary_topic, @edition.primary_topic
+    end
+
+    should "allow tagging to multiple additional topics" do
+      sample_additional_topics = [
+        'oil-and-gas/fields-and-wells',
+        'oil-and-gas/licensing'
+      ]
+
+      @edition.additional_topics = sample_additional_topics
+      @edition.save!; @edition.reload
+
+      assert_equal sample_additional_topics, @edition.additional_topics
+    end
+
+    should "validates topics" do
+      assert_includes Edition.validators.map(&:class), TopicValidator
+    end
+
+    should "validates browse pages" do
+      assert_includes Edition.validators.map(&:class), BrowsePageValidator
     end
   end
 end
