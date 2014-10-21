@@ -21,9 +21,9 @@ class Edition
   field :rejected_count,       type: Integer,  default: 0
   field :important_note,       type: String
 
-  field :browse_pages,         type: Array
+  field :browse_pages,         type: Array, default: []
   field :primary_topic,        type: String
-  field :additional_topics,    type: Array
+  field :additional_topics,    type: Array, default: []
 
   field :assignee,             type: String
   field :creator,              type: String
@@ -251,11 +251,11 @@ class Edition
   def check_for_archived_artefact
     if panopticon_id
       a = Artefact.find(panopticon_id)
-      if a.state == "archived" and changed_attributes.any?
+      if a.state == "archived" and changes.any?
         # If we're only changing the state to archived, that's ok
         # Any other changes are not allowed
         allowed_keys = ["state", "updated_at"]
-        unless ((changed_attributes.keys - allowed_keys).empty?) and state == "archived"
+        unless ((changes.keys - allowed_keys).empty?) and state == "archived"
           raise "Editing of an edition with an Archived artefact is not allowed"
         end
       end
