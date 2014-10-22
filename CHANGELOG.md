@@ -1,3 +1,7 @@
+## 22.1.1
+
+* Copy collection associations when cloning Editions
+
 ## 22.1.0
 
 * Add default values for collection associations on Edition
