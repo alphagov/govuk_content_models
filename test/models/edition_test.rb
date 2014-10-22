@@ -1074,5 +1074,26 @@ class EditionTest < ActiveSupport::TestCase
     should "validates browse pages" do
       assert_includes Edition.validators.map(&:class), BrowsePageValidator
     end
+
+    should "retain collections across new editions" do
+      edition = FactoryGirl.create(:guide_edition,
+        panopticon_id: @artefact.id,
+        state: "published",
+        primary_topic: 'oil-and-gas/carbon-capture-and-storage',
+        additional_topics: [
+          'oil-and-gas/fields-and-wells',
+          'oil-and-gas/licensing'
+        ],
+        browse_pages: [
+          'education/school-admissions-transport',
+          'driving/drivers-lorries-buses'
+        ]
+      )
+
+      new_edition = edition.build_clone
+      assert_equal edition.primary_topic, new_edition.primary_topic
+      assert_equal edition.additional_topics, new_edition.additional_topics
+      assert_equal edition.browse_pages, new_edition.browse_pages
+    end
   end
 end

@@ -155,9 +155,16 @@ class Edition
     new_edition = edition_class.new(title: self.title,
                                     version_number: get_next_version_number)
 
-    real_fields_to_merge = fields_to_copy(edition_class) +
-                           [:panopticon_id, :overview, :alternative_title,
-                            :slug, :department]
+    real_fields_to_merge = fields_to_copy(edition_class) + [
+      :panopticon_id,
+      :overview,
+      :alternative_title,
+      :slug,
+      :department,
+      :browse_pages,
+      :primary_topic,
+      :additional_topics
+    ]
 
     real_fields_to_merge.each do |attr|
       new_edition[attr] = read_attribute(attr)
