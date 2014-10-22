@@ -1,3 +1,7 @@
+## 22.1.0
+
+* Add default values for collection associations on Edition
+
 ## 22.0.0
 
 * Remove old unused `tags` field from Edition
