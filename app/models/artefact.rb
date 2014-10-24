@@ -86,6 +86,7 @@ class Artefact
                                   "cma_case",
                                   "drug_safety_update",
                                   "international_development_fund",
+                                  "maib_report",
                                   "manual",
                                   "manual-change-history",
                                   "manual-section",
