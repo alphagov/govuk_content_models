@@ -1,3 +1,7 @@
+## 22.1.2
+
+* Allow new formats for maib_report and for an Artefact
+
 ## 22.1.1
 
 * Copy collection associations when cloning Editions
