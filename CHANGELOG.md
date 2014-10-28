@@ -1,3 +1,8 @@
+## 22.2.0
+
+* Allow new formats for raib_report for Artefacts
+* Validate only govspeak fields for safe html
+
 ## 22.1.2
 
 * Allow new formats for maib_report and for an Artefact
