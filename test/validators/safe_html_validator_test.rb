@@ -4,8 +4,7 @@ class SafeHtmlTest < ActiveSupport::TestCase
   class Dummy
     include Mongoid::Document
 
-    field "declared", type: String
-    field "i_am_govspeak", type: String
+    field :i_am_govspeak, type: String
 
     GOVSPEAK_FIELDS = [:i_am_govspeak]
 
@@ -17,66 +16,51 @@ class SafeHtmlTest < ActiveSupport::TestCase
   class DummyEmbeddedSingle
     include Mongoid::Document
 
-    GOVSPEAK_FIELDS = []
+    embedded_in :dummy, class_name: 'SafeHtmlTest::Dummy'
+
+    field :i_am_govspeak, type: String
+
+    GOVSPEAK_FIELDS = [:i_am_govspeak]
 
     validates_with SafeHtml
-
-    embedded_in :dummy, class_name: 'SafeHtmlTest::Dummy'
   end
 
   context "we don't quite trust mongoid (2)" do
-    should "embedded documents should be validated automatically" do
-      embedded = DummyEmbeddedSingle.new(dirty: "<script>")
-      dummy = Dummy.new(dummy_embedded_single: embedded)
+    should "validate embedded documents automatically" do
+      embedded = DummyEmbeddedSingle.new(i_am_govspeak: "<script>")
+      dummy = Dummy.new(i_am_govspeak: embedded)
       # Can't invoke embedded.valid? because that would run the validations
       assert dummy.invalid?
-      assert_includes dummy.errors.keys, :dummy_embedded_single
+      assert_includes dummy.errors.keys, :i_am_govspeak
     end
   end
 
   context "what to validate" do
-    should "test declared fields" do
-      dummy = Dummy.new(declared: "<script>alert('XSS')</script>")
-      assert dummy.invalid?
-      assert_includes dummy.errors.keys, :declared
-    end
-
-    should "test undeclared fields" do
-      dummy = Dummy.new(undeclared: "<script>")
-      assert dummy.invalid?
-      assert_includes dummy.errors.keys, :undeclared
-    end
-
     should "allow clean content in nested fields" do
-      dummy = Dummy.new(undeclared: { "clean" => ["plain text"] })
+      dummy = Dummy.new(i_am_govspeak: { "clean" => ["plain text"] })
       assert dummy.valid?
     end
 
-    should "disallow dirty content in nested fields" do
-      dummy = Dummy.new(undeclared: { "dirty" => ["<script>"] })
-      assert dummy.invalid?
-      assert_includes dummy.errors.keys, :undeclared
-    end
-
     should "disallow images not hosted by us" do
-      dummy = Dummy.new(undeclared: '<img src="http://evil.com/trollface"/>')
+      dummy = Dummy.new(i_am_govspeak: '<img src="http://evil.com/trollface"/>')
       assert dummy.invalid?
-      assert_includes dummy.errors.keys, :undeclared
+      assert_includes dummy.errors.keys, :i_am_govspeak
     end
 
     should "allow images hosted by us" do
-      dummy = Dummy.new(undeclared: '<img src="http://www.dev.gov.uk/trollface"/>')
+      dummy = Dummy.new(i_am_govspeak: '<img src="http://www.dev.gov.uk/trollface"/>')
       assert dummy.valid?
     end
 
     should "allow plain text" do
-      dummy = Dummy.new(declared: "foo bar")
+      dummy = Dummy.new(i_am_govspeak: "foo bar")
       assert dummy.valid?
     end
 
     should "check only specified fields as Govspeak" do
       nasty_govspeak = %q{[Numberwang](script:nasty(); "Wangernum")}
       assert ! Govspeak::Document.new(nasty_govspeak).valid?, "expected this to be identified as bad"
+
       dummy = Dummy.new(i_am_govspeak: nasty_govspeak)
       assert dummy.invalid?
     end

@@ -1,6 +1,6 @@
 class LinkValidator < ActiveModel::Validator
   def validate(record)
-    govspeak_field_names(record).each do |govspeak_field_name|
+    record.class::GOVSPEAK_FIELDS.each do |govspeak_field_name|
       govspeak_field_value = record.read_attribute(govspeak_field_name)
       next if govspeak_field_value.blank?
 
@@ -36,15 +36,4 @@ class LinkValidator < ActiveModel::Validator
     end
     errors.to_a
   end
-
-  protected
-
-  def govspeak_field_names(record)
-    if record.class.const_defined?(:GOVSPEAK_FIELDS)
-      record.class.const_get(:GOVSPEAK_FIELDS)
-    else
-      []
-    end
-  end
 end
-
