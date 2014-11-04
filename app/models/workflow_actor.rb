@@ -58,6 +58,10 @@ module WorkflowActor
     edition.new_action(self, type, comment: comment)
   end
 
+  def resolve_important_note(edition)
+    record_note(edition, nil, Action::IMPORTANT_NOTE_RESOLVED)
+  end
+
   def create_edition(format, attributes = {})
     format = "#{format}_edition" unless format.to_s.match(/edition$/)
     publication_class = format.to_s.camelize.constantize

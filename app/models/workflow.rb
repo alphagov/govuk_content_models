@@ -221,10 +221,6 @@ module Workflow
     action if action.try(:request_type) == Action::IMPORTANT_NOTE
   end
 
-  def resolve_important_note
-    important_note.try(:update_attributes, request_type: Action::IMPORTANT_NOTE_RESOLVED)
-  end
-
   private
 
     def publish_at_is_in_the_future
