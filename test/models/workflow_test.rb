@@ -347,4 +347,26 @@ class WorkflowTest < ActiveSupport::TestCase
     user_2.request_amendments(edition, {comment: "More work needed"})
     assert edition.amends_needed?
   end
+
+  test "important_note returns last non-resolved important note" do
+    user = User.create(name: "Ben")
+    edition = template_guide
+    note = user.record_note(edition, 'this is an important note', Action::IMPORTANT_NOTE)
+    user.record_action(edition, 'request_review')
+    assert_equal edition.important_note.comment, 'this is an important note'
+
+    note.update_attribute(:request_type, Action::IMPORTANT_NOTE_RESOLVED)
+    assert_nil edition.important_note
+  end
+
+  test "resolve_important_note marks last important note as resolved" do
+    user = User.create(name: "Ben")
+    edition = template_guide
+    user.record_note(edition, 'this is an important note', Action::IMPORTANT_NOTE)
+    user.record_action(edition, 'request_review')
+    assert_equal edition.important_note.comment, 'this is an important note'
+
+    edition.resolve_important_note
+    assert_nil edition.important_note
+  end
 end
