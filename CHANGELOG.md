@@ -1,3 +1,9 @@
+## 23.0.0
+
+* Remove important_notes field from Edition
+* Add IMPORTANT_NOTE and IMPORTANT_NOTE_RESOLVED request_types to Action
+* Add methods to find, create and resolve important note actions to Workflow and WorkflowActor.
+
 ## 22.2.0
 
 * Allow new formats for raib_report for Artefacts
