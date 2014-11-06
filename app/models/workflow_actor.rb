@@ -54,8 +54,12 @@ module WorkflowActor
     edition.save if edition
   end
 
-  def record_note(edition, comment)
-    edition.new_action(self, "note", comment: comment)
+  def record_note(edition, comment, type = Action::NOTE)
+    edition.new_action(self, type, comment: comment)
+  end
+
+  def resolve_important_note(edition)
+    record_note(edition, nil, Action::IMPORTANT_NOTE_RESOLVED)
   end
 
   def create_edition(format, attributes = {})

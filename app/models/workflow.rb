@@ -216,6 +216,11 @@ module Workflow
     save(validate: false)
   end
 
+  def important_note
+    action = actions.where(:request_type.in => [Action::IMPORTANT_NOTE, Action::IMPORTANT_NOTE_RESOLVED]).last
+    action if action.try(:request_type) == Action::IMPORTANT_NOTE
+  end
+
   private
 
     def publish_at_is_in_the_future

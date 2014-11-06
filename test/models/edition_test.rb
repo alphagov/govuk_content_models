@@ -1001,34 +1001,6 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  context "Important note" do
-    def set_note(edition, note)
-      edition.important_note = note
-      edition.save
-      edition.reload
-    end
-
-    setup do
-      @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
-      set_note(@edition, "This is an important note.")
-    end
-
-    should "be able to add a important note to an edition" do
-      assert_equal "This is an important note.", @edition.important_note
-    end
-
-    should "be able to update an existing important note" do
-      set_note(@edition, "New note.")
-      assert_equal "New note.", @edition.important_note
-    end
-
-    should "should not exist when creating new editions" do
-      Edition.subclasses.each do |klass|
-        refute klass.fields_to_clone.include?(:important_note), "Important note is cloned in a #{klass}"
-      end
-    end
-  end
-
   context "Tagging to collections" do
     setup do
       @edition = FactoryGirl.create(:guide_edition)

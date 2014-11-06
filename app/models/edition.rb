@@ -19,7 +19,6 @@ class Edition
   field :slug,                 type: String
   field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
-  field :important_note,       type: String
 
   field :browse_pages,         type: Array, default: []
   field :primary_topic,        type: String
