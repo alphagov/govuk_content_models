@@ -36,6 +36,7 @@ class Action
   field :comment,            type: String
   field :comment_sanitized,  type: Boolean, default: false
   field :request_type,       type: String
+  field :request_details,    type: Hash, default: {}
   field :email_addresses,    type: String
   field :customised_message, type: String
   field :created_at,         type: DateTime, default: lambda { Time.zone.now }
@@ -52,7 +53,13 @@ class Action
   end
 
   def to_s
-    request_type.humanize.capitalize
+    if request_type == SCHEDULE_FOR_PUBLISHING
+      string = "Scheduled for publishing"
+      string += " on #{request_details['scheduled_time'].strftime('%d/%m/%Y %H:%M %Z')}" if request_details['scheduled_time'].present?
+      string
+    else
+      request_type.humanize.capitalize
+    end
   end
 
   def is_fact_check_request?
