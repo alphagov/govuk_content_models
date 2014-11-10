@@ -117,7 +117,9 @@ module WorkflowActor
   end
 
   def schedule_for_publishing(edition, details)
-    publish_at = details.delete(:publish_at)
+    publish_at = details.delete(:publish_at).to_time.utc
+    details.merge!(request_details: { scheduled_time: publish_at })
+
     take_action(edition, __method__, details, [publish_at])
   end
 

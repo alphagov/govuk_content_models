@@ -84,7 +84,7 @@ class WorkflowActorTest < ActiveSupport::TestCase
   context "#schedule_for_publishing" do
     setup do
       @user = FactoryGirl.build(:user)
-      @publish_at = 1.day.from_now
+      @publish_at = 1.day.from_now.utc
       @activity_details = { publish_at: @publish_at, comment: "Go schedule !" }
     end
 
@@ -104,7 +104,8 @@ class WorkflowActorTest < ActiveSupport::TestCase
 
     should "record the action" do
       edition = FactoryGirl.create(:edition, state: 'ready')
-      @user.expects(:record_action).with(edition, :schedule_for_publishing, { comment: "Go schedule !" })
+      options = { comment: "Go schedule !", request_details: { scheduled_time: @publish_at } }
+      @user.expects(:record_action).with(edition, :schedule_for_publishing, options)
 
       @user.schedule_for_publishing(edition, @activity_details)
     end
