@@ -28,6 +28,8 @@ class Edition
   field :creator,              type: String
   field :publisher,            type: String
   field :archiver,             type: String
+  field :major_change,         type: Boolean, default: false
+  field :change_note,          type: String
 
   GOVSPEAK_FIELDS = []
 
@@ -52,6 +54,7 @@ class Edition
   validates_with SafeHtml
   validates_with LinkValidator, on: :update
   validates_with TopicValidator, BrowsePageValidator
+  validates_presence_of :change_note, if: :major_change
 
   before_save :check_for_archived_artefact
   before_destroy :destroy_artefact
