@@ -108,6 +108,29 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
+  context "change note" do
+    should "be a minor change by default" do
+      refute Edition.new.major_change
+    end
+    should "not be valid for major changes with a blank change note" do
+      edition = Edition.new(major_change: true, change_note: "")
+      refute edition.valid?
+      assert edition.errors.has_key?(:change_note)
+    end
+    should "be valid for major changes with a change note" do
+      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, major_change: true, change_note: "Changed")
+      assert edition.valid?
+    end
+    should "be valid when blank for minor changes" do
+      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "")
+      assert edition.valid?
+    end
+    should "be valid when populated for minor changes" do
+      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "Changed")
+      assert edition.valid?
+    end
+  end
+
   test "it should build a clone" do
     edition = FactoryGirl.create(:guide_edition,
                                   state: "published",
