@@ -92,8 +92,8 @@ class UserTest < ActiveSupport::TestCase
     user = User.create(:name => "bob")
 
     trans = user.create_edition(:transaction, title: "test answer", slug: "test", panopticon_id: @artefact.id)
-    user.request_review(trans, {comment: "Hello"})
-    assert ! user.approve_review(trans, {comment: "Hello"})
+    request_review(user, trans)
+    refute approve_review(user, trans)
   end
 
   test "Edition becomes assigned to user when user is assigned an edition" do

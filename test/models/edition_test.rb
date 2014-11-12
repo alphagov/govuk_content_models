@@ -68,18 +68,18 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "it should be able to find its siblings" do
-    @artefact2 = FactoryGirl.create(:artefact)
+    artefact2 = FactoryGirl.create(:artefact)
     g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
-    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: artefact2.id, version_number: 1)
     g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
     assert_equal [], g2.siblings.to_a
     assert_equal [g3], g1.siblings.to_a
   end
 
   test "it should be able to find its previous siblings" do
-    @artefact2 = FactoryGirl.create(:artefact)
+    artefact2 = FactoryGirl.create(:artefact)
     g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
-    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact2.id, version_number: 1)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: artefact2.id, version_number: 1)
     g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
 
     assert_equal [], g1.previous_siblings.to_a
@@ -634,11 +634,11 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(:guide_edition_with_two_parts, panopticon_id: @artefact.id, state: "ready")
 
     user = User.create name: "bob"
-    user.publish edition, comment: "First publication"
+    publish(user, edition, "First publication")
 
     second_edition = edition.build_clone
     second_edition.state = "ready"
-    user.publish second_edition, comment: "Second publication"
+    publish(user, second_edition, "Second publication")
 
     # simulate link validation errors in published edition
     second_edition.parts.first.update_attribute(:body, "[register your vehicle](registering-an-imported-vehicle)")
@@ -647,7 +647,7 @@ class EditionTest < ActiveSupport::TestCase
     # fix link validation error in cloned edition by appending a '/' to the relative url
     third_edition.parts.first.body = "[register your vehicle](/registering-an-imported-vehicle)"
     third_edition.state = "ready"
-    user.publish third_edition, comment: "Third publication"
+    publish(user, third_edition, "Third publication")
 
     edition.reload
     assert edition.archived?
@@ -662,7 +662,7 @@ class EditionTest < ActiveSupport::TestCase
     user = FactoryGirl.create(:user)
     edition = FactoryGirl.create(:edition, :scheduled_for_publishing)
 
-    user.publish edition, comment: "First publication"
+    publish(user, edition, "First publication")
 
     assert_nil edition.reload.publish_at
   end
@@ -670,7 +670,7 @@ class EditionTest < ActiveSupport::TestCase
   test "edition can return latest status action of a specified request type" do
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
     user = User.create(name: "George")
-    user.request_review edition, comment: "Requesting review"
+    request_review(user, edition)
 
     assert_equal edition.actions.size, 1
     assert edition.latest_status_action(Action::REQUEST_REVIEW).present?
@@ -688,17 +688,17 @@ class EditionTest < ActiveSupport::TestCase
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
 
     user = User.create name: "bob"
-    user.publish edition, comment: "First publication"
+    publish(user, edition, "First publication")
 
     second_edition = edition.build_clone
     second_edition.update_attribute(:state, "ready")
     second_edition.save!
-    user.publish second_edition, comment: "Second publication"
+    publish(user, second_edition, "Second publication")
 
     third_edition = second_edition.build_clone
     third_edition.update_attribute(:state, "ready")
     third_edition.save!
-    user.publish third_edition, comment: "Third publication"
+    publish(user, third_edition, "Third publication")
 
     edition.reload
     assert edition.actions.where("request_type" => "publish")
@@ -716,12 +716,12 @@ class EditionTest < ActiveSupport::TestCase
    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
 
    user = User.create name: "bob"
-   user.publish edition, comment: "First publication"
+   publish(user, edition, "First publication")
 
    new_edition = edition.build_clone
    new_edition.state = "ready"
    new_edition.save!
-   user.publish new_edition, comment: "Second publication"
+   publish(user, new_edition, "Second publication")
 
    edition = edition.reload
 
@@ -733,7 +733,7 @@ class EditionTest < ActiveSupport::TestCase
     edition.save!
 
     user = User.create name: "bob"
-    user.publish edition, comment: "First publication"
+    publish(user, edition, "First publication")
 
     new_edition = edition.build_clone
     new_edition.save!
@@ -771,8 +771,8 @@ class EditionTest < ActiveSupport::TestCase
 
     edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
     assert edition.can_request_review?
-    user.request_review(edition,{comment: "Review this programme please."})
-    assert ! user.request_amendments(edition, {comment: "Well Done, but work harder"})
+    request_review(user, edition)
+    refute request_amendments(user, edition)
   end
 
   test "a published publication with a draft edition is in progress" do
@@ -800,37 +800,37 @@ class EditionTest < ActiveSupport::TestCase
   # test denormalisation
 
   test "should denormalise an edition with an assigned user and action requesters" do
-    @user1 = FactoryGirl.create(:user, name: "Morwenna")
-    @user2 = FactoryGirl.create(:user, name: "John")
-    @user3 = FactoryGirl.create(:user, name: "Nick")
+    user1 = FactoryGirl.create(:user, name: "Morwenna")
+    user2 = FactoryGirl.create(:user, name: "John")
+    user3 = FactoryGirl.create(:user, name: "Nick")
 
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
 
-    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived", assigned_to_id: @user1.id)
-    edition.actions.create request_type: Action::CREATE, requester: @user2
-    edition.actions.create request_type: Action::PUBLISH, requester: @user3
-    edition.actions.create request_type: Action::ARCHIVE, requester: @user1
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived", assigned_to_id: user1.id)
+    edition.actions.create request_type: Action::CREATE, requester: user2
+    edition.actions.create request_type: Action::PUBLISH, requester: user3
+    edition.actions.create request_type: Action::ARCHIVE, requester: user1
     edition.save! and edition.reload
 
-    assert_equal @user1.name, edition.assignee
-    assert_equal @user2.name, edition.creator
-    assert_equal @user3.name, edition.publisher
-    assert_equal @user1.name, edition.archiver
+    assert_equal user1.name, edition.assignee
+    assert_equal user2.name, edition.creator
+    assert_equal user3.name, edition.publisher
+    assert_equal user1.name, edition.archiver
   end
 
   test "should denormalise an assignee's name when an edition is assigned" do
-    @user1 = FactoryGirl.create(:user)
-    @user2 = FactoryGirl.create(:user)
+    user1 = FactoryGirl.create(:user)
+    user2 = FactoryGirl.create(:user)
 
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    @user1.assign edition, @user2
+    user1.assign edition, user2
 
-    assert_equal @user2, edition.assigned_to
-    assert_equal @user2.name, edition.assignee
+    assert_equal user2, edition.assigned_to
+    assert_equal user2.name, edition.assignee
   end
 
   test "should denormalise a creator's name when an edition is created" do
-    @user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:user)
     FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
@@ -842,53 +842,53 @@ class EditionTest < ActiveSupport::TestCase
         owning_app: "publisher",
     )
 
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, @user, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user, {})
 
-    assert_equal @user.name, edition.creator
+    assert_equal user.name, edition.creator
   end
 
   test "should denormalise a publishing user's name when an edition is published" do
-    @user = FactoryGirl.create(:user)
+    user = FactoryGirl.create(:user)
 
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
-    @user.publish edition, { }
+    publish(user, edition, "First publication")
 
-    assert_equal @user.name, edition.publisher
+    assert_equal user.name, edition.publisher
   end
 
   test "should set siblings in progress to nil for new editions" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
-    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
-    assert_equal 1, @edition.version_number
-    assert_nil @edition.sibling_in_progress
+    user = FactoryGirl.create(:user)
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
+    published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
+    assert_equal 1, edition.version_number
+    assert_nil edition.sibling_in_progress
   end
 
   test "should update previous editions when new edition is added" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
-    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
-    @new_edition = @published_edition.build_clone
-    @new_edition.save!
-    @published_edition.reload
+    user = FactoryGirl.create(:user)
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
+    published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
+    new_edition = published_edition.build_clone
+    new_edition.save!
+    published_edition.reload
 
-    assert_equal 3, @new_edition.version_number
-    assert_equal 3, @published_edition.sibling_in_progress
+    assert_equal 3, new_edition.version_number
+    assert_equal 3, published_edition.sibling_in_progress
   end
 
   test "should update previous editions when new edition is published" do
-    @user = FactoryGirl.create(:user)
-    @edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
-    @published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
-    @new_edition = @published_edition.build_clone
-    @new_edition.save!
-    @new_edition.update_attribute(:state, "ready")
-    @user.publish(@new_edition, comment: "Publishing this")
-    @published_edition.reload
+    user = FactoryGirl.create(:user)
+    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "archived")
+    published_edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "published")
 
-    assert_equal 3, @new_edition.version_number
-    assert_nil @new_edition.sibling_in_progress
-    assert_nil @published_edition.sibling_in_progress
+    new_edition = published_edition.build_clone
+    new_edition.save!
+    new_edition.update_attribute(:state, "ready")
+    publish(user, new_edition, "First publication")
+
+    assert_equal 3, new_edition.version_number
+    assert_nil new_edition.sibling_in_progress
+    assert_nil published_edition.reload.sibling_in_progress
   end
 
   test "all subclasses should provide a working whole_body method for diffing" do
