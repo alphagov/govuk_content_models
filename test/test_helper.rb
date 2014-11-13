@@ -11,6 +11,7 @@ require "database_cleaner"
 require "gds_api/test_helpers/panopticon"
 require "webmock/test_unit"
 require "govuk_content_models/test_helpers/factories"
+require 'govuk_content_models/test_helpers/action_processor_helpers'
 require "timecop"
 
 # The models depend on a zone being set, so tests will fail if we don't
@@ -27,6 +28,7 @@ class ActiveSupport::TestCase
   PROJECT_ROOT = File.expand_path("../..", __FILE__)
 
   include GdsApi::TestHelpers::Panopticon
+  include GovukContentModels::TestHelpers::ActionProcessorHelpers
 
   def without_metadata_denormalisation(*klasses, &block)
     klasses.each {|klass| klass.any_instance.stubs(:denormalise_metadata).returns(true) }

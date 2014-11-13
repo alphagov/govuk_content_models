@@ -1,9 +1,11 @@
+require "traits/recordable_actions"
 require "workflow"
 
 class Edition
   include Mongoid::Document
   include Mongoid::Timestamps
   include Workflow
+  include RecordableActions
 
   field :panopticon_id,        type: String
   field :version_number,       type: Integer,  default: 1
