@@ -5,7 +5,7 @@ module GovukContentModels
   module ActionProcessors
     REQUEST_TYPE_TO_PROCESSOR = {
       assign: 'AssignProcessor',
-      create_edition: 'CreateEditionProcessor',
+      create: 'CreateEditionProcessor',
       request_review: 'RequestReviewProcessor',
       approve_review: 'ApproveReviewProcessor',
       send_fact_check: 'SendFactCheckProcessor',
