@@ -1,3 +1,8 @@
+## 24.0.1
+
+* Corrected the request_type recorded in actions for a create_edition
+action to 'create', a deviation introduced by changes in 24.0.0.
+
 ## 24.0.0
 
 * Major clean-up which replaced `WorkflowActor` with `ActionProcessors`.
