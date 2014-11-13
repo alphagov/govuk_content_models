@@ -1,3 +1,13 @@
+## 24.0.0
+
+* Major clean-up which replaced `WorkflowActor` with `ActionProcessors`.
+This is a breaking change, shouldn't break any existing functionality,
+but may break re-opened classes, and tests relying on workflow helper
+methods which were present in `WorkflowActor`.
+* Added Edition fields `major_change` and `change_note`
+* Improved the audit log for scheduled publishing to show scheduled time,
+which requires storing it in the `action`.
+
 ## 23.0.0
 
 * Remove important_notes field from Edition
