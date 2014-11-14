@@ -209,7 +209,7 @@ class Edition
     elsif edition.present?
       scope.where(version_number: edition).first
     else
-      scope.where(state: "published").order_by(:created_at).last
+      scope.where(state: "published").order(version_number: "desc").first
     end
   end
 
