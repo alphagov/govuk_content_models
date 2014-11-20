@@ -15,6 +15,10 @@ FactoryGirl.define do
     end
   end
 
+  factory :disabled_user, parent: :user do
+    disabled true
+  end
+
   factory :tag do
     sequence(:tag_id) { |n| "crime-and-justice-#{n}" }
     sequence(:title) { |n| "The title #{n}" }

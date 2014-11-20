@@ -18,7 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "gds-api-adapters", ">= 10.9.0"
 
-  gem.add_dependency "gds-sso",          ">= 7.0.0", "< 10.0.0"
+  gem.add_dependency "gds-sso",          ">= 10.0.0"
   gem.add_dependency "govspeak",         "~> 3.1.0"
   # Mongoid 2.5.0 supports the newer 1.7.x and 1.8.x Mongo drivers
   gem.add_dependency "mongoid",          "~> 2.5"
@@ -29,7 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "factory_girl", "3.3.0"
   gem.add_development_dependency "gem_publisher", "1.2.0"
   gem.add_development_dependency "mocha", "0.13.3"
-  gem.add_development_dependency "multi_json", "1.3.7" # Pinned to allow dependency resolution
+  gem.add_development_dependency "multi_json"
   gem.add_development_dependency "rake", "0.9.2.2"
   gem.add_development_dependency "webmock", "1.8.7"
   gem.add_development_dependency "shoulda-context", "1.0.0"
