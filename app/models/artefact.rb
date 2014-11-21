@@ -46,6 +46,8 @@ class Artefact
   field "specialist_body",      type: String
   field "language",             type: String,  default: "en"
   field "need_extended_font",   type: Boolean, default: false
+  field "latest_change_note",   type: String
+  field "public_timestamp",     type: DateTime
 
   index "slug", :unique => true
 
