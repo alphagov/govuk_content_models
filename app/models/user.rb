@@ -21,7 +21,10 @@ class User
   field "permissions",         type: Array
   field "remotely_signed_out", type: Boolean, default: false
   field "organisation_slug",   type: String
-  
+  field "disabled",            type: Boolean, default: false
+
+  index "disabled"
+
   GOVSPEAK_FIELDS = []
 
   # Setup accessible (or protected) attributes for your model
@@ -29,6 +32,8 @@ class User
   attr_accessible :email, :name, :uid, :permissions, as: :oauth
 
   scope :alphabetized, order_by(name: :asc)
+  scope :enabled, any_of({ :disabled.exists => false },
+                         { :disabled.in => [false, nil] })
 
   validates_with SafeHtml
 

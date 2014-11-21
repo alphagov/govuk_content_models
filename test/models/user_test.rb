@@ -20,6 +20,17 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "", user.to_s
   end
 
+  test "should return enabled users" do
+    disabled = FactoryGirl.create(:user, disabled: true)
+
+    FactoryGirl.create(:user).unset(:disabled)
+    FactoryGirl.create(:user, disabled: false)
+    FactoryGirl.create(:user, disabled: nil)
+
+    assert_equal 3, User.enabled.count
+    refute User.enabled.include? disabled
+  end
+
   test "should create new user with oauth params" do
     auth_hash = {
       "uid" => "1234abcd",
@@ -30,7 +41,8 @@ class UserTest < ActiveSupport::TestCase
       },
       "extra" => {
         "user" => {
-          "permissions" => ["signin"]
+          "permissions" => ["signin"],
+          "disabled" => false,
         }
       }
     }
@@ -39,6 +51,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "user@example.com", user.email
     assert_equal "Luther Blisset", user.name
     assert_equal(["signin"], user.permissions)
+    refute user.disabled?
   end
 
   test "should find and update the user with oauth params" do
@@ -53,7 +66,8 @@ class UserTest < ActiveSupport::TestCase
       },
       "extra" => {
         "user" => {
-          "permissions" => []
+          "permissions" => [],
+          "disabled" => true
         }
       }
     }
@@ -62,6 +76,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal "new@m.com", user.email
     assert_equal "New", user.name
     assert_equal([], user.permissions)
+    assert user.disabled?
   end
 
   test "should create insecure gravatar URL" do
