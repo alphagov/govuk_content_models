@@ -1,3 +1,10 @@
+## 24.1.0
+
+* Use version numbers for picking current edition in 'Edition.find_and_identify'
+* Changed to depend on the latest major release of gds-sso [10.0.0]
+  which requires a `disabled` field to be defined on the `User` model.
+  This field mirrors the user state in Signon.
+
 ## 24.0.1
 
 * Corrected the request_type recorded in actions for a create_edition
