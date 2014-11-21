@@ -137,12 +137,10 @@ class EditionTest < ActiveSupport::TestCase
                                   panopticon_id: @artefact.id,
                                   version_number: 1,
                                   department: "Test dept",
-                                  overview: "I am a test overview",
-                                  alternative_title: "Alternative test title")
+                                  overview: "I am a test overview")
     clone_edition = edition.build_clone
     assert_equal clone_edition.department, "Test dept"
     assert_equal clone_edition.overview, "I am a test overview"
-    assert_equal clone_edition.alternative_title, "Alternative test title"
     assert_equal clone_edition.version_number, 2
   end
 
@@ -194,7 +192,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title",
         video_url: "http://www.youtube.com/watch?v=dQw4w9WgXcQ"
     )
     new_edition = edition.build_clone AnswerEdition
@@ -205,7 +202,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.whole_body, edition.whole_body
   end
 
@@ -216,8 +212,7 @@ class EditionTest < ActiveSupport::TestCase
         panopticon_id: @artefact.id,
         version_number: 1,
         department: "Test dept",
-        overview: "I am a test overview",
-        alternative_title: "Alternative test title"
+        overview: "I am a test overview"
     )
     new_edition = edition.build_clone AnswerEdition
 
@@ -227,7 +222,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.whole_body, edition.whole_body
   end
 
@@ -239,7 +233,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title",
         more_information: "More information",
         alternate_methods: "Alternate methods"
     )
@@ -251,7 +244,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.whole_body, edition.whole_body
   end
 
@@ -263,7 +255,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title",
         body: "Test body"
     )
     new_edition = edition.build_clone TransactionEdition
@@ -274,7 +265,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.more_information, "Test body"
   end
 
@@ -286,7 +276,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title",
         video_url: "http://www.youtube.com/watch?v=dQw4w9WgXcQ"
     )
     new_edition = edition.build_clone TransactionEdition
@@ -297,7 +286,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.more_information, edition.whole_body
   end
 
@@ -309,7 +297,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title"
     )
     new_edition = edition.build_clone TransactionEdition
 
@@ -319,7 +306,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
     assert_equal new_edition.more_information, edition.whole_body
   end
 
@@ -331,7 +317,6 @@ class EditionTest < ActiveSupport::TestCase
         version_number: 1,
         department: "Test dept",
         overview: "I am a test overview",
-        alternative_title: "Alternative test title"
     )
     new_edition = edition.build_clone GuideEdition
 
@@ -341,7 +326,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.state, "draft"
     assert_equal new_edition.department, "Test dept"
     assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.alternative_title, "Alternative test title"
   end
 
   test "Cloning between types with parts" do
@@ -998,10 +982,10 @@ class EditionTest < ActiveSupport::TestCase
     end
 
     context "for a single part thing" do
-      should "have the normalised content of that part" do
-        edition = FactoryGirl.create(:guide_edition, :state => 'ready', :title => 'one part thing', :alternative_title => 'alternative one part thing', panopticon_id: FactoryGirl.create(:artefact).id)
+      should "have an empty string for an edition with no body" do
+        edition = FactoryGirl.create(:guide_edition, :state => 'ready', :title => 'one part thing', panopticon_id: FactoryGirl.create(:artefact).id)
         edition.publish
-        assert_equal "alternative one part thing", edition.indexable_content
+        assert_equal "", edition.indexable_content
       end
     end
 

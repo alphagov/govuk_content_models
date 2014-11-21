@@ -17,7 +17,6 @@ class Edition
   field :created_at,           type: DateTime, default: lambda { Time.zone.now }
   field :publish_at,           type: DateTime
   field :overview,             type: String
-  field :alternative_title,    type: String
   field :slug,                 type: String
   field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
@@ -125,9 +124,9 @@ class Edition
 
   def indexable_content_without_parts
     if respond_to?(:body)
-      "#{alternative_title} #{Govspeak::Document.new(body).to_text}".strip
+      "#{Govspeak::Document.new(body).to_text}".strip
     else
-      alternative_title
+      ""
     end
   end
 
@@ -162,7 +161,6 @@ class Edition
     real_fields_to_merge = fields_to_copy(edition_class) + [
       :panopticon_id,
       :overview,
-      :alternative_title,
       :slug,
       :department,
       :browse_pages,
