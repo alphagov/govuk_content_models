@@ -1,3 +1,8 @@
+## 24.2.0
+
+- Adds the `public_timestamp` and `latest_change_note` fields to the `Artefact`
+  model.
+
 ## 24.1.0
 
 * Use version numbers for picking current edition in 'Edition.find_and_identify'
