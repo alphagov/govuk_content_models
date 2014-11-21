@@ -1,4 +1,4 @@
 module GovukContentModels
   # Changing this causes Jenkins to tag and release the gem into the wild
-  VERSION = "24.0.1"
+  VERSION = "24.1.0"
 end
