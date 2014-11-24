@@ -49,6 +49,7 @@ class Edition
       where(:assigned_to_id.exists => false)
     end
   }
+  scope :major_updates, lambda { where(major_change: true) }
 
   validates :title, presence: true
   validates :version_number, presence: true, uniqueness: {scope: :panopticon_id}
@@ -108,6 +109,28 @@ class Edition
 
   def can_create_new_edition?
     !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
+  end
+
+  def major_updates_in_series
+    history.published.major_updates
+  end
+
+  def latest_major_update
+    major_updates_in_series.first
+  end
+
+  def latest_change_note
+    if latest_major_update.present?
+      latest_major_update.change_note
+    end
+  end
+
+  def public_updated_at
+    if latest_major_update.present?
+      latest_major_update.updated_at
+    elsif (first_published_edition = series.published.order(version_number: "asc").first)
+      first_published_edition.updated_at
+    end
   end
 
   def meta_data
