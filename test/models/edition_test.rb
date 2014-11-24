@@ -1075,4 +1075,67 @@ class EditionTest < ActiveSupport::TestCase
       assert_equal edition.browse_pages, new_edition.browse_pages
     end
   end
+
+  context "#latest_major_update" do
+    should 'return the most recent published edition with a major change' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: true,
+                                                     change_note: 'published',
+                                                     state: 'published',
+                                                     version_number: 1)
+      edition2 = edition1.build_clone
+
+      edition2.update_attributes!(major_change: true, change_note: 'changed', state: 'published')
+      edition1.update_attributes!(state: 'archived')
+
+      edition3 = edition2.build_clone
+
+      assert_equal edition2.id, edition3.latest_major_update.id
+    end
+  end
+
+  context "#latest_change_note" do
+    should 'return the change note of the latest major update' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: true,
+                                                     change_note: 'a change note',
+                                                     state: 'published')
+      edition2 = edition1.build_clone
+
+      assert_equal 'a change note', edition2.latest_change_note
+    end
+
+    should 'return nil if there is no major update in the edition series' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: false,
+                                                     state: 'published')
+      assert_equal nil, edition1.latest_change_note
+    end
+  end
+
+  context '#public_updated_at' do
+    should 'return the updated_at timestamp of the latest major update' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: true,
+                                                     change_note: 'a change note',
+                                                     updated_at: 1.minute.ago,
+                                                     state: 'published')
+      edition2 = edition1.build_clone
+
+      assert_equal edition1.updated_at, edition2.public_updated_at
+    end
+
+    should 'return the timestamp of the first published edition when there are no major updates' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: false,
+                                                     updated_at: 1.minute.ago,
+                                                     state: 'published')
+      edition2 = edition1.build_clone
+
+      assert_equal edition1.updated_at, edition2.public_updated_at
+    end
+
+    should 'return nil if there are no major updates and no published editions' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: false,
+                                                     updated_at: 1.minute.ago,
+                                                     state: 'draft')
+
+      assert_equal nil, edition1.public_updated_at
+    end
+  end
 end
