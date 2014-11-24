@@ -27,7 +27,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
 
     request_review(user, edition)
@@ -141,7 +141,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    edition = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    edition = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title")
 
     request_review(user, edition)
     approve_review(other_user, edition)
@@ -158,7 +158,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
 
     request_review(user, edition)
@@ -173,7 +173,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
 
     request_review(user, edition)
@@ -189,7 +189,7 @@ class WorkflowTest < ActiveSupport::TestCase
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
 
-    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
 
     request_review(user, edition)
@@ -206,7 +206,7 @@ class WorkflowTest < ActiveSupport::TestCase
     other_user = User.create(name: "James")
     another_user = User.create(name: "Fiona")
 
-    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title", alternative_title: "My Other Title")
+    guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
 
     request_review(user, edition)
