@@ -1,3 +1,8 @@
+## 25.0.0
+
+- Removes the `alternative_title` field from the `Edition` class.
+- Adds methods to return major updates for an `Edition`.
+
 ## 24.2.0
 
 - Adds the `public_timestamp` and `latest_change_note` fields to the `Artefact`
