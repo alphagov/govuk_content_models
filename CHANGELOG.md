@@ -1,3 +1,9 @@
+## 26.0.0
+
+- Removes `Expectation` model and introduces `need_to_know` `String` field on
+  Transaction, LocalTransaction and Place editions to store the expectations
+  as a govspeak field.
+
 ## 25.0.0
 
 - Removes the `alternative_title` field from the `Edition` class.
