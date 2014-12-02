@@ -31,6 +31,7 @@ class Edition
   field :archiver,             type: String
   field :major_change,         type: Boolean, default: false
   field :change_note,          type: String
+  field :review_requested_at,  type: DateTime
 
   GOVSPEAK_FIELDS = []
 

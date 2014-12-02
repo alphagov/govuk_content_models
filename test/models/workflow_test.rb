@@ -112,8 +112,10 @@ class WorkflowTest < ActiveSupport::TestCase
     guide = template_guide
     user = User.create(name:"Ben")
     refute guide.in_review?
+    refute guide.review_requested_at
     request_review(user, guide)
     assert guide.in_review?
+    assert_in_delta Time.zone.now.to_f, guide.review_requested_at.to_f, 1.0
   end
 
   test "guide workflow" do
