@@ -1,20 +1,20 @@
-require "expectant"
 require "local_service"
 require "edition"
 
 class LocalTransactionEdition < Edition
-  include Expectant
+  field :lgsl_code, type: Integer
+  field :lgil_override, type: Integer
+  field :introduction, type: String
+  field :more_information, type: String
+  field :need_to_know, type: String
+  field :minutes_to_complete, type: String
+  field :uses_government_gateway, type: Boolean
 
-  field :lgsl_code,         type: Integer
-  field :lgil_override,     type: Integer
-  field :introduction,      type: String
-  field :more_information,  type: String
-
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information]
+  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information, :need_to_know]
 
   @fields_to_clone = [
     :lgsl_code, :introduction, :more_information,
-    :minutes_to_complete, :expectation_ids
+    :minutes_to_complete, :need_to_know
   ]
 
   validate :valid_lgsl_code

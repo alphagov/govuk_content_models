@@ -168,11 +168,13 @@ FactoryGirl.define do
     sequence(:lgsl_code) { |nlgsl| nlgsl }
     introduction { "Test introduction" }
     more_information { "This is more information" }
+    need_to_know "This service is only available in England and Wales"
   end
 
   factory :transaction_edition, :parent => :edition, :class => "TransactionEdition" do
     introduction { "Test introduction" }
     more_information { "This is more information" }
+    need_to_know "This service is only available in England and Wales"
     link "http://continue.com"
     will_continue_on "To be continued..."
     alternate_methods "Method A or Method B"
@@ -208,14 +210,11 @@ FactoryGirl.define do
     lgil_code 0
   end
 
-  factory :expectation do
-    sequence(:text) {|n| "You will need #{n} of these."}
-  end
-
   factory :place_edition do
     title "Far far away"
     introduction "Test introduction"
     more_information "More information"
+    need_to_know "This service is only available in England and Wales"
     place_type "Location location location"
   end
 
