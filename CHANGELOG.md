@@ -1,3 +1,6 @@
+## 26.1.0
+- Adds `review_requested_at` `DateTime` field to `Edition` class.
+
 ## 26.0.0
 
 - Removes `Expectation` model and introduces `need_to_know` `String` field on
