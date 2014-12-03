@@ -32,6 +32,10 @@ module Workflow
         edition.was_published
       end
 
+      before_transition on: :request_review do |edition, transition|
+        edition.review_requested_at = Time.zone.now
+      end
+
       event :request_review do
         transition [:draft, :amends_needed] => :in_review
       end
@@ -84,6 +88,10 @@ module Workflow
 
       event :archive do
         transition all => :archived, :unless => :archived?
+      end
+
+      state :in_review do
+        validates_presence_of :review_requested_at
       end
 
       state :scheduled_for_publishing do
