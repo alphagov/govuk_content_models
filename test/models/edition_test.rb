@@ -131,6 +131,15 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
+  test "reviewer cannot be the assignee" do
+    user = FactoryGirl.create(:user)
+    edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123,
+                          state: "in_review", review_requested_at: Time.zone.now, assigned_to: user)
+    edition.reviewer = user.name
+    refute edition.valid?
+    assert edition.errors.has_key?(:reviewer)
+  end
+
   test "it should build a clone" do
     edition = FactoryGirl.create(:guide_edition,
                                   state: "published",

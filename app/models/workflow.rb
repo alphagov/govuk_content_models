@@ -28,6 +28,10 @@ module Workflow
         edition.publish_at = nil
       end
 
+      before_transition on: [:approve_review, :request_amendments] do |edition, transition|
+        edition.reviewer = nil
+      end
+
       after_transition on: :publish do |edition, transition|
         edition.was_published
       end
