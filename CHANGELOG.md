@@ -1,3 +1,6 @@
+## 26.2.0
+- Adds `reviewer` `String` field to `Edition` class.
+
 ## 26.1.0
 - Adds `review_requested_at` `DateTime` field to `Edition` class.
 
