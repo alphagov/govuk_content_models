@@ -118,6 +118,14 @@ class WorkflowTest < ActiveSupport::TestCase
     assert_in_delta Time.zone.now.to_f, guide.review_requested_at.to_f, 1.0
   end
 
+  test "a guide not in review cannot have a reviewer" do
+    guide = template_guide
+    refute guide.in_review?
+    guide.reviewer = "Bob"
+    refute guide.valid?
+    assert guide.errors.has_key?(:reviewer)
+  end
+
   test "guide workflow" do
     user = User.create(name: "Ben")
     other_user = User.create(name: "James")
@@ -210,9 +218,14 @@ class WorkflowTest < ActiveSupport::TestCase
     edition = guide
 
     request_review(user, edition)
-    approve_review(other_user, edition)
-    request_amendments(other_user, edition)
 
+    edition.reviewer = other_user
+    edition.save!
+
+    approve_review(other_user, edition)
+    assert_nil edition.reviewer
+
+    request_amendments(other_user, edition)
     assert_equal "More amendments are required", edition.actions.last.comment
   end
 

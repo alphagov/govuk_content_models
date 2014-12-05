@@ -26,6 +26,7 @@ class Edition
   field :additional_topics,    type: Array, default: []
 
   field :assignee,             type: String
+  field :reviewer,             type: String
   field :creator,              type: String
   field :publisher,            type: String
   field :archiver,             type: String
@@ -56,7 +57,7 @@ class Edition
   validates :panopticon_id, presence: true
   validates_with SafeHtml
   validates_with LinkValidator, on: :update
-  validates_with TopicValidator, BrowsePageValidator
+  validates_with TopicValidator, BrowsePageValidator, ReviewerValidator
   validates_presence_of :change_note, if: :major_change
 
   before_save :check_for_archived_artefact
