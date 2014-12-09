@@ -123,6 +123,25 @@ class UserTest < ActiveSupport::TestCase
     assert_equal(worker_user, publication.assigned_to)
   end
 
+  test "Edition can be unassigned" do
+    boss_user = User.create(:name => "Mat")
+    worker_user = User.create(:name => "Grunt")
+
+    publication = boss_user.create_edition(:answer, title: "test answer", slug: "test", panopticon_id: @artefact.id)
+    boss_user.assign(publication, worker_user)
+    publication.save
+    publication.reload
+
+    assert_equal(worker_user, publication.assigned_to)
+
+    boss_user.unassign(publication)
+    publication.save
+    publication.reload
+
+    assert_nil publication.assigned_to
+  end
+
+
   test "should default to a collection called 'users'" do
     assert_equal "users", User.collection_name
   end
