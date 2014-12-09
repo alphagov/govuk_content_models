@@ -66,6 +66,7 @@ class Edition
   index "assigned_to_id"
   index [["panopticon_id", Mongo::ASCENDING], ["version_number", Mongo::ASCENDING]], :unique => true
   index "state"
+  index "updated_at"
 
   class << self; attr_accessor :fields_to_clone end
   @fields_to_clone = []
