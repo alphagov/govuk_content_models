@@ -112,8 +112,8 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "Edition becomes assigned to user when user is assigned an edition" do
-    boss_user = User.create(:name => "Mat")
-    worker_user = User.create(:name => "Grunt")
+    boss_user = FactoryGirl.create(:user, :name => "Mat")
+    worker_user = FactoryGirl.create(:user, :name => "Grunt")
 
     publication = boss_user.create_edition(:answer, title: "test answer", slug: "test", panopticon_id: @artefact.id)
     boss_user.assign(publication, worker_user)

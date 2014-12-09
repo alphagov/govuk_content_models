@@ -599,8 +599,8 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should be assigned to the last assigned recipient" do
-    alice = User.create(name: "alice")
-    bob = User.create(name: "bob")
+    alice = FactoryGirl.create(:user, name: "alice")
+    bob = FactoryGirl.create(:user, name: "bob")
     edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "ready")
     alice.assign(edition, bob)
     assert_equal bob, edition.assigned_to

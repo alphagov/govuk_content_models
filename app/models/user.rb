@@ -23,6 +23,7 @@ class User
   field "organisation_slug",   type: String
   field "disabled",            type: Boolean, default: false
 
+  index "uid", unique: true
   index "disabled"
 
   GOVSPEAK_FIELDS = []
