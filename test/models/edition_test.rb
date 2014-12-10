@@ -1132,11 +1132,17 @@ class EditionTest < ActiveSupport::TestCase
 
     should 'return the timestamp of the first published edition when there are no major updates' do
       edition1 = FactoryGirl.create(:answer_edition, major_change: false,
-                                                     updated_at: 1.minute.ago,
+                                                     updated_at: 2.minute.ago,
                                                      state: 'published')
       edition2 = edition1.build_clone
+      Timecop.freeze(1.minute.ago) do
+        #added to allow significant amount of time between edition updated_at values
+        edition2.update_attributes!(state: 'published', major_change: false)
+      end
+      edition1.update_attributes!(state: 'archived', major_change: false)
 
       assert_equal edition1.updated_at, edition2.public_updated_at
+      assert_not_equal edition2.updated_at, edition2.public_updated_at
     end
 
     should 'return nil if there are no major updates and no published editions' do
@@ -1145,6 +1151,40 @@ class EditionTest < ActiveSupport::TestCase
                                                      state: 'draft')
 
       assert_equal nil, edition1.public_updated_at
+    end
+  end
+
+  context '#has_ever_been_published?' do
+    should 'return true if any edition has a published state' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: false,
+        updated_at: 2.minute.ago,
+        state: 'published')
+      edition2 = edition1.build_clone
+      edition2.update_attributes!(state: 'archived', major_change: false)
+      edition4 = FactoryGirl.create(:answer_edition, major_change: false,
+        updated_at: 2.minute.ago,
+        state: 'draft')
+
+      assert_equal true, edition1.has_ever_been_published?
+      assert_equal true, edition2.has_ever_been_published?
+      assert_equal false, edition4.has_ever_been_published?
+    end
+  end
+
+  context '#first_edition_of_published' do
+    should 'return the first edition of a series that has at least one edition state published' do
+      edition1 = FactoryGirl.create(:answer_edition, major_change: false,
+        updated_at: 2.minute.ago,
+        state: 'published')
+      edition2 = edition1.build_clone
+      edition1.update_attributes!(state: 'archived', major_change: false)
+      edition2.update_attributes!(state: 'published', major_change: false)
+      edition3 = edition2.build_clone
+      edition3.update_attributes!(state: 'archived', major_change: false)
+
+      assert_equal edition1, edition1.first_edition_of_published
+      assert_equal edition1, edition2.first_edition_of_published
+      assert_equal edition1, edition3.first_edition_of_published
     end
   end
 end
