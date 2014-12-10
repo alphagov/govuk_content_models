@@ -42,6 +42,7 @@ class Edition
   state_machine.states.map(&:name).each do |state|
     scope state, where(state: state)
   end
+  scope :archived_or_published, where(:state.in => ["archived", "published"])
   scope :in_progress, where(:state.nin => ["archived", "published"])
   scope :assigned_to, lambda { |user|
     if user
@@ -129,9 +130,17 @@ class Edition
   def public_updated_at
     if latest_major_update.present?
       latest_major_update.updated_at
-    elsif (first_published_edition = series.published.order(version_number: "asc").first)
-      first_published_edition.updated_at
+    elsif has_ever_been_published?
+      first_edition_of_published.updated_at
     end
+  end
+
+  def has_ever_been_published?
+    series.map(&:state).include?('published')
+  end
+
+  def first_edition_of_published
+    series.archived_or_published.order(version_number: "asc").first
   end
 
   def meta_data
