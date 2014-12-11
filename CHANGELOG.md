@@ -1,5 +1,11 @@
-## 26.3.0
+## 27.0.0
+
 - Corrected to return public timestamp of first edition when no major changes
+- Adds a unique index on the `uid` field for a `User`. (breaking change)
+
+## 26.3.0 (yanked)
+- Corrected to return public timestamp of first edition when no major changes
+- Yanked due to the unintended inclusion of a breaking change.
 
 ## 26.2.0
 - Adds `reviewer` `String` field to `Edition` class.
