@@ -1,3 +1,6 @@
+## 26.3.0
+- Corrected to return public timestamp of first edition when no major changes
+
 ## 26.2.0
 - Adds `reviewer` `String` field to `Edition` class.
 
