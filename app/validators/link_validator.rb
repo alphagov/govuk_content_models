@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class LinkValidator < ActiveModel::Validator
   def validate(record)
     record.class::GOVSPEAK_FIELDS.each do |govspeak_field_name|
@@ -21,7 +23,7 @@ class LinkValidator < ActiveModel::Validator
 
     errors = Set.new
 
-    string.scan(link_regex) do |match|
+    string.gsub(/(“|”)+/, '"').scan(link_regex) do |match|
 
       if match[0] !~ %r{^(?:https?://|mailto:|/)}
         errors << 'Internal links must start with a forward slash eg [link text](/link-destination). External links must start with http://, https://, or mailto: eg [external link text](https://www.google.co.uk).'

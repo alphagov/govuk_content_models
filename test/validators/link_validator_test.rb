@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require 'test_helper'
 
 class LinkValidatorTest < ActiveSupport::TestCase
@@ -35,6 +37,12 @@ class LinkValidatorTest < ActiveSupport::TestCase
 
     should "not contain hover text" do
       doc = Dummy.new(body: 'abc [foobar](http://foobar.com "hover")')
+      assert doc.invalid?
+      assert_includes doc.errors.keys, :body
+    end
+
+    should "validate smart quotes as normal quotes" do
+      doc = Dummy.new(body: %q<abc [foobar](http://foobar.com “hover”)>)
       assert doc.invalid?
       assert_includes doc.errors.keys, :body
     end
