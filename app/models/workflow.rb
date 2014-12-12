@@ -116,7 +116,8 @@ module Workflow
   end
 
   def denormalise_users!
-    set(:assignee, assigned_to.name) if assigned_to
+    new_assignee = assigned_to.try(:name)
+    set(:assignee, new_assignee) unless new_assignee == assignee
     update_user_action("creator",   [Action::CREATE, Action::NEW_VERSION])
     update_user_action("publisher", [Action::PUBLISH])
     update_user_action("archiver",  [Action::ARCHIVE])
