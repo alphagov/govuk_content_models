@@ -1,3 +1,7 @@
+## 27.1.0
+
+Updates the LinkValidator to validate smart quotes in the same way as normal quotes
+
 ## 27.0.0
 
 - Corrected to return public timestamp of first edition when no major changes
