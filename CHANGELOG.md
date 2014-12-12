@@ -1,3 +1,8 @@
+## 27.2.0
+
+- Adds `unassign` instance method for `User` class which allows users to
+  unassign an `Edition`.
+
 ## 27.1.0
 
 Updates the LinkValidator to validate smart quotes in the same way as normal quotes
