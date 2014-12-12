@@ -78,4 +78,8 @@ class User
   def assign(edition, recipient)
     GovukContentModels::ActionProcessors::AssignProcessor.new(self, edition, { recipient_id: recipient.id }).processed_edition
   end
+
+  def unassign(edition)
+    GovukContentModels::ActionProcessors::AssignProcessor.new(self, edition).processed_edition
+  end
 end
