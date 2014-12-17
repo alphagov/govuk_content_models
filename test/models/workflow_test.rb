@@ -112,10 +112,14 @@ class WorkflowTest < ActiveSupport::TestCase
     guide = template_guide
     user = User.create(name:"Ben")
     refute guide.in_review?
-    refute guide.review_requested_at
-    request_review(user, guide)
+    assert_nil guide.review_requested_at
+
+    now = Time.zone.now
+    Timecop.freeze(now) do
+      request_review(user, guide)
+    end
     assert guide.in_review?
-    assert_in_delta Time.zone.now.to_f, guide.review_requested_at.to_f, 1.0
+    assert_equal now.to_i, guide.review_requested_at.to_i
   end
 
   test "a guide not in review cannot have a reviewer" do
