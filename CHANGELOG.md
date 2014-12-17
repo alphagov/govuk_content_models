@@ -1,3 +1,8 @@
+## 28.0.0
+
+- Removes `uses_government_gateway` and `minutes_to_complete` fields from
+  `Edition` class
+
 ## 27.2.0
 
 - Adds `unassign` instance method for `User` class which allows users to
