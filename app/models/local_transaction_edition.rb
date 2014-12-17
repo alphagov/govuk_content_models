@@ -7,14 +7,11 @@ class LocalTransactionEdition < Edition
   field :introduction, type: String
   field :more_information, type: String
   field :need_to_know, type: String
-  field :minutes_to_complete, type: String
-  field :uses_government_gateway, type: Boolean
 
   GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information, :need_to_know]
 
   @fields_to_clone = [
-    :lgsl_code, :introduction, :more_information,
-    :minutes_to_complete, :need_to_know
+    :lgsl_code, :introduction, :more_information, :need_to_know
   ]
 
   validate :valid_lgsl_code
