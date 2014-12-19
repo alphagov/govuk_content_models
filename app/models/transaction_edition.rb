@@ -8,7 +8,7 @@ class TransactionEdition < Edition
   field :need_to_know, type: String
   field :alternate_methods, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information, :alternate_methods, :need_to_know]
+  GOVSPEAK_FIELDS = [:introduction, :more_information, :alternate_methods, :need_to_know]
 
   @fields_to_clone = [:introduction, :will_continue_on, :link,
                       :more_information, :alternate_methods,

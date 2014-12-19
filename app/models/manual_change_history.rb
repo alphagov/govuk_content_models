@@ -12,7 +12,4 @@ class ManualChangeHistory
   index "slug", unique: true
 
   validates :slug, uniqueness: true
-  validates_with SafeHtml
-
-  GOVSPEAK_FIELDS = []
 end

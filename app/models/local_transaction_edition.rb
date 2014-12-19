@@ -8,7 +8,7 @@ class LocalTransactionEdition < Edition
   field :more_information, type: String
   field :need_to_know, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information, :need_to_know]
+  GOVSPEAK_FIELDS = [:introduction, :more_information, :need_to_know]
 
   @fields_to_clone = [
     :lgsl_code, :introduction, :more_information, :need_to_know

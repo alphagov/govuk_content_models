@@ -34,8 +34,6 @@ class Edition
   field :change_note,          type: String
   field :review_requested_at,  type: DateTime
 
-  GOVSPEAK_FIELDS = []
-
   belongs_to :assigned_to, class_name: "User"
 
   # state_machine comes from Workflow

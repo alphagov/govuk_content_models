@@ -3,7 +3,7 @@ require "edition"
 class AnswerEdition < Edition
   field :body, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  GOVSPEAK_FIELDS = [:body]
 
   @fields_to_clone = [:body]
 

@@ -26,8 +26,6 @@ class User
   index "uid", unique: true
   index "disabled"
 
-  GOVSPEAK_FIELDS = []
-
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :name, :uid
   attr_accessible :email, :name, :uid, :permissions, as: :oauth
@@ -35,8 +33,6 @@ class User
   scope :alphabetized, order_by(name: :asc)
   scope :enabled, any_of({ :disabled.exists => false },
                          { :disabled.in => [false, nil] })
-
-  validates_with SafeHtml
 
   def to_s
     name || email || ""

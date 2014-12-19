@@ -28,7 +28,6 @@ class SimpleSmartAnswerEdition < Edition
     validates :slug, :presence => true, :format => {:with => /\A[a-z0-9-]+\z/}
 
     validate :outcomes_have_no_options
-
     validates_with SafeHtml
 
     private

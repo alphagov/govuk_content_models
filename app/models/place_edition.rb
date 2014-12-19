@@ -6,7 +6,7 @@ class PlaceEdition < Edition
   field :need_to_know, type: String
   field :place_type, type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:introduction, :more_information, :need_to_know]
+  GOVSPEAK_FIELDS = [:introduction, :more_information, :need_to_know]
 
   @fields_to_clone = [:introduction, :more_information, :place_type, :need_to_know]
 

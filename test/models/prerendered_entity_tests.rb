@@ -10,7 +10,7 @@ module PrerenderedEntityTests
   end
 
   def test_has_no_govspeak_fields
-    assert_equal [], model_class::GOVSPEAK_FIELDS
+    refute model_class.const_defined?(:GOVSPEAK_FIELDS)
   end
 
   def test_create_or_update_by_slug

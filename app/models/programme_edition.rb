@@ -6,6 +6,7 @@ class ProgrammeEdition < Edition
 
   before_save :setup_default_parts, on: :create
 
+  GOVSPEAK_FIELDS = []
   @fields_to_clone = []
 
   DEFAULT_PARTS = [

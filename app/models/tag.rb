@@ -13,7 +13,6 @@ class Tag
   field :parent_id,         type: String
   field :state,             type: String, default: 'draft'
 
-  GOVSPEAK_FIELDS = []
   STATES = ['draft', 'live']
 
   index :tag_id
@@ -23,7 +22,6 @@ class Tag
   validates_presence_of :tag_id, :title, :tag_type
   validates_uniqueness_of :tag_id, scope: :tag_type
   validates_with TagIdValidator
-  validates_with SafeHtml
 
   attr_protected :state
 
