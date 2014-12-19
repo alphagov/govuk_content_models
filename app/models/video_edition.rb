@@ -8,7 +8,7 @@ class VideoEdition < Edition
   field :video_summary, type: String
   field :body,          type: String
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  GOVSPEAK_FIELDS = [:body]
 
   @fields_to_clone = [:video_url, :video_summary, :body]
 

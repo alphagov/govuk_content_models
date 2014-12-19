@@ -110,30 +110,30 @@ class EditionTest < ActiveSupport::TestCase
 
   context "change note" do
     should "be a minor change by default" do
-      refute Edition.new.major_change
+      refute AnswerEdition.new.major_change
     end
     should "not be valid for major changes with a blank change note" do
-      edition = Edition.new(major_change: true, change_note: "")
+      edition = AnswerEdition.new(major_change: true, change_note: "")
       refute edition.valid?
       assert edition.errors.has_key?(:change_note)
     end
     should "be valid for major changes with a change note" do
-      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, major_change: true, change_note: "Changed")
+      edition = AnswerEdition.new(title: "Edition", version_number: 1, panopticon_id: 123, major_change: true, change_note: "Changed")
       assert edition.valid?
     end
     should "be valid when blank for minor changes" do
-      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "")
+      edition = AnswerEdition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "")
       assert edition.valid?
     end
     should "be valid when populated for minor changes" do
-      edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "Changed")
+      edition = AnswerEdition.new(title: "Edition", version_number: 1, panopticon_id: 123, change_note: "Changed")
       assert edition.valid?
     end
   end
 
   test "reviewer cannot be the assignee" do
     user = FactoryGirl.create(:user)
-    edition = Edition.new(title: "Edition", version_number: 1, panopticon_id: 123,
+    edition = AnswerEdition.new(title: "Edition", version_number: 1, panopticon_id: 123,
                           state: "in_review", review_requested_at: Time.zone.now, assigned_to: user)
     edition.reviewer = user.name
     refute edition.valid?

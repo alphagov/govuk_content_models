@@ -11,7 +11,8 @@ class SimpleSmartAnswerEdition < Edition
 
   accepts_nested_attributes_for :nodes, allow_destroy: true
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body]
+  GOVSPEAK_FIELDS = [:body]
+
   @fields_to_clone = [:body]
 
   def whole_body

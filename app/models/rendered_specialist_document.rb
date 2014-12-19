@@ -15,8 +15,5 @@ class RenderedSpecialistDocument
 
   index "slug", unique: true
 
-  GOVSPEAK_FIELDS = []
-
   validates :slug, uniqueness: true
-  validates_with SafeHtml
 end

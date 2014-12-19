@@ -30,7 +30,7 @@ class BusinessSupportEdition < Edition
   field :end_date,        type: Date
   field :areas,           type: Array, default: []
 
-  GOVSPEAK_FIELDS = Edition::GOVSPEAK_FIELDS + [:body, :eligibility, :evaluation, :additional_information]
+  GOVSPEAK_FIELDS = [:body, :eligibility, :evaluation, :additional_information]
 
   validate :scheme_dates
   validate :min_must_be_less_than_max

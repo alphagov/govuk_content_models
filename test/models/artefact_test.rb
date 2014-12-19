@@ -286,11 +286,11 @@ class ArtefactTest < ActiveSupport::TestCase
     parent = Artefact.create!(slug: "parent", name: "Parent", kind: "guide", owning_app: "x")
 
     a = Artefact.create!(slug: "a", name: "has no published editions", kind: "guide", owning_app: "publisher")
-    Edition.create!(panopticon_id: a.id, title: "Unpublished", state: "draft")
+    GuideEdition.create!(panopticon_id: a.id, title: "Unpublished", state: "draft")
     parent.related_artefacts << a
 
     b = Artefact.create!(slug: "b", name: "has a published edition", kind: "guide", owning_app: "publisher")
-    Edition.create!(panopticon_id: b.id, title: "Published", state: "published")
+    GuideEdition.create!(panopticon_id: b.id, title: "Published", state: "published")
     parent.related_artefacts << b
 
     c = Artefact.create!(slug: "c", name: "not a publisher artefact", kind: "place", owning_app: "x")

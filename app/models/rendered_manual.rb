@@ -13,8 +13,5 @@ class RenderedManual
 
   index "slug", unique: true
 
-  GOVSPEAK_FIELDS = []
-
-  validates_with SafeHtml
   validates_uniqueness_of :slug
 end
