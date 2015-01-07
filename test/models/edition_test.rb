@@ -106,6 +106,14 @@ class EditionTest < ActiveSupport::TestCase
       refute edition.valid?
       assert_include edition.errors.full_messages, %q<Body ["Don't include hover text in links. Delete the text in quotation marks eg \\"This appears when you hover over the link.\\""]>
     end
+
+    should "allow archiving an edition with invalid links" do
+      edition = FactoryGirl.create(:answer_edition, state: 'published', body: 'abc [foobar](http://foobar.com "hover")')
+
+      assert_difference 'AnswerEdition.archived.count', 1 do
+        edition.archive!
+      end
+    end
   end
 
   context "change note" do

@@ -55,7 +55,7 @@ class Edition
   validates :version_number, presence: true, uniqueness: {scope: :panopticon_id}
   validates :panopticon_id, presence: true
   validates_with SafeHtml
-  validates_with LinkValidator, on: :update
+  validates_with LinkValidator, on: :update, unless: :archived?
   validates_with TopicValidator, BrowsePageValidator, ReviewerValidator
   validates_presence_of :change_note, if: :major_change
 
