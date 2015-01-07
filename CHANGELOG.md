@@ -1,3 +1,7 @@
+## 28.0.1
+
+- Skip LinkValidator for archived editions.
+
 ## 28.0.0
 
 - Removes `uses_government_gateway` and `minutes_to_complete` fields from
