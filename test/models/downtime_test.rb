@@ -2,6 +2,13 @@ require "test_helper"
 
 class DowntimeTest < ActiveSupport::TestCase
   context "validations" do
+    should "validate presence of message" do
+      downtime = FactoryGirl.build(:downtime, message: nil)
+
+      refute downtime.valid?
+      assert_includes downtime.errors[:message], "can't be blank"
+    end
+
     should "validate presence of start time" do
       downtime = FactoryGirl.build(:downtime, start_time: nil)
 
