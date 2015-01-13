@@ -19,6 +19,13 @@ FactoryGirl.define do
     disabled true
   end
 
+  factory :downtime do
+    message "This service will be unavailable from 3pm to 6pm tomorrow"
+    start_time (Date.today + 1).to_time + (15 * 60 * 60)
+    end_time (Date.today + 1).to_time + (18 * 60 * 60)
+    artefact
+  end
+
   factory :tag do
     sequence(:tag_id) { |n| "crime-and-justice-#{n}" }
     sequence(:title) { |n| "The title #{n}" }
