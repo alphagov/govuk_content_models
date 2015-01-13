@@ -1,3 +1,7 @@
+## 28.1.0
+
+- Add a `Downtime` model to represent downtime for an artefact.
+
 ## 28.0.1
 
 - Skip LinkValidator for archived editions.
