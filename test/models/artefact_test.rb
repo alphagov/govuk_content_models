@@ -118,7 +118,7 @@ class ArtefactTest < ActiveSupport::TestCase
       artefact = FactoryGirl.build(:artefact, need_ids: ["B1231"])
 
       refute artefact.valid?
-      assert_includes artefact.errors[:need_ids], "must be six-digit integers"
+      assert_includes artefact.errors[:need_ids], "must be six-digit integer strings"
     end
 
     should "not validate need ids that were migrated from the singular need_id field" do
