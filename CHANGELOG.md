@@ -1,3 +1,7 @@
+## 28.2.0
+
+- Add an index for `created_at` on Edition.
+
 ## 28.1.0
 
 - Add a `Downtime` model to represent downtime for an artefact.
