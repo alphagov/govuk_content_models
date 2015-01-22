@@ -37,9 +37,8 @@ module Parted
     return if parts.empty?
 
     if errors.delete(:parts) == ["is invalid"]
-      index = -1
       parts_errors = parts.inject({}) do |result, part|
-        result[index += 1] = part.errors.messages
+        result["#{part._id}:#{part.order}"] = part.errors.messages if part.errors.present?
         result
       end
       errors.add(:parts, parts_errors)
