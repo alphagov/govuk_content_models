@@ -7,6 +7,7 @@ class TopicValidator < ActiveModel::Validator
 
       if additional_topics.include?(record.primary_topic)
         record.errors.add(:base, "You can't have the primary topic set as an additional topic")
+        record.errors.add(:additional_topics, "can't have the primary topic set as an additional topic")
       end
     end
   end
