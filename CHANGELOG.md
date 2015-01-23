@@ -1,3 +1,8 @@
+## 28.3.0
+
+- Add error message when validating primary and additional topics
+- Embed part errors within edition errors
+
 ## 28.2.0
 
 - Add an index for `created_at` on Edition.
