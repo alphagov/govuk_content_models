@@ -5,6 +5,7 @@ module Parted
     klass.embeds_many :parts
     klass.accepts_nested_attributes_for :parts, allow_destroy: true,
       reject_if: proc { |attrs| attrs["title"].blank? and attrs["body"].blank? }
+    klass.after_validation :merge_embedded_parts_errors
   end
 
   def build_clone(edition_class=nil)
@@ -28,5 +29,19 @@ module Parted
 
   def whole_body
     self.parts.map {|i| %Q{\# #{i.title}\n\n#{i.body}} }.join("\n\n")
+  end
+
+  private
+
+  def merge_embedded_parts_errors
+    return if parts.empty?
+
+    if errors.delete(:parts) == ["is invalid"]
+      parts_errors = parts.inject({}) do |result, part|
+        result["#{part._id}:#{part.order}"] = part.errors.messages if part.errors.present?
+        result
+      end
+      errors.add(:parts, parts_errors)
+    end
   end
 end

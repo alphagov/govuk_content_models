@@ -23,6 +23,13 @@ class LinkValidatorTest < ActiveSupport::TestCase
       assert_empty doc.errors
     end
 
+    should "not contain empty array for errors on fields" do
+      doc = Dummy.new(body: "Nothing is invalid")
+
+      assert doc.valid?
+      assert_empty doc.errors[:body]
+    end
+
     should "start with http[s]://, mailto: or /" do
       doc = Dummy.new(body: "abc [external](external.com)")
       assert doc.invalid?
