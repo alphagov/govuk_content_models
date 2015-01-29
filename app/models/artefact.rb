@@ -82,6 +82,7 @@ class Artefact
     "travel-advice-publisher" => ["travel-advice"],
     "specialist-publisher"    => ["aaib_report",
                                   "cma_case",
+                                  "countryside_stewardship_grant",
                                   "drug_safety_update",
                                   "international_development_fund",
                                   "maib_report",
