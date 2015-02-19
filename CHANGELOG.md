@@ -1,3 +1,7 @@
+## 28.4.0
+
+- Add `european_structural_investment_fund` artefact format
+
 ## 28.3.0
 
 - Add error message when validating primary and additional topics
