@@ -83,6 +83,7 @@ class Artefact
     "specialist-publisher"    => ["aaib_report",
                                   "cma_case",
                                   "drug_safety_update",
+                                  "european_structural_investment_fund",
                                   "international_development_fund",
                                   "maib_report",
                                   "manual",
