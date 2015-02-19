@@ -1,3 +1,7 @@
+## 28.5.0
+
+- Add `countryside_stewardship_grant` artefact format
+
 ## 28.4.0
 
 - Add `european_structural_investment_fund` artefact format
