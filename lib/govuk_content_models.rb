@@ -1,6 +1,7 @@
 require "govuk_content_models/version"
 require "mongoid"
 require "mongoid/monkey_patches"
+require "govuk_content_models/presentation_toggles"
 require "govuk_content_models/action_processors"
 
 module GovukContentModels
