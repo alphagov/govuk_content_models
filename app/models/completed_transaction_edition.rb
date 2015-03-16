@@ -1,9 +1,9 @@
 require "edition"
 
 class CompletedTransactionEdition < Edition
-  include PresentationToggles
 
   field :body, type: String
+  embeds_one :organ_donor_promotion, class_name: "PresentationToggle"
 
   GOVSPEAK_FIELDS = [:body]
 
@@ -12,5 +12,4 @@ class CompletedTransactionEdition < Edition
   def whole_body
     self.body
   end
-
 end
