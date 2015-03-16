@@ -3,6 +3,7 @@ module PresentationToggles
 
   included do
     field :presentation_toggles, type: Hash, default: default_presentation_toggles
+    validates_presence_of :organ_donor_registration_promotion_url, if: :display_organ_donor_registration_promotion?
   end
 
   def display_organ_donor_registration_promotion=(value)

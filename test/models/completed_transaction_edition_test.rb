@@ -6,6 +6,7 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
     refute completed_transaction_edition.display_organ_donor_registration_promotion?
 
     completed_transaction_edition.display_organ_donor_registration_promotion = true
+    completed_transaction_edition.organ_donor_registration_promotion_url = "https://www.organdonation.nhs.uk/registration/"
     completed_transaction_edition.save!
     assert completed_transaction_edition.reload.display_organ_donor_registration_promotion?
 
@@ -14,7 +15,7 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
     refute completed_transaction_edition.reload.display_organ_donor_registration_promotion?
   end
 
-  test "stores organ donor registration promotion code" do
+  test "stores organ donor registration promotion URL" do
     completed_transaction_edition = FactoryGirl.create(:completed_transaction_edition,
       display_organ_donor_registration_promotion: true)
 
@@ -24,10 +25,18 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
     assert_equal "1221", completed_transaction_edition.reload.organ_donor_registration_promotion_url
   end
 
-  test "returns an empty organ donor registration promotion code if the promotion is turned-off" do
+  test "returns an empty organ donor registration URL if the promotion is turned-off" do
     completed_transaction_edition = FactoryGirl.create(:completed_transaction_edition,
-      display_organ_donor_registration_promotion: false, organ_donor_registration_promotion_url: "1221")
+      display_organ_donor_registration_promotion: false, organ_donor_registration_promotion_url: "https://www.organdonation.nhs.uk/registration/")
 
     assert_empty completed_transaction_edition.organ_donor_registration_promotion_url
+  end
+
+  test "invalid if organ_donor_registration_promotion_url is not specified when promotion is on" do
+    completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition,
+      display_organ_donor_registration_promotion: true, organ_donor_registration_promotion_url: "")
+
+    assert completed_transaction_edition.invalid?
+    assert_includes completed_transaction_edition.errors[:organ_donor_registration_promotion_url], "can't be blank"
   end
 end
