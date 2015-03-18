@@ -1,3 +1,7 @@
+## 28.6.0
+
+- Add `presentation_toggles` field to CompletedTransactionEdition
+
 ## 28.5.0
 
 - Add `countryside_stewardship_grant` artefact format
