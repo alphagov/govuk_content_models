@@ -210,6 +210,10 @@ class Edition
       new_edition.body = whole_body
     end
 
+    if edition_class == SimpleSmartAnswerEdition && %w(AnswerEdition GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
+      new_edition.body = whole_body
+    end
+
     if edition_class == TransactionEdition and %w(AnswerEdition GuideEdition ProgrammeEdition).include?(self.class.name)
       new_edition.more_information = whole_body
     end

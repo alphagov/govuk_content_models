@@ -285,6 +285,27 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.more_information, "Test body"
   end
 
+  test "Cloning from AnswerEdition into SimpleSmartAnswerEdition" do
+    edition = FactoryGirl.create(
+      :answer_edition,
+      state: "published",
+      panopticon_id: @artefact.id,
+      version_number: 1,
+      department: "Test dept",
+      overview: "I am a test overview",
+      body: "Test body"
+    )
+    new_edition = edition.build_clone SimpleSmartAnswerEdition
+
+    assert_equal new_edition.class, SimpleSmartAnswerEdition
+    assert_equal new_edition.version_number, 2
+    assert_equal new_edition.panopticon_id, @artefact.id.to_s
+    assert_equal new_edition.state, "draft"
+    assert_equal new_edition.department, "Test dept"
+    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal new_edition.body, "Test body"
+  end
+
   test "Cloning from GuideEdition into TransactionEdition" do
     edition = FactoryGirl.create(
         :guide_edition,
