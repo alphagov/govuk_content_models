@@ -1,3 +1,8 @@
+## 28.6.1
+
+- Copy the body from the old edition to the new edition when converting from
+  Answers, Guides, Programmes and Transactions to Simple Smart Answers
+
 ## 28.6.0
 
 - Add `presentation_toggles` field to CompletedTransactionEdition
