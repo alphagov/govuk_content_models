@@ -17,7 +17,7 @@ class Downtime
   end
 
   def publicise?
-    Time.zone.now.between?(start_time.to_date - 1, end_time) # starting at midnight a day before start time
+    Time.zone.now.between?(start_time.yesterday.at_midnight, end_time)
   end
 
   private
