@@ -1,3 +1,7 @@
+## 28.6.2
+
+- Relax constraint on govspeak dependency from `~> 3.1.0` to `~> 3.1`.
+
 ## 28.6.1
 
 - Copy the body from the old edition to the new edition when converting from
