@@ -1,3 +1,7 @@
+## 28.7.0
+
+- Add `vehicle_recalls_and_faults_alert` artefact format
+
 ## 28.6.2
 
 - Relax constraint on govspeak dependency from `~> 3.1.0` to `~> 3.1`.
