@@ -8,7 +8,6 @@ class SlugValidator < ActiveModel::EachValidator
       FinderEmailSignupValidator,
       GovernmentPageValidator,
       ManualPageValidator,
-      ManualChangeHistoryValidator,
       SpecialistDocumentPageValidator,
       BrowsePageValidator,
       DefaultValidator
@@ -119,7 +118,7 @@ protected
 
   class ManualPageValidator < InstanceValidator
     def applicable?
-      of_kind?('manual') || of_kind?('manual-section')
+      of_kind?('manual')
     end
 
     def validate!
@@ -138,44 +137,6 @@ protected
     def validate_guidance_prefix!
       unless starts_with?('guidance/')
         record.errors[attribute] << 'must have a guidance/ prefix'
-      end
-    end
-
-    def validate_parts_as_slugs!
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << 'must be usable in a URL'
-      end
-    end
-  end
-
-  class ManualChangeHistoryValidator < InstanceValidator
-    def applicable?
-      of_kind?('manual-change-history')
-    end
-
-    def validate!
-      validate_number_of_parts!
-      validate_guidance_prefix!
-      validate_updates_suffix!
-      validate_parts_as_slugs!
-    end
-
-  private
-    def validate_number_of_parts!
-      unless url_parts.size == 3
-        record.errors[attribute] << 'must contain three path parts'
-      end
-    end
-
-    def validate_guidance_prefix!
-      unless starts_with?('guidance/')
-        record.errors[attribute] << 'must have a guidance/ prefix'
-      end
-    end
-
-    def validate_updates_suffix!
-      unless ends_with?('/updates')
-        record.errors[attribute] << 'must have a /updates suffix'
       end
     end
 
@@ -208,8 +169,6 @@ protected
     def unacceptable_formats
       [
         "manual",
-        "manual-change-history",
-        "manual-section",
       ]
     end
   end
