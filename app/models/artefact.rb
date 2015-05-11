@@ -88,7 +88,6 @@ class Artefact
                                   "international_development_fund",
                                   "maib_report",
                                   "manual",
-                                  "manual-change-history",
                                   "manual-section",
                                   "medical_safety_alert",
                                   "raib_report",
