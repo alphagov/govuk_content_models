@@ -88,7 +88,6 @@ class Artefact
                                   "international_development_fund",
                                   "maib_report",
                                   "manual",
-                                  "manual-section",
                                   "medical_safety_alert",
                                   "raib_report",
                                   "vehicle_recalls_and_faults_alert"],

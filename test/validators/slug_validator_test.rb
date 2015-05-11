@@ -113,8 +113,6 @@ class SlugTest < ActiveSupport::TestCase
     should "allow two or three path parts" do
       refute document_with_slug("guidance", kind: "manual").valid?
       assert document_with_slug("guidance/a-manual", kind: "manual").valid?
-      assert document_with_slug("guidance/a-manual/a-section", kind: "manual-section").valid?
-      refute document_with_slug("guidance/a-manual/a-section/a-subsection", kind: "manual-section").valid?
     end
 
     should "not allow invalid path segments" do

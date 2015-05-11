@@ -118,7 +118,7 @@ protected
 
   class ManualPageValidator < InstanceValidator
     def applicable?
-      of_kind?('manual') || of_kind?('manual-section')
+      of_kind?('manual')
     end
 
     def validate!
@@ -169,7 +169,6 @@ protected
     def unacceptable_formats
       [
         "manual",
-        "manual-section",
       ]
     end
   end
