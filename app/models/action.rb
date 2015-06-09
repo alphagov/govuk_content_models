@@ -52,7 +52,7 @@ class Action
   def to_s
     if request_type == SCHEDULE_FOR_PUBLISHING
       string = "Scheduled for publishing"
-      string += " on #{request_details['scheduled_time'].strftime('%d/%m/%Y %H:%M %Z')}" if request_details['scheduled_time'].present?
+      string += " on #{request_details['scheduled_time'].to_datetime.in_time_zone('London').strftime('%d/%m/%Y %H:%M')}" if request_details['scheduled_time'].present?
       string
     else
       request_type.humanize.capitalize
