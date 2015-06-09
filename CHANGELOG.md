@@ -1,3 +1,7 @@
+## 28.7.1
+
+- Change the scheduled publishing timestamp to be London local time
+  instead of UTC.
 ## 28.7.0
 
 - Add `vehicle_recalls_and_faults_alert` artefact format
