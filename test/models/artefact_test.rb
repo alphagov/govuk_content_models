@@ -231,6 +231,19 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  should "validate redirect_url" do
+    artefact = FactoryGirl.create(:artefact)
+
+    artefact.redirect_url = "foobar"
+    refute artefact.valid?
+
+    artefact.redirect_url = "/foobar"
+    assert artefact.valid?
+
+    artefact.redirect_url = "http://foo.bar/"
+    refute artefact.valid?
+  end
+
   test "should translate kind into internally normalised form" do
     a = Artefact.new(kind: "benefit / scheme")
     a.normalise

@@ -48,6 +48,7 @@ class Artefact
   field "need_extended_font",   type: Boolean, default: false
   field "latest_change_note",   type: String
   field "public_timestamp",     type: DateTime
+  field "redirect_url",         type: String
 
   index "slug", :unique => true
 
@@ -173,6 +174,7 @@ class Artefact
   validates_with CannotEditSlugIfEverPublished
   validate :validate_prefixes_and_paths
   validate :format_of_new_need_ids, if: :need_ids_changed?
+  validate :validate_redirect_url
 
   scope :relatable_items, proc {
     where(:kind.ne => "completed_transaction", :state.ne => "archived")
@@ -403,5 +405,12 @@ class Artefact
     uri.path == path && path !~ %r{//} && path !~ %r{./\z}
   rescue URI::InvalidURIError
     false
+  end
+
+  def validate_redirect_url
+    return unless self.redirect_url.present?
+    unless valid_url_path?(self.redirect_url)
+      errors[:redirect_url] << "is not a valid redirect target"
+    end
   end
 end
