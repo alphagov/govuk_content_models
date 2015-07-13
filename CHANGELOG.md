@@ -1,3 +1,7 @@
+## 28.8.0
+
+- Add `redirect_url` to artefact
+
 ## 28.7.1
 
 - Change the scheduled publishing timestamp to be London local time
