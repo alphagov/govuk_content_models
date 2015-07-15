@@ -222,6 +222,30 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal new_edition.whole_body, edition.whole_body
   end
 
+  test "Cloning from LicenceEdition into AnswerEdition" do
+    edition = FactoryGirl.create(
+      :licence_edition,
+      state: "published",
+      panopticon_id: @artefact.id,
+      version_number: 1,
+      department: "Test dept",
+      licence_overview: "I am a test overview",
+      licence_identifier: "Test identifier",
+      licence_short_description: "I am a test short description",
+      will_continue_on: "test will continue on",
+      continuation_link: "https://github.com/alphagov/"
+    )
+    new_edition = edition.build_clone AnswerEdition
+
+    assert_equal AnswerEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.body
+  end
+
   test "Cloning from ProgrammeEdition into AnswerEdition" do
     edition = FactoryGirl.create(
         :programme_edition,
