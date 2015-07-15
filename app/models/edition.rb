@@ -210,6 +210,11 @@ class Edition
       new_edition.body = whole_body
     end
 
+    if edition_class == AnswerEdition and self.is_a?(LicenceEdition)
+      new_edition.body = whole_body
+      new_edition.overview = licence_overview
+    end
+
     if edition_class == SimpleSmartAnswerEdition && %w(AnswerEdition GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
       new_edition.body = whole_body
     end
