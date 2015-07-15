@@ -1,3 +1,7 @@
+## 28.10.0
+
+- Add conversion from LicenceEdition to AnswerEdition in `Edition#build_clone`
+
 ## 28.9.0
 
 - Add `department_analytics_profile` to transaction editions
