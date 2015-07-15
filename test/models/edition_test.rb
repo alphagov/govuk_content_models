@@ -156,9 +156,9 @@ class EditionTest < ActiveSupport::TestCase
                                   department: "Test dept",
                                   overview: "I am a test overview")
     clone_edition = edition.build_clone
-    assert_equal clone_edition.department, "Test dept"
-    assert_equal clone_edition.overview, "I am a test overview"
-    assert_equal clone_edition.version_number, 2
+    assert_equal "Test dept", clone_edition.department
+    assert_equal "I am a test overview", clone_edition.overview
+    assert_equal 2, clone_edition.version_number
   end
 
   test "cloning can only occur from a published edition" do
@@ -197,7 +197,7 @@ class EditionTest < ActiveSupport::TestCase
                                   version_number: 2)
 
     clone1 = edition.build_clone
-    assert_equal clone1.version_number, 3
+    assert_equal 3, clone1.version_number
   end
 
 # test cloning into different edition types
@@ -213,13 +213,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone AnswerEdition
 
-    assert_equal new_edition.class, AnswerEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.whole_body, edition.whole_body
+    assert_equal AnswerEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.whole_body
   end
 
   test "Cloning from LicenceEdition into AnswerEdition" do
@@ -257,13 +257,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone AnswerEdition
 
-    assert_equal new_edition.class, AnswerEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.whole_body, edition.whole_body
+    assert_equal AnswerEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.whole_body
   end
 
   test "Cloning from TransactionEdition into AnswerEdition" do
@@ -279,13 +279,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone AnswerEdition
 
-    assert_equal new_edition.class, AnswerEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.whole_body, edition.whole_body
+    assert_equal AnswerEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.whole_body
   end
 
   test "Cloning from AnswerEdition into TransactionEdition" do
@@ -300,13 +300,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone TransactionEdition
 
-    assert_equal new_edition.class, TransactionEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.more_information, "Test body"
+    assert_equal TransactionEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal "Test body", new_edition.more_information
   end
 
   test "Cloning from AnswerEdition into SimpleSmartAnswerEdition" do
@@ -321,13 +321,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone SimpleSmartAnswerEdition
 
-    assert_equal new_edition.class, SimpleSmartAnswerEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.body, "Test body"
+    assert_equal SimpleSmartAnswerEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal "Test body", new_edition.body
   end
 
   test "Cloning from GuideEdition into TransactionEdition" do
@@ -342,13 +342,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone TransactionEdition
 
-    assert_equal new_edition.class, TransactionEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.more_information, edition.whole_body
+    assert_equal TransactionEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.more_information
   end
 
   test "Cloning from ProgrammeEdition into TransactionEdition" do
@@ -362,13 +362,13 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone TransactionEdition
 
-    assert_equal new_edition.class, TransactionEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
-    assert_equal new_edition.more_information, edition.whole_body
+    assert_equal TransactionEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
+    assert_equal edition.whole_body, new_edition.more_information
   end
 
   test "Cloning from AnswerEdition into GuideEdition" do
@@ -382,12 +382,12 @@ class EditionTest < ActiveSupport::TestCase
     )
     new_edition = edition.build_clone GuideEdition
 
-    assert_equal new_edition.class, GuideEdition
-    assert_equal new_edition.version_number, 2
-    assert_equal new_edition.panopticon_id, @artefact.id.to_s
-    assert_equal new_edition.state, "draft"
-    assert_equal new_edition.department, "Test dept"
-    assert_equal new_edition.overview, "I am a test overview"
+    assert_equal GuideEdition, new_edition.class
+    assert_equal 2, new_edition.version_number
+    assert_equal @artefact.id.to_s, new_edition.panopticon_id
+    assert_equal "draft", new_edition.state
+    assert_equal "Test dept", new_edition.department
+    assert_equal "I am a test overview", new_edition.overview
   end
 
   test "Cloning between types with parts" do
