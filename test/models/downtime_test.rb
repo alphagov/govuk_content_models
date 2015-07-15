@@ -65,16 +65,17 @@ class DowntimeTest < ActiveSupport::TestCase
 
   context "publicising downtime" do
     should "start at midnight a day before it is scheduled" do
-      Timecop.freeze(Date.today) do # beginnning of today
+      now = Time.zone.parse("2015-01-01")
+      Timecop.freeze(now) do
         downtime = FactoryGirl.build(:downtime)
 
-        downtime.start_time = (Date.today + 1).to_time + (3 * 60 * 60) # 3am tomorrow
+        downtime.start_time = Time.zone.parse("2015-01-02 03:00")
         assert downtime.publicise?
 
-        downtime.start_time = Date.today.to_time + (21 * 60 * 60) # 9pm today
+        downtime.start_time = Time.zone.parse("2015-01-01 21:00")
         assert downtime.publicise?
 
-        downtime.start_time = Date.today + 2 # day after tomorrow
+        downtime.start_time = Time.zone.parse("2015-01-03 00:00")
         refute downtime.publicise?
       end
     end
