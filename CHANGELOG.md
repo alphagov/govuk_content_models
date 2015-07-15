@@ -1,3 +1,7 @@
+## 28.9.0
+
+- Add `department_analytics_profile` to transaction editions
+
 ## 28.8.0
 
 - Add `redirect_url` to artefact
