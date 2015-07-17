@@ -38,7 +38,6 @@ class Artefact
   field "need_id",              type: String
 
   field "need_ids",             type: Array, default: []
-  field "fact_checkers",        type: String
   field "publication_id",       type: String
   field "description",          type: String
   field "state",                type: String,  default: "draft"
