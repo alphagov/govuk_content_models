@@ -10,7 +10,6 @@ class Edition
   field :panopticon_id,        type: String
   field :version_number,       type: Integer,  default: 1
   field :sibling_in_progress,  type: Integer,  default: nil
-  field :business_proposition, type: Boolean,  default: false
 
   field :title,                type: String
   field :in_beta,              type: Boolean,  default: false
@@ -243,8 +242,7 @@ class Edition
       panopticon_id: metadata.id,
       slug: metadata.slug,
       title: metadata.name,
-      department: metadata.department,
-      business_proposition: metadata.business_proposition)
+      department: metadata.department)
   end
 
   def self.find_and_identify(slug, edition)

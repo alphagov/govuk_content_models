@@ -23,7 +23,6 @@ class Artefact
   # NOTE: these fields are deprecated, and soon to be replaced with a
   # tag-based implementation
   field "department",           type: String
-  field "business_proposition", type: Boolean, default: false
 
   field "name",                 type: String
   field "slug",                 type: String
