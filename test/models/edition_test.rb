@@ -16,7 +16,6 @@ class EditionTest < ActiveSupport::TestCase
         name: "Foo bar",
         # primary_section: "test-section",
         # sections: ["test-section"],
-        # department: "Test dept",
         owning_app: "publisher")
 
     AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: artefact.id,
@@ -153,10 +152,8 @@ class EditionTest < ActiveSupport::TestCase
                                   state: "published",
                                   panopticon_id: @artefact.id,
                                   version_number: 1,
-                                  department: "Test dept",
                                   overview: "I am a test overview")
     clone_edition = edition.build_clone
-    assert_equal "Test dept", clone_edition.department
     assert_equal "I am a test overview", clone_edition.overview
     assert_equal 2, clone_edition.version_number
   end
@@ -207,7 +204,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
         video_url: "http://www.youtube.com/watch?v=dQw4w9WgXcQ"
     )
@@ -217,7 +213,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.whole_body
   end
@@ -228,7 +223,6 @@ class EditionTest < ActiveSupport::TestCase
       state: "published",
       panopticon_id: @artefact.id,
       version_number: 1,
-      department: "Test dept",
       licence_overview: "I am a test overview",
       licence_identifier: "Test identifier",
       licence_short_description: "I am a test short description",
@@ -241,7 +235,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.body
   end
@@ -252,7 +245,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview"
     )
     new_edition = edition.build_clone AnswerEdition
@@ -261,7 +253,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.whole_body
   end
@@ -272,7 +263,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
         more_information: "More information",
         alternate_methods: "Alternate methods"
@@ -283,7 +273,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.whole_body
   end
@@ -294,7 +283,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
         body: "Test body"
     )
@@ -304,7 +292,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal "Test body", new_edition.more_information
   end
@@ -315,7 +302,6 @@ class EditionTest < ActiveSupport::TestCase
       state: "published",
       panopticon_id: @artefact.id,
       version_number: 1,
-      department: "Test dept",
       overview: "I am a test overview",
       body: "Test body"
     )
@@ -325,7 +311,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal "Test body", new_edition.body
   end
@@ -336,7 +321,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
         video_url: "http://www.youtube.com/watch?v=dQw4w9WgXcQ"
     )
@@ -346,7 +330,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.more_information
   end
@@ -357,7 +340,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
     )
     new_edition = edition.build_clone TransactionEdition
@@ -366,7 +348,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
     assert_equal edition.whole_body, new_edition.more_information
   end
@@ -377,7 +358,6 @@ class EditionTest < ActiveSupport::TestCase
         state: "published",
         panopticon_id: @artefact.id,
         version_number: 1,
-        department: "Test dept",
         overview: "I am a test overview",
     )
     new_edition = edition.build_clone GuideEdition
@@ -386,7 +366,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "Test dept", new_edition.department
     assert_equal "I am a test overview", new_edition.overview
   end
 
@@ -446,7 +425,6 @@ class EditionTest < ActiveSupport::TestCase
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        department: "Test dept",
         owning_app: "publisher",
     )
     artefact.save!
@@ -459,7 +437,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_kind_of AnswerEdition, publication
     assert_equal artefact.name, publication.title
     assert_equal artefact.id.to_s, publication.panopticon_id.to_s
-    assert_equal artefact.department, publication.department
   end
 
   test "should not change edition metadata if archived" do
@@ -470,7 +447,6 @@ class EditionTest < ActiveSupport::TestCase
         name: "Foo bar",
         primary_section: "test-section",
         sections: ["test-section"],
-        department: "Test dept",
         owning_app: "publisher",
     )
 
@@ -907,7 +883,6 @@ class EditionTest < ActiveSupport::TestCase
         name: "Foo bar",
         primary_section: "test-section",
         sections: ["test-section"],
-        department: "Test dept",
         owning_app: "publisher",
     )
 

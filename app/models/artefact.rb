@@ -20,10 +20,6 @@ class Artefact
                   :keywords, :legacy_sources, :specialist_sectors, :organisations
   has_primary_tag_for :section
 
-  # NOTE: these fields are deprecated, and soon to be replaced with a
-  # tag-based implementation
-  field "department",           type: String
-
   field "name",                 type: String
   field "slug",                 type: String
   field "paths",                type: Array, default: []

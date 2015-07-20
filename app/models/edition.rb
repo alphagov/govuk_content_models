@@ -17,7 +17,6 @@ class Edition
   field :publish_at,           type: DateTime
   field :overview,             type: String
   field :slug,                 type: String
-  field :department,           type: String
   field :rejected_count,       type: Integer,  default: 0
 
   field :browse_pages,         type: Array, default: []
@@ -195,7 +194,6 @@ class Edition
       :panopticon_id,
       :overview,
       :slug,
-      :department,
       :browse_pages,
       :primary_topic,
       :additional_topics
@@ -241,8 +239,7 @@ class Edition
     importing_user.create_edition(metadata.kind.to_sym,
       panopticon_id: metadata.id,
       slug: metadata.slug,
-      title: metadata.name,
-      department: metadata.department)
+      title: metadata.name)
   end
 
   def self.find_and_identify(slug, edition)
