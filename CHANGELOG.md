@@ -1,3 +1,15 @@
+# CHANGELOG
+
+## 29.0.0
+
+- Remove fields from Artefact:
+  - `department`
+  - `business_proposition`
+  - `fact_checkers`
+- Remove fields from Edition:
+  - `business_proposition`
+  - `department`
+
 ## 28.10.0
 
 - Add conversion from LicenceEdition to AnswerEdition in `Edition#build_clone`
