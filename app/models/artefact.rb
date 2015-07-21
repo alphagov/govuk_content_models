@@ -20,11 +20,6 @@ class Artefact
                   :keywords, :legacy_sources, :specialist_sectors, :organisations
   has_primary_tag_for :section
 
-  # NOTE: these fields are deprecated, and soon to be replaced with a
-  # tag-based implementation
-  field "department",           type: String
-  field "business_proposition", type: Boolean, default: false
-
   field "name",                 type: String
   field "slug",                 type: String
   field "paths",                type: Array, default: []
@@ -39,7 +34,6 @@ class Artefact
   field "need_id",              type: String
 
   field "need_ids",             type: Array, default: []
-  field "fact_checkers",        type: String
   field "publication_id",       type: String
   field "description",          type: String
   field "state",                type: String,  default: "draft"

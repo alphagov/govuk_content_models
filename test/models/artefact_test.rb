@@ -376,7 +376,6 @@ class ArtefactTest < ActiveSupport::TestCase
         name: "Foo bar",
         primary_section: "test-section",
         sections: ["test-section"],
-        department: "Test dept",
         owning_app: "publisher",
     )
 

@@ -18,7 +18,6 @@ end
 class ArtefactActionTest < ActiveSupport::TestCase
 
   DEFAULTS = {
-    "business_proposition" => false,
     "active" => false,
     "tag_ids" => [],
     "tags" => [],
