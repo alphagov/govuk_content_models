@@ -284,9 +284,11 @@ class Artefact
   def update_editions
     case state
     when 'draft'
-      Edition.where(:state.nin => ["archived"],
-                    panopticon_id: self.id).each do |edition|
-        edition.update_slug_from_artefact(self)
+      if self.slug_changed?
+        Edition.where(:state.nin => ["archived"],
+                      panopticon_id: self.id).each do |edition|
+          edition.update_slug_from_artefact(self)
+        end
       end
     when 'archived'
       archive_editions

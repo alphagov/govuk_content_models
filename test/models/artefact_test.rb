@@ -330,6 +330,19 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal artefact.slug, edition.slug
   end
 
+  should "not touch the updated_at field on the editions when the artefact is saved but the slug hasn't changed" do
+    artefact = FactoryGirl.create(:draft_artefact)
+    edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id)
+    old_updated_at = 2.days.ago.to_time
+    edition.set(:updated_at, old_updated_at)
+
+    artefact.language = "cy"
+    artefact.save!
+
+    edition.reload
+    assert_equal old_updated_at.utc.iso8601, edition.updated_at.utc.iso8601
+  end
+
   should "not update the edition's slug when a live artefact is saved" do
     artefact = FactoryGirl.create(:live_artefact, slug: "something-something-live")
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id, slug: "something-else")
