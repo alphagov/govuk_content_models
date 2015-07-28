@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 29.0.1
+
+- Bugfix: updated_at field on non-archive editions was being updated whenever an Artefact was saved. Now only do so when the slug has changed.
+
 ## 29.0.0
 
 - Remove fields from Artefact:
