@@ -66,6 +66,13 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
         assert_equal "yes", @option.slug
       end
 
+      should "keep the slug up to date if the label changes" do
+        @option = @node.options.create(@atts.merge(slug: "most-likely"))
+        @option.label = "Most of the times"
+        assert @option.valid?
+        assert_equal "most-of-the-times", @option.slug
+      end
+
       should "not overwrite a given slug" do
         @option = @node.options.build(@atts.merge(:slug => "fooey"))
 
