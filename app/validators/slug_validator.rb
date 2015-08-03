@@ -130,7 +130,7 @@ protected
     end
   end
 
-  class DetailedGuideValidator <InstanceValidator
+  class DetailedGuideValidator < InstanceValidator
     def applicable?
       of_kind?('detailed_guide')
     end
