@@ -8,6 +8,7 @@ class SlugValidator < ActiveModel::EachValidator
       FinderEmailSignupValidator,
       GovernmentPageValidator,
       BrowsePageValidator,
+      DetailedGuideValidator,
       DefaultValidator
     ].map { |klass| klass.new(record, attribute, value) }
 
@@ -126,6 +127,16 @@ protected
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
         record.errors[attribute] << "must be usable in a URL"
       end
+    end
+  end
+
+  class DetailedGuideValidator <InstanceValidator
+    def applicable?
+      of_kind?('detailed_guide')
+    end
+
+    def validate!
+      record.errors[attribute] << "must be a valid URL either at the root or under 'guidance/'" unless value.match(%r{^(guidance/)?[a-z0-9\-_]+$})
     end
   end
 
