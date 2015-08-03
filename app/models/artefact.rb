@@ -37,7 +37,6 @@ class Artefact
   field "publication_id",       type: String
   field "description",          type: String
   field "state",                type: String,  default: "draft"
-  field "specialist_body",      type: String
   field "language",             type: String,  default: "en"
   field "need_extended_font",   type: Boolean, default: false
   field "latest_change_note",   type: String
