@@ -7,8 +7,6 @@ class SlugValidator < ActiveModel::EachValidator
       HelpPageValidator,
       FinderEmailSignupValidator,
       GovernmentPageValidator,
-      ManualPageValidator,
-      SpecialistDocumentPageValidator,
       BrowsePageValidator,
       DefaultValidator
     ].map { |klass| klass.new(record, attribute, value) }
@@ -113,63 +111,6 @@ protected
   protected
     def prefixed_whitehall_format_names
       Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"] - ["detailed_guide"]
-    end
-  end
-
-  class ManualPageValidator < InstanceValidator
-    def applicable?
-      of_kind?('manual')
-    end
-
-    def validate!
-      validate_number_of_parts!
-      validate_guidance_prefix!
-      validate_parts_as_slugs!
-    end
-
-  private
-    def validate_number_of_parts!
-      unless [2, 3].include?(url_parts.size)
-        record.errors[attribute] << 'must contains two or three path parts'
-      end
-    end
-
-    def validate_guidance_prefix!
-      unless starts_with?('guidance/')
-        record.errors[attribute] << 'must have a guidance/ prefix'
-      end
-    end
-
-    def validate_parts_as_slugs!
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << 'must be usable in a URL'
-      end
-    end
-  end
-
-  class SpecialistDocumentPageValidator < InstanceValidator
-    def applicable?
-      of_kind?(acceptable_formats)
-    end
-
-    def validate!
-      unless url_parts.size == 2
-        record.errors[attribute] << "must be of form <finder-slug>/<specialist-document-slug>"
-      end
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << "must be usable in a URL"
-      end
-    end
-
-  private
-    def acceptable_formats
-      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["specialist-publisher"] - unacceptable_formats
-    end
-
-    def unacceptable_formats
-      [
-        "manual",
-      ]
     end
   end
 
