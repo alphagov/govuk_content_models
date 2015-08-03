@@ -252,6 +252,25 @@ FactoryGirl.define do
     end
   end
 
+  factory :rendered_specialist_document do
+    sequence(:slug) {|n| "test-rendered-specialist-document-#{n}" }
+    sequence(:title) {|n| "Test Rendered Specialist Document #{n}" }
+    summary "My summary"
+    body "<p>My body</p>"
+    details({
+      "opened_date" => "2013-04-20",
+      "market_sector" => "some-market-sector",
+      "case_type" => "a-case-type",
+      "case_state" => "open",
+    })
+  end
+
+  factory :rendered_manual do
+    sequence(:slug) {|n| "test-rendered-manual-#{n}" }
+    sequence(:title) {|n| "Test Rendered Manual #{n}" }
+    summary "My summary"
+  end
+
   factory :simple_smart_answer_edition, :parent => :edition, :class => "SimpleSmartAnswerEdition" do
     title "Simple smart answer"
     body "Introduction to the smart answer"
