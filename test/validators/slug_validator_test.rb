@@ -93,4 +93,19 @@ class SlugTest < ActiveSupport::TestCase
       refute document_with_slug("oil-and-gas/not.a.valid.slug", kind: "specialist_sector").valid?
     end
   end
+
+  context "Detailed guides slugs" do
+    should "allow a '/' in the slug" do
+      assert document_with_slug("guidance/british-forces-overseas-posting-cyprus", kind: "detailed_guide").valid?
+    end
+
+    should "allow only one '/' in the slug" do
+      refute document_with_slug("guidance/british-forces-overseas-posting-cyprus/more-information", kind: "detailed_guide").valid?
+    end
+
+    should "ensure it allows slugs that start at the root" do
+      assert document_with_slug("british-forces-overseas-posting-cyprus", kind: "detailed_guide").valid?
+    end
+    #TODO: disallow this once guidance migration has been complete
+  end
 end
