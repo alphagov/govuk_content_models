@@ -2,7 +2,7 @@
 
 ## 29.1.2
 
-- Bugfix: revert removal of specialist publisher code since it breaks Panopticon integration
+- Bugfix: revert removal of specialist document code since it breaks Panopticon integration
 
 ## 29.1.1
 
@@ -11,6 +11,7 @@
 ## 29.1.0
 
 - Allow detailed guide slugs to start with /guidance
+- Remove code relating to specialist documents
 
 ## 29.0.1
 
