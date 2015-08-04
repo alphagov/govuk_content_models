@@ -1,6 +1,11 @@
 # CHANGELOG
 
+## 29.1.1
+
+- Bugfix: update question options slugs when their labels are updated
+
 ## 29.1.0
+
 - Allow detailed guide slugs to start with /guidance
 
 ## 29.0.1
