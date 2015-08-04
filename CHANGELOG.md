@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 29.1.0
+- Allow detailed guide slugs to start with /guidance
+
 ## 29.0.1
 
 - Bugfix: updated_at field on non-archive editions was being updated whenever an Artefact was saved. Now only do so when the slug has changed.
