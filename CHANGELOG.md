@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 29.1.2
+
+- Bugfix: revert removal of specialist publisher code since it breaks Panopticon integration
+
 ## 29.1.1
 
 - Bugfix: update question options slugs when their labels are updated
