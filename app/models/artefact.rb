@@ -85,6 +85,7 @@ class Artefact
                                   "manual",
                                   "medical_safety_alert",
                                   "raib_report",
+                                  "utiac_decision",
                                   "vehicle_recalls_and_faults_alert"],
     "finder-api"              => ["finder",
                                   "finder_email_signup"],
