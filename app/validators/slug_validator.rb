@@ -8,7 +8,6 @@ class SlugValidator < ActiveModel::EachValidator
       FinderEmailSignupValidator,
       GovernmentPageValidator,
       ManualPageValidator,
-      SpecialistDocumentPageValidator,
       BrowsePageValidator,
       DetailedGuideValidator,
       DefaultValidator
@@ -145,32 +144,6 @@ protected
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
         record.errors[attribute] << 'must be usable in a URL'
       end
-    end
-  end
-
-  class SpecialistDocumentPageValidator < InstanceValidator
-    def applicable?
-      of_kind?(acceptable_formats)
-    end
-
-    def validate!
-      unless url_parts.size == 2
-        record.errors[attribute] << "must be of form <finder-slug>/<specialist-document-slug>"
-      end
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << "must be usable in a URL"
-      end
-    end
-
-  private
-    def acceptable_formats
-      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["specialist-publisher"] - unacceptable_formats
-    end
-
-    def unacceptable_formats
-      [
-        "manual",
-      ]
     end
   end
 

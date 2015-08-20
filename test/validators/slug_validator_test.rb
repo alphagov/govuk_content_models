@@ -76,16 +76,6 @@ class SlugTest < ActiveSupport::TestCase
     end
   end
 
-  context "Specialist documents" do
-    should "all url nested one level deep" do
-      assert document_with_slug("some-finder/my-specialist-document", kind: "cma_case").valid?;
-    end
-
-    should "not allow deeper nesting" do
-      refute document_with_slug("some-finder/my-specialist-document/not-allowed", kind: "cma_case").valid?
-    end
-  end
-
   context "Specialist sector browse pages" do
     should "allow a single path part" do
       assert document_with_slug("oil-and-gas", kind: "specialist_sector").valid?

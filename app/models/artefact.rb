@@ -37,7 +37,6 @@ class Artefact
   field "publication_id",       type: String
   field "description",          type: String
   field "state",                type: String,  default: "draft"
-  field "specialist_body",      type: String
   field "language",             type: String,  default: "en"
   field "need_extended_font",   type: Boolean, default: false
   field "latest_change_note",   type: String
@@ -75,17 +74,7 @@ class Artefact
     "smartanswers"            => ["smart-answer"],
     "custom-application"      => ["custom-application"], # In this case the owning_app is overriden. eg calendars, licencefinder
     "travel-advice-publisher" => ["travel-advice"],
-    "specialist-publisher"    => ["aaib_report",
-                                  "cma_case",
-                                  "countryside_stewardship_grant",
-                                  "drug_safety_update",
-                                  "european_structural_investment_fund",
-                                  "international_development_fund",
-                                  "maib_report",
-                                  "manual",
-                                  "medical_safety_alert",
-                                  "raib_report",
-                                  "vehicle_recalls_and_faults_alert"],
+    "specialist-publisher"    => ["manual"],
     "finder-api"              => ["finder",
                                   "finder_email_signup"],
     "whitehall"               => ["announcement",

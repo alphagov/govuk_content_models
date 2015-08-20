@@ -424,15 +424,6 @@ class ArtefactTest < ActiveSupport::TestCase
     assert artefact.any_editions_published?
   end
 
-  test "should have a specialist_body field present for markdown content" do
-    artefact = Artefact.create!(slug: "parent", name: "Harry Potter", kind: "guide", owning_app: "x")
-    refute_includes artefact.attributes, "specialist_body"
-
-    artefact.specialist_body = "Something wicked this way comes"
-    assert_includes artefact.attributes, "specialist_body"
-    assert_equal "Something wicked this way comes", artefact.specialist_body
-  end
-
   test "should have 'video' as a supported FORMAT" do
     assert_includes Artefact::FORMATS, "video"
   end
