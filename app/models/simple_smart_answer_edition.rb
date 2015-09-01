@@ -19,8 +19,8 @@ class SimpleSmartAnswerEdition < Edition
     body
   end
 
-  def build_clone(edition_class=nil)
-    new_edition = super(edition_class)
+  def build_clone(target_class=nil)
+    new_edition = super(target_class)
     new_edition.body = self.body
 
     if new_edition.is_a?(SimpleSmartAnswerEdition)

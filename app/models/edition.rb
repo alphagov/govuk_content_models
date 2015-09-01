@@ -173,11 +173,11 @@ class Edition
   # If the new clone is of the same type, we can copy all its fields over; if
   # we are changing the type of the edition, any fields other than the base
   # fields will likely be meaningless.
-  def fields_to_copy(edition_class)
-    edition_class == self.class ? self.class.fields_to_clone : []
+  def fields_to_copy(target_class)
+    target_class == self.class ? self.class.fields_to_clone : []
   end
 
-  def build_clone(edition_class=nil)
+  def build_clone(target_class=nil)
     unless state == "published"
       raise "Cloning of non published edition not allowed"
     end
@@ -186,11 +186,11 @@ class Edition
              is not allowed"
     end
 
-    edition_class = self.class unless edition_class
-    new_edition = edition_class.new(title: self.title,
+    target_class = self.class unless target_class
+    new_edition = target_class.new(title: self.title,
                                     version_number: get_next_version_number)
 
-    real_fields_to_merge = fields_to_copy(edition_class) + [
+    real_fields_to_merge = fields_to_copy(target_class) + [
       :panopticon_id,
       :overview,
       :slug,
@@ -203,24 +203,24 @@ class Edition
       new_edition[attr] = read_attribute(attr)
     end
 
-    if edition_class == AnswerEdition and %w(GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
+    if target_class == AnswerEdition and %w(GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
       new_edition.body = whole_body
     end
 
-    if edition_class == AnswerEdition and self.is_a?(LicenceEdition)
+    if target_class == AnswerEdition and self.is_a?(LicenceEdition)
       new_edition.body = whole_body
       new_edition.overview = licence_overview
     end
 
-    if edition_class == SimpleSmartAnswerEdition && %w(AnswerEdition GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
+    if target_class == SimpleSmartAnswerEdition && %w(AnswerEdition GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
       new_edition.body = whole_body
     end
 
-    if edition_class == TransactionEdition and %w(AnswerEdition GuideEdition ProgrammeEdition).include?(self.class.name)
+    if target_class == TransactionEdition and %w(AnswerEdition GuideEdition ProgrammeEdition).include?(self.class.name)
       new_edition.more_information = whole_body
     end
 
-    if edition_class == GuideEdition and self.is_a?(AnswerEdition)
+    if target_class == GuideEdition and self.is_a?(AnswerEdition)
       new_edition.parts.build(title: "Part One", body: whole_body,
                               slug: "part-one")
     end

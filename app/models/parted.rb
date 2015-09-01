@@ -8,12 +8,12 @@ module Parted
     klass.after_validation :merge_embedded_parts_errors
   end
 
-  def build_clone(edition_class=nil)
+  def build_clone(target_class=nil)
     new_edition = super
 
     # If the new edition is of the same type or another type that has parts,
     # copy over the parts from this edition
-    if edition_class.nil? or edition_class.include? Parted
+    if target_class.nil? or target_class.include? Parted
       new_edition.parts = self.parts.map {|p| p.dup }
     end
 
