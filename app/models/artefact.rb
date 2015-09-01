@@ -43,6 +43,12 @@ class Artefact
   field "public_timestamp",     type: DateTime
   field "redirect_url",         type: String
 
+  # content_id should be unique but we have existing artefacts without it.
+  # We should therefore enforce the uniqueness as soon as:
+  #  - every current artefact will have a content id assigned
+  #  - every future artefact will be created with a content id
+  field "content_id",           type: String
+
   index "slug", :unique => true
 
   # This index allows the `relatable_artefacts` method to use an index-covered
