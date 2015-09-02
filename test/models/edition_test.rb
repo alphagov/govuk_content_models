@@ -235,7 +235,8 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 2, new_edition.version_number
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
-    assert_equal "I am a test overview", new_edition.overview
+    assert_match /#{edition.licence_overview}/, new_edition.body
+    assert_match /#{edition.licence_short_description}/, new_edition.body
     assert_equal edition.whole_body, new_edition.body
   end
 

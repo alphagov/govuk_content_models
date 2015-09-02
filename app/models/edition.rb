@@ -203,10 +203,6 @@ class Edition
       new_edition[attr] = read_attribute(attr)
     end
 
-    if target_class == AnswerEdition and self.is_a?(LicenceEdition)
-      new_edition.overview = licence_overview
-    end
-
     # If the type is changing, then take the combined body (whole_body) from
     # the old and decide where to put it in the new.
     #
