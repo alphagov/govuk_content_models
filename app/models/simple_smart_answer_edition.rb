@@ -16,12 +16,15 @@ class SimpleSmartAnswerEdition < Edition
   @fields_to_clone = [:body]
 
   def whole_body
-    body
+    parts = [body]
+    unless nodes.nil?
+      parts += nodes.map { |node| "#{node.kind}: #{node.title} \n\n #{node.body}" }
+    end
+    parts.join("\n\n\n")
   end
 
   def build_clone(target_class=nil)
     new_edition = super(target_class)
-    new_edition.body = self.body
 
     if new_edition.is_a?(SimpleSmartAnswerEdition)
       self.nodes.each {|n| new_edition.nodes << n.clone }
