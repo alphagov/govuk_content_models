@@ -7,7 +7,10 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "have custom fields" do
-    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
+    support = FactoryGirl.create(
+      :business_support_edition,
+      panopticon_id: @artefact.id,
+    )
     support.short_description = "The short description"
     support.body = "The body"
     support.eligibility = "The eligibility"
@@ -64,7 +67,10 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "not allow max_value to be less than min_value" do
-    support = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
+    support = FactoryGirl.create(
+      :business_support_edition,
+      panopticon_id: @artefact.id,
+    )
     support.min_value = 100
     support.max_value = 50
 
@@ -106,7 +112,10 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   context "continuation_link validation" do
 
     setup do
-      @bs = FactoryGirl.create(:business_support_edition, panopticon_id: @artefact.id)
+      @bs = FactoryGirl.create(
+        :business_support_edition,
+        panopticon_id: @artefact.id,
+      )
     end
 
     should "not validate the continuation link when blank" do
@@ -125,31 +134,33 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "clone extra fields when cloning edition" do
-    support = FactoryGirl.create(:business_support_edition,
-                                 :panopticon_id => @artefact.id,
-                                 :state => "published",
-                                 :short_description => "Short description of support format",
-                                 :body => "Body to be cloned",
-                                 :min_value => 1,
-                                 :max_value => 2,
-                                 :max_employees => 3,
-                                 :organiser => "Organiser to be cloned",
-                                 :eligibility => "Eligibility to be cloned",
-                                 :evaluation => "Evaluation to be cloned",
-                                 :additional_information => "Additional info to be cloned",
-                                 :will_continue_on => "Continuation text to be cloned",
-                                 :continuation_link => "http://www.gov.uk",
-                                 :contact_details => "Contact details to be cloned",
-                                 :priority => 2,
-                                 :areas => ['123','9999'],
-                                 :business_sizes => ['up-to-249'],
-                                 :locations => ['london'],
-                                 :purposes => ['start-up'],
-                                 :sectors => ['agriculture','manufacturing'],
-                                 :stages => ['grow-and-sustain'],
-                                 :support_types => ['grant','loan'],
-                                 :start_date => 1.year.ago(Date.today),
-                                 :end_date => 1.year.since(Date.today))
+    support = FactoryGirl.create(
+      :business_support_edition,
+      :panopticon_id => @artefact.id,
+      :state => "published",
+      :short_description => "Short description of support format",
+      :body => "Body to be cloned",
+      :min_value => 1,
+      :max_value => 2,
+      :max_employees => 3,
+      :organiser => "Organiser to be cloned",
+      :eligibility => "Eligibility to be cloned",
+      :evaluation => "Evaluation to be cloned",
+      :additional_information => "Additional info to be cloned",
+      :will_continue_on => "Continuation text to be cloned",
+      :continuation_link => "http://www.gov.uk",
+      :contact_details => "Contact details to be cloned",
+      :priority => 2,
+      :areas => ['123','9999'],
+      :business_sizes => ['up-to-249'],
+      :locations => ['london'],
+      :purposes => ['start-up'],
+      :sectors => ['agriculture','manufacturing'],
+      :stages => ['grow-and-sustain'],
+      :support_types => ['grant','loan'],
+      :start_date => 1.year.ago(Date.today),
+      :end_date => 1.year.since(Date.today),
+    )
 
     new_support = support.build_clone
 
@@ -180,47 +191,78 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
 
   context "for facets" do
     setup do
-      @e1 = FactoryGirl.create(:business_support_edition,
-                              :areas => ['2345', '1234'],
-                              :business_sizes => ['1', 'up-to-1000000'],
-                              :locations => ['narnia'], :purposes => ['world-domination'],
-                              :sectors => ['agriculture', 'healthcare'],
-                              :stages => ['pivoting'], :support_types => ['award', 'grant', 'loan'])
-      @e2 = FactoryGirl.create(:business_support_edition,
-                              :areas => ['1212', '1234', '999'],
-                              :business_sizes => ['1', 'up-to-1000000'],
-                              :locations => ['hades', 'narnia'], :purposes => ['business-growth-and-expansion'],
-                              :sectors => ['education', 'healthcare'],
-                              :stages => ['start-up', 'pivoting'], :support_types => ['grant', 'loan', 'equity'])
-      @e3 = FactoryGirl.create(:business_support_edition,
-                              :areas => ['1234'],
-                              :business_sizes => ['up-to-249', 'up-to-1000000'],
-                              :locations => ['hades', 'chicken-town'], :purposes => ['making-the-most-of-the-internet'],
-                              :sectors => ['utilities'], :stages => ['start-up'], :support_types => ['grant'])
+      @e1 = FactoryGirl.create(
+        :business_support_edition,
+        :areas => ['2345', '1234'],
+        :business_sizes => ['1', 'up-to-1000000'],
+        :locations => ['narnia'],
+        :purposes => ['world-domination'],
+        :sectors => ['agriculture', 'healthcare'],
+        :stages => ['pivoting'],
+        :support_types => ['award', 'grant', 'loan'],
+      )
+      @e2 = FactoryGirl.create(
+        :business_support_edition,
+        :areas => ['1212', '1234', '999'],
+        :business_sizes => ['1', 'up-to-1000000'],
+        :locations => ['hades', 'narnia'],
+        :purposes => ['business-growth-and-expansion'],
+        :sectors => ['education', 'healthcare'],
+        :stages => ['start-up', 'pivoting'],
+        :support_types => ['grant', 'loan', 'equity'],
+      )
+      @e3 = FactoryGirl.create(
+        :business_support_edition,
+        :areas => ['1234'],
+        :business_sizes => ['up-to-249', 'up-to-1000000'],
+        :locations => ['hades', 'chicken-town'],
+        :purposes => ['making-the-most-of-the-internet'],
+        :sectors => ['utilities'],
+        :stages => ['start-up'],
+        :support_types => ['grant'],
+      )
     end
 
     should "only return editions matching the facet values provided" do
-      editions = BusinessSupportEdition.for_facets({:purposes => 'business-growth-and-expansion', :support_types => 'equity'})
+      editions = BusinessSupportEdition.for_facets({
+        :purposes => 'business-growth-and-expansion',
+        :support_types => 'equity',
+      })
       assert_equal [@e2], editions
-      editions = BusinessSupportEdition.for_facets({:business_sizes => '1,up-to-1000000', :locations => 'narnia'})
+      editions = BusinessSupportEdition.for_facets({
+        :business_sizes => '1,up-to-1000000',
+        :locations => 'narnia',
+      })
       assert_equal [@e1, @e2], editions
     end
     should "support searching with all the facet values" do
-      editions = BusinessSupportEdition.for_facets({:areas => '1234', :business_sizes => 'up-to-1000000', :locations => 'narnia,hades,chicken-town',
-                                                    :purposes => 'business-growth-and-expansion,making-the-most-of-the-internet,world-domination',
-                                                    :sectors => 'agriculture,healthcare,utilities', :stages => 'pivoting,start-up',
-                                                    :support_types => 'award,grant,loan'})
+      editions = BusinessSupportEdition.for_facets({
+        :areas => '1234',
+        :business_sizes => 'up-to-1000000',
+        :locations => 'narnia,hades,chicken-town',
+        :purposes => 'business-growth-and-expansion,making-the-most-of-the-internet,world-domination',
+        :sectors => 'agriculture,healthcare,utilities',
+        :stages => 'pivoting,start-up',
+        :support_types => 'award,grant,loan',
+      })
       assert_equal [@e1, @e2, @e3], editions
     end
     should "return nothing where no facet values match" do
-      editions = BusinessSupportEdition.for_facets({:business_sizes => 'up-to-a-bizillion', :locations => 'ecclefechan'})
+      editions = BusinessSupportEdition.for_facets({
+        :business_sizes => 'up-to-a-bizillion',
+        :locations => 'ecclefechan',
+      })
       assert_empty editions
     end
   end
 
   context "scheme dates" do
     should "should have year with 4 digits length" do
-      invalid_edition = FactoryGirl.build(:business_support_edition, start_date: Date.new(99, 12, 31), end_date: Date.new(99, 12, 31))
+      invalid_edition = FactoryGirl.build(
+        :business_support_edition,
+        start_date: Date.new(99, 12, 31),
+        end_date: Date.new(99, 12, 31),
+      )
 
       refute invalid_edition.valid?
 
@@ -230,7 +272,11 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     end
 
     should "have start date earlier than end date" do
-      invalid_edition = FactoryGirl.build(:business_support_edition, start_date: 1.week.ago, end_date: 2.weeks.ago)
+      invalid_edition = FactoryGirl.build(
+        :business_support_edition,
+        start_date: 1.week.ago,
+        end_date: 2.weeks.ago,
+      )
 
       refute invalid_edition.valid?
       assert_includes invalid_edition.errors.full_messages, "Start date can't be later than end date"
