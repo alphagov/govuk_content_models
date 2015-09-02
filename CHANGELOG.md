@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 30.0.0
+
+- Add:
+  - `content_id` field to the `Artefact` model
+
+- Remove:
+  - `specialist_body` field from `Artefact` model
+  - specialist documents from the list of formats owned by `specialist-publisher`
+  - model for rendering `specialist documents`
+  - `specialist document validator` from `slug validator`, its factory and its fixture
+
 ## 29.1.2
 
 - Bugfix: revert removal of specialist document code since it breaks Panopticon integration
@@ -43,6 +54,7 @@
 
 - Change the scheduled publishing timestamp to be London local time
   instead of UTC.
+
 ## 28.7.0
 
 - Add `vehicle_recalls_and_faults_alert` artefact format
