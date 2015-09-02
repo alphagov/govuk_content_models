@@ -7,10 +7,9 @@ class CompletedTransactionEdition < Edition
 
   GOVSPEAK_FIELDS = [:body]
 
-  @fields_to_clone = [:body]
+  @fields_to_clone = [:body, :presentation_toggles]
 
   def whole_body
     self.body
   end
-
 end
