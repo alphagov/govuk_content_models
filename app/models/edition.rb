@@ -174,7 +174,19 @@ class Edition
   # we are changing the type of the edition, any fields other than the base
   # fields will likely be meaningless.
   def fields_to_copy(target_class)
-    target_class == self.class ? self.class.fields_to_clone : []
+    return_value = [
+      :title,
+      :panopticon_id,
+      :overview,
+      :slug,
+      :browse_pages,
+      :primary_topic,
+      :additional_topics
+    ]
+    if target_class == self.class
+      return_value += self.class.fields_to_clone
+    end
+    return_value
   end
 
   def build_clone(target_class=nil)
@@ -187,19 +199,9 @@ class Edition
     end
 
     target_class = self.class unless target_class
-    new_edition = target_class.new(title: self.title,
-                                    version_number: get_next_version_number)
+    new_edition = target_class.new(version_number: get_next_version_number)
 
-    real_fields_to_merge = fields_to_copy(target_class) + [
-      :panopticon_id,
-      :overview,
-      :slug,
-      :browse_pages,
-      :primary_topic,
-      :additional_topics
-    ]
-
-    real_fields_to_merge.each do |attr|
+    fields_to_copy(target_class).each do |attr|
       new_edition[attr] = read_attribute(attr)
     end
 
