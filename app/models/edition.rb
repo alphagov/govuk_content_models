@@ -66,9 +66,6 @@ class Edition
   index "created_at"
   index "updated_at"
 
-  class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = []
-
   alias_method :admin_list_title, :title
 
   def series
@@ -184,7 +181,8 @@ class Edition
       :additional_topics
     ]
     if target_class == self.class
-      return_value += self.class.fields_to_clone
+      type_specific_keys = self.fields.keys - Edition.fields.keys
+      return_value += type_specific_keys
     end
     return_value
   end

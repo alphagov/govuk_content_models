@@ -13,10 +13,6 @@ class TransactionEdition < Edition
 
   validates_format_of :department_analytics_profile, with: /UA-\d+-\d+/i, allow_blank: true
 
-  @fields_to_clone = [:introduction, :will_continue_on, :link,
-                      :more_information, :alternate_methods,
-                      :need_to_know, :department_analytics_profile]
-
   def indexable_content
     "#{super} #{Govspeak::Document.new(introduction).to_text} #{Govspeak::Document.new(more_information).to_text}".strip
   end

@@ -10,8 +10,6 @@ class VideoEdition < Edition
 
   GOVSPEAK_FIELDS = [:body]
 
-  @fields_to_clone = [:video_url, :video_summary, :body]
-
   attaches :caption_file
 
   def has_video?

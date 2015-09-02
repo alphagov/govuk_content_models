@@ -13,8 +13,6 @@ class SimpleSmartAnswerEdition < Edition
 
   GOVSPEAK_FIELDS = [:body]
 
-  @fields_to_clone = [:body]
-
   def whole_body
     parts = [body]
     unless nodes.nil?

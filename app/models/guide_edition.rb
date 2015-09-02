@@ -8,7 +8,6 @@ class GuideEdition < Edition
   field :video_summary, type: String
 
   GOVSPEAK_FIELDS = []
-  @fields_to_clone = [:video_url, :video_summary]
 
   def has_video?
     video_url.present?
