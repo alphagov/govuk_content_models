@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 29.2.0
+
+- Add `content_id` field to the `Artefact` model.
+
 ## 29.1.2
 
 - Bugfix: revert removal of specialist document code since it breaks Panopticon integration
