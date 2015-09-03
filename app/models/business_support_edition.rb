@@ -39,12 +39,6 @@ class BusinessSupportEdition < Edition
   # https://github.com/mongoid/mongoid/issues/1735 Really Mongoid‽
   validates :min_value, :max_value, :max_employees, :numericality => {:allow_nil => true, :only_integer => true}
 
-  @fields_to_clone = [:body, :min_value, :max_value, :max_employees, :organiser,
-      :eligibility, :evaluation, :additional_information, :continuation_link,
-      :will_continue_on, :contact_details, :short_description, :priority, :areas,
-      :business_sizes, :locations, :purposes, :sectors, :stages, :support_types,
-      :start_date, :end_date]
-
   scope :for_facets, lambda { |facets|
     where({ "$and" => facets_criteria(facets) }).order_by([:priority, :desc], [:title, :asc])
   }

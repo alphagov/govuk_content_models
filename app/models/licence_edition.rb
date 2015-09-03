@@ -14,9 +14,6 @@ class LicenceEdition < Edition
   validate :licence_identifier_unique
   validates_format_of :continuation_link, :with => URI::regexp(%w(http https)), :allow_blank => true
 
-  @fields_to_clone = [:licence_identifier, :licence_short_description,
-                      :licence_overview, :will_continue_on, :continuation_link]
-
   def whole_body
     [licence_short_description, licence_overview].join("\n\n")
   end

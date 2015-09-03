@@ -56,7 +56,7 @@ class SimpleSmartAnswerEditionTest < ActiveSupport::TestCase
 
     new_edition = edition.build_clone(AnswerEdition)
 
-    assert_equal edition.body, new_edition.body
+    assert_equal "This smart answer is somewhat unique and calls for a different kind of introduction\n\n\nquestion: You approach two open doors. Which do you choose? \n\n ", new_edition.body
 
     assert new_edition.is_a?(AnswerEdition)
     assert ! new_edition.respond_to?(:nodes)

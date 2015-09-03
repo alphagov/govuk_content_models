@@ -10,10 +10,6 @@ class LocalTransactionEdition < Edition
 
   GOVSPEAK_FIELDS = [:introduction, :more_information, :need_to_know]
 
-  @fields_to_clone = [
-    :lgsl_code, :introduction, :more_information, :need_to_know
-  ]
-
   validate :valid_lgsl_code
 
   def valid_lgsl_code

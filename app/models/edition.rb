@@ -66,9 +66,6 @@ class Edition
   index "created_at"
   index "updated_at"
 
-  class << self; attr_accessor :fields_to_clone end
-  @fields_to_clone = []
-
   alias_method :admin_list_title, :title
 
   def series
@@ -174,7 +171,20 @@ class Edition
   # we are changing the type of the edition, any fields other than the base
   # fields will likely be meaningless.
   def fields_to_copy(target_class)
-    target_class == self.class ? self.class.fields_to_clone : []
+    return_value = [
+      :title,
+      :panopticon_id,
+      :overview,
+      :slug,
+      :browse_pages,
+      :primary_topic,
+      :additional_topics
+    ]
+    if target_class == self.class
+      type_specific_keys = self.fields.keys - Edition.fields.keys
+      return_value += type_specific_keys
+    end
+    return_value
   end
 
   def build_clone(target_class=nil)
@@ -187,42 +197,28 @@ class Edition
     end
 
     target_class = self.class unless target_class
-    new_edition = target_class.new(title: self.title,
-                                    version_number: get_next_version_number)
+    new_edition = target_class.new(version_number: get_next_version_number)
 
-    real_fields_to_merge = fields_to_copy(target_class) + [
-      :panopticon_id,
-      :overview,
-      :slug,
-      :browse_pages,
-      :primary_topic,
-      :additional_topics
-    ]
-
-    real_fields_to_merge.each do |attr|
+    fields_to_copy(target_class).each do |attr|
       new_edition[attr] = read_attribute(attr)
     end
 
-    if target_class == AnswerEdition and %w(GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
-      new_edition.body = whole_body
-    end
-
-    if target_class == AnswerEdition and self.is_a?(LicenceEdition)
-      new_edition.body = whole_body
-      new_edition.overview = licence_overview
-    end
-
-    if target_class == SimpleSmartAnswerEdition && %w(AnswerEdition GuideEdition ProgrammeEdition TransactionEdition).include?(self.class.name)
-      new_edition.body = whole_body
-    end
-
-    if target_class == TransactionEdition and %w(AnswerEdition GuideEdition ProgrammeEdition).include?(self.class.name)
-      new_edition.more_information = whole_body
-    end
-
-    if target_class == GuideEdition and self.is_a?(AnswerEdition)
-      new_edition.parts.build(title: "Part One", body: whole_body,
-                              slug: "part-one")
+    # If the type is changing, then take the combined body (whole_body) from
+    # the old and decide where to put it in the new.
+    #
+    # Where the type is not changing, the body will already have been copied
+    # above.
+    #
+    # We don't need to copy parts between Parted types here, because the Parted
+    # module does that.
+    if target_class != self.class
+      if new_edition.respond_to?(:parts) and !self.respond_to?(:parts)
+        new_edition.parts.build(title: "Part One", body: whole_body, slug: "part-one")
+      elsif new_edition.respond_to?(:more_information=)
+        new_edition.more_information = whole_body
+      elsif new_edition.respond_to?(:body=)
+        new_edition.body = whole_body
+      end
     end
 
     new_edition

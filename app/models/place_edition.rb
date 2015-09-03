@@ -8,8 +8,6 @@ class PlaceEdition < Edition
 
   GOVSPEAK_FIELDS = [:introduction, :more_information, :need_to_know]
 
-  @fields_to_clone = [:introduction, :more_information, :place_type, :need_to_know]
-
   def whole_body
     self.introduction
   end
