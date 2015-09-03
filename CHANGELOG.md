@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## 31.0.0 (Unreleased)
+## 31.0.0
 
 - `Edition.find_or_create_from_panopticon_data` no longer takes a third
    parameter.
