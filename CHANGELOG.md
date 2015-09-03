@@ -11,6 +11,9 @@
   - model for rendering `specialist documents`
   - `specialist document validator` from `slug validator`, its factory and its fixture
 
+  - Include question/answer texts in change notes for SimpleSmartAnswer editions
+  - Stop discarding some fields when creating a new edition (see: https://github.com/alphagov/govuk_content_models/commit/de295d09ea9bdc7397ee2ce1249d12b9cd1d9d66)
+
 ## 29.1.2
 
 - Bugfix: revert removal of specialist document code since it breaks Panopticon integration
