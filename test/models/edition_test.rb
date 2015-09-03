@@ -451,7 +451,7 @@ class EditionTest < ActiveSupport::TestCase
     a = Artefact.find(artefact.id)
     user = User.create
 
-    publication = Edition.find_or_create_from_panopticon_data(artefact.id, user, {})
+    publication = Edition.find_or_create_from_panopticon_data(artefact.id, user)
 
     assert_kind_of AnswerEdition, publication
     assert_equal artefact.name, publication.title
@@ -530,7 +530,7 @@ class EditionTest < ActiveSupport::TestCase
 
   test "deleting a newer draft of a published edition removes sibling information" do
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
     edition.update_attribute(:state, "published")
     second_edition = edition.build_clone
     second_edition.save!
@@ -546,7 +546,7 @@ class EditionTest < ActiveSupport::TestCase
 
   test "the latest edition should remove sibling_in_progress details if it is present" do
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
     edition.update_attribute(:state, "published")
 
     # simulate a document having a newer edition destroyed (previous behaviour).
@@ -561,7 +561,7 @@ class EditionTest < ActiveSupport::TestCase
     FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
 
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
 
     assert_difference "Artefact.count", -1 do
       edition.destroy
@@ -572,7 +572,7 @@ class EditionTest < ActiveSupport::TestCase
 
     FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
     edition.update_attribute(:state, "published")
 
     edition.reload
@@ -905,7 +905,7 @@ class EditionTest < ActiveSupport::TestCase
         owning_app: "publisher",
     )
 
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user)
 
     assert_equal user.name, edition.creator
   end
