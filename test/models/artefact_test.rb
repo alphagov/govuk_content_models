@@ -393,7 +393,7 @@ class ArtefactTest < ActiveSupport::TestCase
     )
 
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1)
     edition.state = "published"
     edition.save!
 
@@ -414,7 +414,7 @@ class ArtefactTest < ActiveSupport::TestCase
         owning_app: "publisher",
     )
     user1 = FactoryGirl.create(:user)
-    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1, {})
+    edition = AnswerEdition.find_or_create_from_panopticon_data(artefact.id, user1)
 
     refute artefact.any_editions_published?
 

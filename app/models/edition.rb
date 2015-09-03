@@ -224,8 +224,7 @@ class Edition
     new_edition
   end
 
-  def self.find_or_create_from_panopticon_data(panopticon_id,
-                                               importing_user, api_credentials)
+  def self.find_or_create_from_panopticon_data(panopticon_id, importing_user)
     existing_publication = Edition.where(panopticon_id: panopticon_id)
                                   .order_by([:version_number, :desc]).first
     return existing_publication if existing_publication
