@@ -198,6 +198,21 @@ class EditionTest < ActiveSupport::TestCase
   end
 
 # test cloning into different edition types
+  test "it should be possible to clone from any type to any type" do
+    # Note that the new edition won't be valid in cases where the new type has
+    # required fields (such as licence_identifier on Licences). This is OK
+    # because when Publisher saves the clone, it already skips validations. The
+    # user will then be required to populate those values before they save the
+    # edition again.
+    Edition.subclasses.permutation(2).each do |source_class, destination_class|
+      source_edition = FactoryGirl.create(:edition, _type: source_class.to_s, state: "published")
+
+      assert_nothing_raised do
+        new_edition = source_edition.build_clone(destination_class)
+      end
+    end
+  end
+
   test "Cloning from GuideEdition into AnswerEdition" do
     edition = FactoryGirl.create(
         :guide_edition,

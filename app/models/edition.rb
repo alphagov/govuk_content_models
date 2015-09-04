@@ -208,16 +208,20 @@ class Edition
     #
     # Where the type is not changing, the body will already have been copied
     # above.
-    #
-    # We don't need to copy parts between Parted types here, because the Parted
-    # module does that.
     if target_class != self.class
-      if new_edition.respond_to?(:parts) and !self.respond_to?(:parts)
+      if new_edition.respond_to?(:parts) && self.respond_to?(:parts)
+        # We don't need to copy parts between Parted types here, because the
+        # Parted module does that.
+      elsif new_edition.respond_to?(:parts) && !self.respond_to?(:parts)
         new_edition.parts.build(title: "Part One", body: whole_body, slug: "part-one")
       elsif new_edition.respond_to?(:more_information=)
         new_edition.more_information = whole_body
       elsif new_edition.respond_to?(:body=)
         new_edition.body = whole_body
+      elsif new_edition.respond_to?(:licence_overview=)
+        new_edition.licence_overview = whole_body
+      else
+        raise "Nowhere to copy whole_body content for conversion from: #{self.class} to: #{target_class}"
       end
     end
 
