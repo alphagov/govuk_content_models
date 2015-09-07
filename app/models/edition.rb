@@ -327,6 +327,6 @@ private
   end
 
   def type_specific_field_keys
-    self.fields.keys - Edition.fields.keys
+    (self.fields.keys - Edition.fields.keys).map(&:to_sym)
   end
 end
