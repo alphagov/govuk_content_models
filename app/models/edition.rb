@@ -171,20 +171,11 @@ class Edition
   # we are changing the type of the edition, any fields other than the base
   # fields will likely be meaningless.
   def fields_to_copy(target_class)
-    return_value = [
-      :title,
-      :panopticon_id,
-      :overview,
-      :slug,
-      :browse_pages,
-      :primary_topic,
-      :additional_topics
-    ]
     if target_class == self.class
-      type_specific_keys = self.fields.keys - Edition.fields.keys
-      return_value += type_specific_keys
+      base_field_keys + type_specific_field_keys
+    else
+      base_field_keys
     end
-    return_value
   end
 
   def build_clone(target_class=nil)
@@ -320,5 +311,22 @@ class Edition
     if can_destroy? && siblings.empty?
       Artefact.find(self.panopticon_id).destroy
     end
+  end
+
+private
+  def base_field_keys
+    [
+      :title,
+      :panopticon_id,
+      :overview,
+      :slug,
+      :browse_pages,
+      :primary_topic,
+      :additional_topics,
+    ]
+  end
+
+  def type_specific_field_keys
+    self.fields.keys - Edition.fields.keys
   end
 end
