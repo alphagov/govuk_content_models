@@ -208,11 +208,11 @@ class Edition
     #
     # Where the type is not changing, the body will already have been copied
     # above.
-    if target_class != self.class
-      if new_edition.respond_to?(:parts) && self.respond_to?(:parts)
-        # We don't need to copy parts between Parted types here, because the
-        # Parted module does that.
-      elsif new_edition.respond_to?(:parts) && !self.respond_to?(:parts)
+    #
+    # We don't need to copy parts between Parted types here, because the
+    # Parted module does that.
+    if target_class != self.class && !cloning_between_parted_types?(new_edition)
+      if new_edition.respond_to?(:parts)
         new_edition.parts.build(title: "Part One", body: whole_body, slug: "part-one")
       elsif new_edition.respond_to?(:more_information=)
         new_edition.more_information = whole_body
@@ -226,6 +226,10 @@ class Edition
     end
 
     new_edition
+  end
+
+  def cloning_between_parted_types?(new_edition)
+    self.respond_to?(:parts) && new_edition.respond_to?(:parts)
   end
 
   def self.find_or_create_from_panopticon_data(panopticon_id, importing_user)
