@@ -212,20 +212,24 @@ class Edition
     # We don't need to copy parts between Parted types here, because the
     # Parted module does that.
     if target_class != self.class && !cloning_between_parted_types?(new_edition)
-      if new_edition.respond_to?(:parts)
-        new_edition.parts.build(title: "Part One", body: whole_body, slug: "part-one")
-      elsif new_edition.respond_to?(:more_information=)
-        new_edition.more_information = whole_body
-      elsif new_edition.respond_to?(:body=)
-        new_edition.body = whole_body
-      elsif new_edition.respond_to?(:licence_overview=)
-        new_edition.licence_overview = whole_body
-      else
-        raise "Nowhere to copy whole_body content for conversion from: #{self.class} to: #{target_class}"
-      end
+      new_edition.clone_whole_body_from(self)
     end
 
     new_edition
+  end
+
+  def clone_whole_body_from(origin_edition)
+    if self.respond_to?(:parts)
+      self.parts.build(title: "Part One", body: origin_edition.whole_body, slug: "part-one")
+    elsif self.respond_to?(:more_information=)
+      self.more_information = origin_edition.whole_body
+    elsif self.respond_to?(:body=)
+      self.body = origin_edition.whole_body
+    elsif self.respond_to?(:licence_overview=)
+      self.licence_overview = origin_edition.whole_body
+    else
+      raise "Nowhere to copy whole_body content for conversion from: #{origin_edition.class} to: #{self.class}"
+    end
   end
 
   def cloning_between_parted_types?(new_edition)
