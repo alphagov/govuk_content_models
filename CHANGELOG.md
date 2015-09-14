@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 31.1.0
+
+- `area_gss_codes` field for BusinessSupportEdition
+- Explicitly support conversion between any edition types
+
 ## 31.0.0
 
 - `Edition.find_or_create_from_panopticon_data` no longer takes a third
