@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 31.2.0
+
+- Add `content_id` to `Tag` model
+
 ## 31.1.0
 
 - `area_gss_codes` field for BusinessSupportEdition
