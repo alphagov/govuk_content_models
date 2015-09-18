@@ -12,6 +12,7 @@ class Tag
   field :short_description, type: String
   field :parent_id,         type: String
   field :state,             type: String, default: 'draft'
+  field :content_id,        type: String
 
   STATES = ['draft', 'live']
 
