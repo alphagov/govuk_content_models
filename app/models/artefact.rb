@@ -294,7 +294,7 @@ class Artefact
     if state == 'archived'
       Edition.where(panopticon_id: self.id, :state.nin => ["archived"]).each do |edition|
         edition.new_action(self, "note", comment: "Artefact has been archived. Archiving this edition.")
-        edition.archive!
+        edition.perform_event_without_validations(:archive!)
       end
     end
   end
@@ -313,7 +313,7 @@ class Artefact
   def save_as(user, options={})
     default_action = new_record? ? "create" : "update"
     action_type = options.delete(:action_type) || default_action
-    record_action action_type, user: user
+    record_action(action_type, user: user)
     save(options)
   end
 
