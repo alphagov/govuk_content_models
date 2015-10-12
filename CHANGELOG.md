@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 31.2.1
+
+- Bugfix: don't run validations on editions when archiving an artefact
+
 ## 31.2.0
 
 - Add `content_id` to `Tag` model
