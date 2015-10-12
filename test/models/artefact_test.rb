@@ -460,6 +460,21 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
+  test "should not run validations on editions when archiving" do
+    artefact = FactoryGirl.create(:artefact, state: "live")
+    edition = FactoryGirl.create(:help_page_edition, panopticon_id: artefact.id, state: 'published')
+    user1 = FactoryGirl.create(:user)
+
+    # Make the edition invalid, check that it persisted the invalid state
+    edition.update_attribute(:title, nil)
+    assert_equal(nil, edition.reload.title)
+
+    artefact.update_attributes_as(user1, state: "archived")
+    artefact.save!
+
+    assert_equal("archived", edition.reload.state)
+  end
+
   test "should restrict what attributes can be updated on an edition that has an archived artefact" do
     artefact = FactoryGirl.create(:artefact, state: "live")
     edition = FactoryGirl.create(:programme_edition, panopticon_id: artefact.id, state: "published")
