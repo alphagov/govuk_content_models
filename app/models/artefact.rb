@@ -106,6 +106,7 @@ class Artefact
                                   "national_statistics",
                                   "news_story",
                                   "notice",
+                                  "official_statistics",
                                   "oral_statement",
                                   "policy",
                                   "policy_paper",
