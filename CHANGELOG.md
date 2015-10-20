@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Add "official_statistics" artefact format
+
 ## 31.2.1
 
 - Bugfix: don't run validations on editions when archiving an artefact
