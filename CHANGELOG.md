@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 31.2.2
 
 - Add "official_statistics" artefact format
 
