@@ -417,6 +417,12 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal 7, new_edition.parts.size #there are 5 'default' parts plus an additional two created by the factory
   end
 
+  test "knows the common fields of two edition subclasses" do
+    to_copy = Set.new([:introduction, :need_to_know, :more_information])
+    result = Set.new(TransactionEdition.new.fields_to_copy(PlaceEdition))
+    assert to_copy.proper_subset?(result)
+  end
+
   # Mongoid 2.x marks array fields as dirty whenever they are accessed.
   # See https://github.com/mongoid/mongoid/issues/2311
   # This behaviour has been patched in lib/mongoid/monkey_patches.rb
