@@ -174,7 +174,7 @@ class Edition
     if target_class == self.class
       base_field_keys + type_specific_field_keys
     else
-      base_field_keys
+      base_field_keys + common_type_specific_field_keys(target_class)
     end
   end
 
@@ -340,5 +340,9 @@ private
 
   def type_specific_field_keys
     (self.fields.keys - Edition.fields.keys).map(&:to_sym)
+  end
+
+  def common_type_specific_field_keys(target_class)
+    ((self.fields.keys & target_class.fields.keys) - Edition.fields.keys).map(&:to_sym)
   end
 end

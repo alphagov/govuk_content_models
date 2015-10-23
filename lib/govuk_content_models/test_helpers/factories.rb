@@ -217,7 +217,7 @@ FactoryGirl.define do
     lgil_code 0
   end
 
-  factory :place_edition do
+  factory :place_edition, parent: :edition, class: 'PlaceEdition'  do
     title "Far far away"
     introduction "Test introduction"
     more_information "More information"
