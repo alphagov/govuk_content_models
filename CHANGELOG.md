@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 31.3.0
+
+- Include matching type-specific fields when converting editions
+
 ## 31.2.2
 
 - Add "official_statistics" artefact format
