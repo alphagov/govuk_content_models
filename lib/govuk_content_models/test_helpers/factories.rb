@@ -114,20 +114,24 @@ FactoryGirl.define do
     trait :published do
       state 'published'
     end
+
+    trait :with_body do
+      body 'Some body text'
+    end
   end
-  factory :answer_edition, parent: :edition do
+  factory :answer_edition, traits: [:with_body], parent: :edition do
   end
 
-  factory :help_page_edition, :parent => :edition, :class => 'HelpPageEdition' do
+  factory :help_page_edition, traits: [:with_body], :parent => :edition, :class => 'HelpPageEdition' do
   end
 
-  factory :campaign_edition, :parent => :edition, :class => 'CampaignEdition' do
+  factory :campaign_edition, traits: [:with_body], :parent => :edition, :class => 'CampaignEdition' do
   end
 
-  factory :completed_transaction_edition, :parent => :edition, :class => 'CompletedTransactionEdition' do
+  factory :completed_transaction_edition, traits: [:with_body], :parent => :edition, :class => 'CompletedTransactionEdition' do
   end
 
-  factory :video_edition, parent: :edition, :class => 'VideoEdition' do
+  factory :video_edition, traits: [:with_body], parent: :edition, :class => 'VideoEdition' do
   end
 
   factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
@@ -189,6 +193,8 @@ FactoryGirl.define do
 
   factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
     licence_identifier "AB1234"
+    licence_short_description "This is a licence short description"
+    licence_overview "This is a licence overview."
   end
 
   factory :local_service do |ls|
