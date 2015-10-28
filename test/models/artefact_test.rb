@@ -240,8 +240,24 @@ class ArtefactTest < ActiveSupport::TestCase
     artefact.redirect_url = "/foobar"
     assert artefact.valid?
 
+    artefact.redirect_url = "/foobar?an=argument"
+    assert artefact.valid?
+
+    artefact.redirect_url = "/foobar#chapter"
+    assert artefact.valid?
+
     artefact.redirect_url = "http://foo.bar/"
     refute artefact.valid?
+
+    [
+      "\jkhsdfgjkhdjskfgh//fdf#th",
+      "not a URL path",
+      "bar/baz",
+      "/foo//bar",
+    ].each do |invalid_path|
+      artefact.redirect_url = invalid_path
+      refute artefact.valid?
+    end
   end
 
   test "should translate kind into internally normalised form" do
