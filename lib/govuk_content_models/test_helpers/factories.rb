@@ -118,26 +118,7 @@ FactoryGirl.define do
     trait :with_body do
       body 'Some body text'
     end
-<<<<<<< HEAD
-=======
 
-    trait :with_parts do
-      DEFAULT_PARTS=[
-        {title: "Overview", slug: "overview"},
-        {title: "What you'll get", slug: "what-youll-get"},
-        {title: "Eligibility", slug: "eligibility"},
-        {title: "How to claim", slug: "how-to-claim"},
-        {title: "Further information", slug: "further-information"}
-      ]
-      after :create do |getp|
-        DEFAULT_PARTS.each do |part|
-          getp.parts.build(title: "#{part[:title]}", body: "This is some #{part[:title]} body.",
-                           slug: "#{part[:slug]}")
-        end
-      end
-    end
-
->>>>>>> 1a3918648208cf7ca908cb8450778a656abf7a3b
   end
   factory :answer_edition, traits: [:with_body], parent: :edition do
   end
@@ -157,11 +138,11 @@ FactoryGirl.define do
   factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
   end
 
-  factory :guide_edition, traits: [:with_parts], :parent => :edition, :class => "GuideEdition" do
+  factory :guide_edition, :parent => :edition, :class => "GuideEdition" do
     sequence(:title)  { |n| "Test guide #{n}" }
   end
 
-  factory :programme_edition, traits: [:with_parts], :parent => :edition, :class => "ProgrammeEdition" do
+  factory :programme_edition, :parent => :edition, :class => "ProgrammeEdition" do
     sequence(:title) { |n| "Test programme #{n}" }
   end
 
@@ -213,8 +194,6 @@ FactoryGirl.define do
 
   factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
     licence_identifier "AB1234"
-    licence_short_description "This is a licence short description"
-    licence_overview "This is a licence overview."
   end
 
   factory :local_service do |ls|
