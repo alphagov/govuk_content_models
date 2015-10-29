@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 31.4.0
+
+- Allow URLs with fragments in Artefact#redirect_url
+
 ## 31.3.0
 
 - Include matching type-specific fields when converting editions
