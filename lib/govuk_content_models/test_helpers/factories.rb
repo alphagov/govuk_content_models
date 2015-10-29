@@ -193,8 +193,6 @@ FactoryGirl.define do
 
   factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
     licence_identifier "AB1234"
-    licence_short_description "This is a licence short description"
-    licence_overview "This is a licence overview."
   end
 
   factory :local_service do |ls|

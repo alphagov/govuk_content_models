@@ -57,7 +57,7 @@ class LicenceEditionTest < ActiveSupport::TestCase
       assert_equal 'wibble', new_version.licence_identifier
       assert new_version.valid?, "Expected clone to be valid"
     end
-    
+
     should "not validate the continuation link when blank" do
       @l.continuation_link = ""
       assert @l.valid?, "continuation link validation should not be triggered when the field is blank"
