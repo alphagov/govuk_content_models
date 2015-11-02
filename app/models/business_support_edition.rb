@@ -46,7 +46,7 @@ class BusinessSupportEdition < Edition
 
 
   def whole_body
-    [short_description, body].join("\n\n")
+    [short_description, body, additional_information].join("\n\n")
   end
 
   private
