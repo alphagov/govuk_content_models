@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 32.0.0
+
+- Remove `areas` field from BusinessSupportEdition
+
 ## 31.4.0
 
 - Allow URLs with fragments in Artefact#redirect_url
