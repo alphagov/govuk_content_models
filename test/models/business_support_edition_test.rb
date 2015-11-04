@@ -25,7 +25,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
 
     support.priority = 2
-    support.areas = ["123","345","45","9"]
     support.area_gss_codes = ["G123","G345","G45","G9"]
     support.business_sizes << "up-to-249"
     support.business_types << "charity"
@@ -55,7 +54,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
 
     assert_equal 2, support.priority
 
-    assert_equal ["123","345","45","9"], support.areas
     assert_equal ["G123","G345","G45","G9"], support.area_gss_codes
     assert_equal ["up-to-249"], support.business_sizes
     assert_equal ["charity"], support.business_types
@@ -153,7 +151,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       :continuation_link => "http://www.gov.uk",
       :contact_details => "Contact details to be cloned",
       :priority => 2,
-      :areas => ['123','9999'],
       :area_gss_codes => ['G123','G9999'],
       :business_sizes => ['up-to-249'],
       :locations => ['london'],
@@ -181,7 +178,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     assert_equal support.contact_details, new_support.contact_details
 
     assert_equal support.priority, new_support.priority
-    assert_equal support.areas, new_support.areas
     assert_equal support.area_gss_codes, new_support.area_gss_codes
     assert_equal support.business_sizes, new_support.business_sizes
     assert_equal support.locations, new_support.locations
@@ -197,7 +193,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     setup do
       @e1 = FactoryGirl.create(
         :business_support_edition,
-        :areas => ['2345', '1234'],
         :area_gss_codes => ['G2345', 'G1234'],
         :business_sizes => ['1', 'up-to-1000000'],
         :locations => ['narnia'],
@@ -208,7 +203,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       )
       @e2 = FactoryGirl.create(
         :business_support_edition,
-        :areas => ['1212', '1234', '999'],
         :area_gss_codes => ['G1212', 'G1234', 'G999'],
         :business_sizes => ['1', 'up-to-1000000'],
         :locations => ['hades', 'narnia'],
@@ -219,7 +213,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       )
       @e3 = FactoryGirl.create(
         :business_support_edition,
-        :areas => ['1234'],
         :area_gss_codes => ['G1234'],
         :business_sizes => ['up-to-249', 'up-to-1000000'],
         :locations => ['hades', 'chicken-town'],
@@ -244,7 +237,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
     end
     should "support searching with all the facet values" do
       editions = BusinessSupportEdition.for_facets({
-        :areas => '1234',
         :area_gss_codes => 'G1234',
         :business_sizes => 'up-to-1000000',
         :locations => 'narnia,hades,chicken-town',

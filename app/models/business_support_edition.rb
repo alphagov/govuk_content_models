@@ -28,7 +28,6 @@ class BusinessSupportEdition < Edition
   field :support_types,   type: Array, default: []
   field :start_date,      type: Date
   field :end_date,        type: Date
-  field :areas,           type: Array, default: []
   field :area_gss_codes,  type: Array, default: []
 
   GOVSPEAK_FIELDS = [:body, :eligibility, :evaluation, :additional_information]
