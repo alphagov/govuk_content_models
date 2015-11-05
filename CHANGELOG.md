@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 32.0.0
+
+- Add body and default parts to mainstream format factories
+- Remove areas field from BusinessSupportEditions and replace with area_gss_codes, which are more stable
+
 ## 31.4.0
 
 - Allow URLs with fragments in Artefact#redirect_url
