@@ -211,6 +211,7 @@ class Edition
 
   def clone_whole_body_from(origin_edition)
     if self.respond_to?(:parts)
+      self.setup_default_parts if self.respond_to?(:setup_default_parts)
       self.parts.build(title: "Part One", body: origin_edition.whole_body, slug: "part-one")
     elsif self.respond_to?(:more_information=)
       self.more_information = origin_edition.whole_body
