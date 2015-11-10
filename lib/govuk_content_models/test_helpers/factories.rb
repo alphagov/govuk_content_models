@@ -135,7 +135,7 @@ FactoryGirl.define do
   factory :video_edition, traits: [:with_body], parent: :edition, :class => 'VideoEdition' do
   end
 
-  factory :business_support_edition, :parent => :edition, :class => "BusinessSupportEdition" do
+  factory :business_support_edition, traits: [:with_body], :parent => :edition, :class => "BusinessSupportEdition" do
   end
 
   factory :guide_edition, :parent => :edition, :class => "GuideEdition" do
@@ -194,6 +194,8 @@ FactoryGirl.define do
 
   factory :licence_edition, :parent => :edition, :class => "LicenceEdition" do
     licence_identifier "AB1234"
+    licence_short_description "This is a licence short description."
+    licence_overview "This is a licence overview."
   end
 
   factory :local_service do |ls|

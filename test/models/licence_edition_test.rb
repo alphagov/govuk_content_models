@@ -57,7 +57,7 @@ class LicenceEditionTest < ActiveSupport::TestCase
       assert_equal 'wibble', new_version.licence_identifier
       assert new_version.valid?, "Expected clone to be valid"
     end
-    
+
     should "not validate the continuation link when blank" do
       @l.continuation_link = ""
       assert @l.valid?, "continuation link validation should not be triggered when the field is blank"
@@ -92,13 +92,13 @@ class LicenceEditionTest < ActiveSupport::TestCase
 
   context "indexable_content" do
     should "include the licence_overview, removing markup" do
-      licence = FactoryGirl.create(:licence_edition, licence_overview: "## Overview")
-      assert_equal "Overview", licence.indexable_content
+      licence = FactoryGirl.create(:licence_edition)
+      assert_includes licence.indexable_content, "This is a licence overview"
     end
 
     should "include the licence_short_description" do
-      licence = FactoryGirl.create(:licence_edition, licence_short_description: "Short desc")
-      assert_equal "Short desc", licence.indexable_content
+      licence = FactoryGirl.create(:licence_edition)
+      assert_includes licence.indexable_content, "This is a licence short description."
     end
   end
 end
