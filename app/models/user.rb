@@ -14,14 +14,15 @@ class User
     defined?(USER_COLLECTION_NAME) ? USER_COLLECTION_NAME : "users"
   end
 
-  field "name",                type: String
-  field "uid",                 type: String
-  field "version",             type: Integer
-  field "email",               type: String
-  field "permissions",         type: Array
-  field "remotely_signed_out", type: Boolean, default: false
-  field "organisation_slug",   type: String
-  field "disabled",            type: Boolean, default: false
+  field "name",                    type: String
+  field "uid",                     type: String
+  field "version",                 type: Integer
+  field "email",                   type: String
+  field "permissions",             type: Array
+  field "remotely_signed_out",     type: Boolean, default: false
+  field "organisation_slug",       type: String
+  field "disabled",                type: Boolean, default: false
+  field "organisation_content_id", type: String
 
   index "uid", unique: true
   index "disabled"
