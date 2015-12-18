@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 32.1.0
+
+- Add GDS-SSO `User` linting and required `User#organisation_content_id` attribute
+
 ## 32.0.0
 
 - Add body and default parts to mainstream format factories
