@@ -16,7 +16,8 @@ describe LocalAuthority do
                   contact_address: ["Line one", "line two", "line three"],
                   contact_url: "http://example.gov/contact",
                   contact_phone: "0000000000",
-                  contact_email: "contact@example.gov")
+                  contact_email: "contact@example.gov",
+                  homepage_url: 'http://example.gov/')
     authority = LocalAuthority.first
     assert_equal "Example", authority.name
     assert_equal "AA00", authority.snac
@@ -26,6 +27,7 @@ describe LocalAuthority do
     assert_equal "http://example.gov/contact", authority.contact_url
     assert_equal "0000000000", authority.contact_phone
     assert_equal "contact@example.gov", authority.contact_email
+    assert_equal "http://example.gov/", authority.homepage_url
   end
 
   describe "validating local_interactions" do

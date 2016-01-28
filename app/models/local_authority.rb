@@ -15,6 +15,7 @@ class LocalAuthority
   field :contact_url,        type: String
   field :contact_phone,      type: String
   field :contact_email,      type: String
+  field :homepage_url,       type: String
 
   validates_uniqueness_of :snac
   validates_presence_of   :snac, :local_directgov_id, :name, :tier
