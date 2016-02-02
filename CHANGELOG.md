@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 32.2.0
+
+- Add `homepage_url` attribute to `LocalAuthority` model
+
 ## 32.1.0
 
 - Add GDS-SSO `User` linting and required `User#organisation_content_id` attribute
