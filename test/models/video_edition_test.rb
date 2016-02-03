@@ -11,7 +11,7 @@ class VideoEditionTest < ActiveSupport::TestCase
     v.video_summary = "Coke smoothie"
     v.body = "Description of video"
     v.caption_file_id = 'file-to-an-asset-of-the-caption-file'
-    v.safely.save!
+    v.save!
 
     v = VideoEdition.first
     assert_equal "http://www.youtube.com/watch?v=qySFp3qnVmM", v.video_url

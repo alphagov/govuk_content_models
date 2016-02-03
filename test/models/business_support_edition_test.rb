@@ -7,38 +7,34 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "have custom fields" do
-    support = FactoryGirl.create(
-      :business_support_edition,
+    support = FactoryGirl.create(:business_support_edition,
       panopticon_id: @artefact.id,
+      short_description: "The short description",
+      body: "The body",
+      eligibility: "The eligibility",
+      evaluation: "The evaluation",
+      additional_information: "The additional information",
+      min_value: 1000,
+      max_value: 3000,
+      max_employees: 2000,
+      organiser: "The business support people",
+      continuation_link: "http://www.gov.uk",
+      will_continue_on: "The GOVUK website",
+      contact_details: "123 The Street, Townsville, UK. 07324 123456",
+      priority: 2,
+      area_gss_codes: ["G123","G345","G45","G9"],
+      locations: ["scotland", "england"],
+      sectors: ["education", "manufacturing"],
+      support_types: ["grant", "loan"],
+      start_date: Date.parse("1 Jan 2000"),
+      end_date: Date.parse("1 Jan 2020"),
     )
-    support.short_description = "The short description"
-    support.body = "The body"
-    support.eligibility = "The eligibility"
-    support.evaluation = "The evaluation"
-    support.additional_information = "The additional information"
-    support.min_value = 1000
-    support.max_value = 3000
-    support.max_employees = 2000
-    support.organiser = "The business support people"
-    support.continuation_link = "http://www.gov.uk"
-    support.will_continue_on = "The GOVUK website"
-    support.contact_details = "123 The Street, Townsville, UK. 07324 123456"
 
-    support.priority = 2
-    support.area_gss_codes = ["G123","G345","G45","G9"]
     support.business_sizes << "up-to-249"
     support.business_types << "charity"
-    support.locations = ["scotland", "england"]
     support.purposes << "making-the-most-of-the-internet"
-    support.sectors = ["education", "manufacturing"]
     support.stages << "start-up"
-    support.support_types = ["grant", "loan"]
-    support.start_date = Date.parse("1 Jan 2000")
-    support.end_date = Date.parse("1 Jan 2020")
 
-    support.safely.save!
-
-    support = BusinessSupportEdition.first
     assert_equal "The short description", support.short_description
     assert_equal "The body", support.body
     assert_equal "The eligibility", support.eligibility

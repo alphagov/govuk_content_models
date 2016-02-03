@@ -124,7 +124,7 @@ class ArtefactTest < ActiveSupport::TestCase
     should "not validate need ids that were migrated from the singular need_id field" do
       artefact = FactoryGirl.create(:artefact)
       # simulate what happened during migration
-      artefact.set(:need_ids, ['As an employer
+      artefact.set(need_ids: ['As an employer
                                 I need to know which type of DBS check an employee needs
                                 so that I can apply for the correct one'])
 
@@ -146,8 +146,8 @@ class ArtefactTest < ActiveSupport::TestCase
       end
 
       should "append to existing need_ids when need_id is assigned" do
-        @artefact.set(:need_ids, ["100044"])
-        @artefact.set(:need_id, "100044")
+        @artefact.set(need_ids: ["100044"])
+        @artefact.set(need_id: "100044")
 
         @artefact.need_id = "100045"
 
@@ -158,8 +158,8 @@ class ArtefactTest < ActiveSupport::TestCase
       # this should only matter till the time we have both fields
       # need_id and need_ids. can delete this test once we unset need_id.
       should "keep need_ids unchanged when need_id is removed" do
-        @artefact.set(:need_ids, ["100044", "100045"])
-        @artefact.set(:need_id, "100044")
+        @artefact.set(need_ids: ["100044", "100045"])
+        @artefact.set(need_id: "100044")
 
         @artefact.need_id = nil
 
@@ -350,7 +350,7 @@ class ArtefactTest < ActiveSupport::TestCase
     artefact = FactoryGirl.create(:draft_artefact)
     edition = FactoryGirl.create(:answer_edition, panopticon_id: artefact.id)
     old_updated_at = 2.days.ago.to_time
-    edition.set(:updated_at, old_updated_at)
+    edition.set(updated_at: old_updated_at)
 
     artefact.language = "cy"
     artefact.save!

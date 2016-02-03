@@ -6,11 +6,11 @@ class HelpPageEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct extra fields" do
-    h = FactoryGirl.build(:help_page_edition, :panopticon_id => @artefact.id)
-    h.body = "I'm a help page."
-    h.safely.save!
+    h = FactoryGirl.create(:help_page_edition,
+      panopticon_id: @artefact.id,
+      body: "I'm a help page.",
+    )
 
-    h = HelpPageEdition.first
     assert_equal "I'm a help page.", h.body
   end
 
