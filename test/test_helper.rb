@@ -5,19 +5,22 @@ require "bundler/setup"
 require "active_support/test_case"
 require "shoulda/context"
 require "minitest/autorun"
+require "mocha/mini_test"
 require "mongoid"
 require "govuk_content_models/require_all"
 require "database_cleaner"
 require "gds_api/test_helpers/panopticon"
-require "webmock/test_unit"
+require "webmock/minitest"
 require "govuk_content_models/test_helpers/factories"
 require 'govuk_content_models/test_helpers/action_processor_helpers'
 require "timecop"
+require "byebug"
 
 # The models depend on a zone being set, so tests will fail if we don't
 Time.zone = "London"
 
 Mongoid.load! File.expand_path("../../config/mongoid.yml", __FILE__)
+Mongoid::Tasks::Database.create_indexes
 WebMock.disable_net_connect!
 
 DatabaseCleaner.strategy = :truncation
