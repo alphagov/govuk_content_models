@@ -1,6 +1,6 @@
 require 'attachable'
 require 'parted'
-require 'state_machine'
+require 'state_machines-mongoid'
 require 'safe_html'
 
 class TravelAdviceEdition
@@ -25,7 +25,7 @@ class TravelAdviceEdition
 
   embeds_many :actions
 
-  index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
+  index({country_slug: 1, version_number: -1}, unique: true)
 
   attaches :image, :document
 
@@ -47,7 +47,7 @@ class TravelAdviceEdition
   validates_with SafeHtml
   validates_with LinkValidator
 
-  scope :published, where(:state => "published")
+  scope :published, lambda { where(:state => "published") }
 
   class << self; attr_accessor :fields_to_clone end
   @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary, :image_id, :document_id, :synonyms]
@@ -113,7 +113,7 @@ class TravelAdviceEdition
   end
 
   def previous_version
-    self.class.where(:country_slug => self.country_slug, :version_number.lt => self.version_number).order_by([:version_number, :desc]).first
+    self.class.where(:country_slug => self.country_slug, :version_number.lt => self.version_number).order_by(version_number: :desc).first
   end
 
   private
@@ -129,7 +129,7 @@ class TravelAdviceEdition
 
   def populate_version_number
     if self.version_number.nil? and ! self.country_slug.nil? and ! self.country_slug.empty?
-      if latest_edition = self.class.where(:country_slug => self.country_slug).order_by([:version_number, :desc]).first
+      if latest_edition = self.class.where(:country_slug => self.country_slug).order_by(version_number: :desc).first
         self.version_number = latest_edition.version_number + 1
       else
         self.version_number = 1

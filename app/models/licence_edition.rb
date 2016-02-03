@@ -24,8 +24,11 @@ class LicenceEdition < Edition
 
   private
   def licence_identifier_unique
-    if self.class.without_state('archived').where(:licence_identifier => licence_identifier,
-                        :panopticon_id.ne => panopticon_id).any?
+    if self.class.where(
+      :state.ne => 'archived',
+      :licence_identifier => licence_identifier,
+      :panopticon_id.ne => panopticon_id
+    ).any?
       errors.add(:licence_identifier, :taken)
     end
   end

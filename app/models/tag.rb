@@ -1,6 +1,6 @@
 require "safe_html"
 require 'tag_id_validator'
-require 'state_machine'
+require 'state_machines-mongoid'
 
 class Tag
   include Mongoid::Document
@@ -16,15 +16,13 @@ class Tag
 
   STATES = ['draft', 'live']
 
-  index :tag_id
-  index [ [:tag_id, Mongo::ASCENDING], [:tag_type, Mongo::ASCENDING] ], unique: true
-  index :tag_type
+  index tag_id: 1
+  index({tag_id: 1, tag_type: 1}, unique: true)
+  index tag_type: 1
 
   validates_presence_of :tag_id, :title, :tag_type
   validates_uniqueness_of :tag_id, scope: :tag_type
   validates_with TagIdValidator
-
-  attr_protected :state
 
   validates :state, inclusion: { in: STATES }
 
