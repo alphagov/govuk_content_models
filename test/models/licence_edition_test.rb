@@ -6,7 +6,8 @@ class LicenceEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct extra fields" do
-    l = FactoryGirl.create(:licence_edition,
+    l = FactoryGirl.create(
+      :licence_edition,
       panopticon_id: @artefact.id,
       licence_identifier: "AB1234",
       licence_short_description: "Short description of licence",

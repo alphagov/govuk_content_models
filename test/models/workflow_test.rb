@@ -110,7 +110,7 @@ class WorkflowTest < ActiveSupport::TestCase
 
   test "a guide should be marked as having reviewables if requested for review" do
     guide = template_guide
-    user = FactoryGirl.create(:user, name:"Ben")
+    user = FactoryGirl.create(:user, name: "Ben")
     refute guide.in_review?
     assert_nil guide.review_requested_at
 
@@ -216,7 +216,7 @@ class WorkflowTest < ActiveSupport::TestCase
   test "ready items may require further amendments" do
     user = FactoryGirl.create(:user, name: "Ben")
     other_user = FactoryGirl.create(:user, name: "James")
-    another_user = FactoryGirl.create(:user, name: "Fiona")
+    FactoryGirl.create(:user, name: "Fiona")
 
     guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide

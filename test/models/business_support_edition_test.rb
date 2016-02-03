@@ -7,7 +7,8 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
   end
 
   should "have custom fields" do
-    support = FactoryGirl.create(:business_support_edition,
+    support = FactoryGirl.create(
+      :business_support_edition,
       panopticon_id: @artefact.id,
       short_description: "The short description",
       body: "The body",
@@ -22,10 +23,10 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       will_continue_on: "The GOVUK website",
       contact_details: "123 The Street, Townsville, UK. 07324 123456",
       priority: 2,
-      area_gss_codes: ["G123","G345","G45","G9"],
-      locations: ["scotland", "england"],
-      sectors: ["education", "manufacturing"],
-      support_types: ["grant", "loan"],
+      area_gss_codes: %w(G123 G345 G45 G9),
+      locations: %w(scotland england),
+      sectors: %w(education manufacturing),
+      support_types: %w(grant loan),
       start_date: Date.parse("1 Jan 2000"),
       end_date: Date.parse("1 Jan 2020"),
     )

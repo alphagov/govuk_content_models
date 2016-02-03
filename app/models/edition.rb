@@ -38,8 +38,8 @@ class Edition
   state_machine.states.map(&:name).each do |state|
     scope state, lambda { where(state: state) }
   end
-  scope :archived_or_published, lambda { where(:state.in => ["archived", "published"]) }
-  scope :in_progress, lambda { where(:state.nin => ["archived", "published"]) }
+  scope :archived_or_published, lambda { where(:state.in => %w(archived published)) }
+  scope :in_progress, lambda { where(:state.nin => %w(archived published)) }
   scope :assigned_to, lambda { |user|
     if user
       where(assigned_to_id: user.id)
@@ -61,7 +61,7 @@ class Edition
   before_destroy :destroy_artefact
 
   index assigned_to_id: 1
-  index({panopticon_id: 1, version_number: 1}, :unique => true)
+  index({panopticon_id: 1, version_number: 1}, unique: true)
   index state: 1
   index created_at: 1
   index updated_at: 1
@@ -230,7 +230,7 @@ class Edition
 
   def self.find_or_create_from_panopticon_data(panopticon_id, importing_user)
     existing_publication = Edition.where(panopticon_id: panopticon_id)
-                                  .order_by(version_number: :desc).first
+      .order_by(version_number: :desc).first
     return existing_publication if existing_publication
 
     raise "Artefact not found" unless metadata = Artefact.find(panopticon_id)

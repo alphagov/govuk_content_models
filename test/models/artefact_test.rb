@@ -152,19 +152,19 @@ class ArtefactTest < ActiveSupport::TestCase
         @artefact.need_id = "100045"
 
         assert_equal "100045", @artefact.need_id
-        assert_equal ["100044", "100045"], @artefact.need_ids
+        assert_equal %w(100044 100045), @artefact.need_ids
       end
 
       # this should only matter till the time we have both fields
       # need_id and need_ids. can delete this test once we unset need_id.
       should "keep need_ids unchanged when need_id is removed" do
-        @artefact.set(need_ids: ["100044", "100045"])
+        @artefact.set(need_ids: %w(100044 100045))
         @artefact.set(need_id: "100044")
 
         @artefact.need_id = nil
 
         assert_equal nil, @artefact.need_id
-        assert_equal ["100044", "100045"], @artefact.need_ids
+        assert_equal %w(100044 100045), @artefact.need_ids
       end
     end
   end
@@ -465,7 +465,7 @@ class ArtefactTest < ActiveSupport::TestCase
     artefact.update_attributes_as(user1, state: "archived")
     artefact.save!
 
-    editions.each &:reload
+    editions.each(&:reload)
     editions.each do |edition|
       assert_equal "archived", edition.state
     end

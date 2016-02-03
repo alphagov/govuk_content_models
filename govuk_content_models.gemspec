@@ -34,7 +34,8 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency "webmock", "1.22.6"
   gem.add_development_dependency "shoulda-context", "1.2.1"
   gem.add_development_dependency "timecop", "0.5.9.2"
-  gem.add_development_dependency "byebug"
+  gem.add_development_dependency 'govuk-lint', '~> 0.5.1'
+  gem.add_development_dependency 'pry-byebug'
 
   # The following are added to help bundler resolve dependencies
   gem.add_development_dependency "rack", "~> 1.6.4"

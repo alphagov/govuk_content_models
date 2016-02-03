@@ -1049,7 +1049,7 @@ class EditionTest < ActiveSupport::TestCase
       ed2.version_number = ed1.version_number
 
       assert_raises Mongo::Error::OperationFailure do
-        ed2.save! :validate => false
+        ed2.save! validate: false
       end
     end
   end

@@ -6,7 +6,8 @@ class CampaignEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct extra fields" do
-    c = FactoryGirl.create(:campaign_edition,
+    c = FactoryGirl.create(
+      :campaign_edition,
       panopticon_id: @artefact.id,
       body: "Start all the campaigns!",
       large_image_id: "large-image-id-from-the-asset-manager",
