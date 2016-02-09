@@ -84,7 +84,7 @@ class DowntimeTest < ActiveSupport::TestCase
       Timecop.freeze(Time.zone.now + 10) do
         downtime = FactoryGirl.build(:downtime)
 
-        downtime.end_time = Time.zone.now
+        downtime.end_time = Time.zone.now - 1.minute
         refute downtime.publicise?
       end
     end

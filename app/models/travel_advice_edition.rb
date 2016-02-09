@@ -1,6 +1,6 @@
 require 'attachable'
 require 'parted'
-require 'state_machine'
+require 'state_machines-mongoid'
 require 'safe_html'
 
 class TravelAdviceEdition
@@ -25,7 +25,7 @@ class TravelAdviceEdition
 
   embeds_many :actions
 
-  index [[:country_slug, Mongo::ASCENDING], [:version_number, Mongo::DESCENDING]], :unique => true
+  index({country_slug: 1, version_number: -1}, unique: true)
 
   attaches :image, :document
 
@@ -37,23 +37,23 @@ class TravelAdviceEdition
     "avoid_all_travel_to_whole_country",
   ]
 
-  before_validation :populate_version_number, :on => :create
+  before_validation :populate_version_number, on: :create
 
   validates_presence_of :country_slug, :title
   validate :state_for_slug_unique
-  validates :version_number, :presence => true, :uniqueness => { :scope => :country_slug }
+  validates :version_number, presence: true, uniqueness: { scope: :country_slug }
   validate :alert_status_contains_valid_values
   validate :first_version_cant_be_minor_update
   validates_with SafeHtml
   validates_with LinkValidator
 
-  scope :published, where(:state => "published")
+  scope :published, lambda { where(state: "published") }
 
   class << self; attr_accessor :fields_to_clone end
   @fields_to_clone = [:title, :country_slug, :overview, :alert_status, :summary, :image_id, :document_id, :synonyms]
 
   state_machine initial: :draft do
-    before_transition :draft => :published do |edition, transition|
+    before_transition draft: :published do |edition, _|
       if edition.minor_update
         previous = edition.previous_version
         edition.published_at = previous.published_at
@@ -73,12 +73,12 @@ class TravelAdviceEdition
     end
 
     event :archive do
-      transition all => :archived, :unless => :archived?
+      transition all => :archived, unless: :archived?
     end
 
     state :published do
       validate :cannot_edit_published
-      validates_presence_of :change_description, :unless => :minor_update, :message => "can't be blank on publish"
+      validates_presence_of :change_description, unless: :minor_update, message: "can't be blank on publish"
     end
     state :archived do
       validate :cannot_edit_archived
@@ -104,7 +104,7 @@ class TravelAdviceEdition
   end
 
   def build_action_as(user, action_type, comment = nil)
-    actions.build(:requester => user, :request_type => action_type, :comment => comment)
+    actions.build(requester: user, request_type: action_type, comment: comment)
   end
 
   def publish_as(user)
@@ -113,7 +113,7 @@ class TravelAdviceEdition
   end
 
   def previous_version
-    self.class.where(:country_slug => self.country_slug, :version_number.lt => self.version_number).order_by([:version_number, :desc]).first
+    self.class.where(country_slug: self.country_slug, :version_number.lt => self.version_number).order_by(version_number: :desc).first
   end
 
   private
@@ -121,19 +121,20 @@ class TravelAdviceEdition
   def state_for_slug_unique
     if %w(published draft).include?(self.state) and
         self.class.where(:_id.ne => id,
-                         :country_slug => country_slug,
-                         :state => state).any?
+                         country_slug: country_slug,
+                         state: state).any?
       errors.add(:state, :taken)
     end
   end
 
   def populate_version_number
     if self.version_number.nil? and ! self.country_slug.nil? and ! self.country_slug.empty?
-      if latest_edition = self.class.where(:country_slug => self.country_slug).order_by([:version_number, :desc]).first
-        self.version_number = latest_edition.version_number + 1
-      else
-        self.version_number = 1
-      end
+      latest_edition = self.class.where(country_slug: self.country_slug).order_by(version_number: :desc).first
+      self.version_number = if latest_edition
+                              latest_edition.version_number + 1
+                            else
+                              1
+                            end
     end
   end
 

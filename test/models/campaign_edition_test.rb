@@ -6,18 +6,19 @@ class CampaignEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct extra fields" do
-    c = FactoryGirl.build(:campaign_edition, :panopticon_id => @artefact.id)
-    c.body = "Start all the campaigns!"
-    c.large_image_id = "large-image-id-from-the-asset-manager"
-    c.medium_image_id = "medium-image-id-from-the-asset-manager"
-    c.small_image_id = "small-image-id-from-the-asset-manager"
-    c.organisation_formatted_name = "Driver & Vehicle\nLicensing\nAgency"
-    c.organisation_url = "/government/organisations/driver-and-vehicle-licensing-agency"
-    c.organisation_brand_colour = "department-for-transport"
-    c.organisation_crest = "single-identity"
-    c.safely.save!
+    c = FactoryGirl.create(
+      :campaign_edition,
+      panopticon_id: @artefact.id,
+      body: "Start all the campaigns!",
+      large_image_id: "large-image-id-from-the-asset-manager",
+      medium_image_id: "medium-image-id-from-the-asset-manager",
+      small_image_id: "small-image-id-from-the-asset-manager",
+      organisation_formatted_name: "Driver & Vehicle\nLicensing\nAgency",
+      organisation_url: "/government/organisations/driver-and-vehicle-licensing-agency",
+      organisation_brand_colour: "department-for-transport",
+      organisation_crest: "single-identity",
+    )
 
-    c = CampaignEdition.first
     assert_equal "Start all the campaigns!", c.body
     assert_equal "large-image-id-from-the-asset-manager", c.large_image_id
     assert_equal "medium-image-id-from-the-asset-manager", c.medium_image_id

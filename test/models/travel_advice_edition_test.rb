@@ -19,7 +19,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.change_description = "Some things"
     ed.synonyms = ["Foo", "Bar"]
     ed.parts.build(:title => "Part One", :slug => "one")
-    ed.safely.save!
+    ed.save!
 
     ed = TravelAdviceEdition.first
     assert_equal "Travel advice for Aruba", ed.title
@@ -319,6 +319,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       @published = FactoryGirl.create(:published_travel_advice_edition, :country_slug => 'aruba',
                                       :published_at => 3.days.ago, :change_description => 'Stuff changed')
       @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
+      @published.reload
     end
 
     should "publish the edition and archive related editions" do
@@ -358,6 +359,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
                                       :published_at => 3.days.ago, :change_description => 'Stuff changed')
       @published.reviewed_at = 2.days.ago
       @published.save!
+      @published.reload
 
       Timecop.freeze(1.days.ago) do
         # this is done to make sure there's a significant difference in time

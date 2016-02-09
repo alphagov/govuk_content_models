@@ -49,17 +49,17 @@ class Artefact
   #  - every future artefact will be created with a content id
   field "content_id",           type: String
 
-  index "slug", :unique => true
+  index({slug: 1}, unique: true)
 
   # This index allows the `relatable_artefacts` method to use an index-covered
   # query, so it doesn't have to load each of the artefacts.
-  index [[:name, Mongo::ASCENDING],
-         [:state, Mongo::ASCENDING],
-         [:kind, Mongo::ASCENDING],
-         [:_type, Mongo::ASCENDING],
-         [:_id, Mongo::ASCENDING]]
+  index name: 1,
+        state: 1,
+        kind: 1,
+        _type: 1,
+        _id: 1
 
-  scope :not_archived, where(:state.nin => ["archived"])
+  scope :not_archived, lambda { where(:state.nin => ["archived"]) }
 
   MAXIMUM_RELATED_ITEMS = 8
 
@@ -143,7 +143,7 @@ class Artefact
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
-  embeds_many :actions, class_name: "ArtefactAction", order: :created_at
+  embeds_many :actions, class_name: "ArtefactAction", order: {created_at: :asc}
 
   embeds_many :external_links, class_name: "ArtefactExternalLink"
   accepts_nested_attributes_for :external_links, :allow_destroy => true,
@@ -168,11 +168,11 @@ class Artefact
 
   scope :relatable_items, proc {
     where(:kind.ne => "completed_transaction", :state.ne => "archived")
-      .order_by([[:name, :asc]])
+      .order_by(name: :asc)
   }
 
   def self.in_alphabetical_order
-    order_by([[:name, :asc]])
+    order_by(name: :asc)
   end
 
   def self.find_by_slug(s)
@@ -302,8 +302,6 @@ class Artefact
 
   def self.from_param(slug_or_id)
     find_by_slug(slug_or_id) || find(slug_or_id)
-  rescue BSON::InvalidObjectId
-    raise Mongoid::Errors::DocumentNotFound.new(self, slug_or_id)
   end
 
   def update_attributes_as(user, *args)
@@ -353,7 +351,11 @@ class Artefact
   end
 
   def snapshot
-    attributes.except "_id", "created_at", "updated_at", "actions"
+    attributes
+      .except("_id", "created_at", "updated_at", "actions")
+      .merge(
+        "related_artefact_ids" => self.related_artefact_ids
+      )
   end
 
   def need_id=(new_need_id)

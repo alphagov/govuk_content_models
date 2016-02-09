@@ -15,11 +15,11 @@ module PrerenderedEntityTests
 
   def test_create_or_update_by_slug
     slug = "a-slug"
-    original_body = "Original body"
+    original_title = "Original title"
 
     version1_attrs= {
       slug: slug,
-      body: original_body,
+      title: original_title,
     }
 
     created = model_class.create_or_update_by_slug!(version1_attrs)
@@ -28,13 +28,13 @@ module PrerenderedEntityTests
     assert created.persisted?
 
     version2_attrs = version1_attrs.merge(
-      body: "Updated body",
+      title: "Updated title",
     )
 
     version2 = model_class.create_or_update_by_slug!(version2_attrs)
 
     assert version2.persisted?
-    assert_equal "Updated body", version2.body
+    assert_equal "Updated title", version2.title
   end
 
   def test_find_by_slug

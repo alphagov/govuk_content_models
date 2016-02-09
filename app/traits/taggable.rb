@@ -52,8 +52,7 @@ module Taggable
     klass.field          :tag_ids, type: Array, default: []
     klass.field          :tags, type: Array, default: []
 
-    klass.index          :tag_ids
-    klass.attr_protected :tags, :tag_ids
+    klass.index          tag_ids: 1
     klass.__send__       :private, :tag_ids=
   end
 

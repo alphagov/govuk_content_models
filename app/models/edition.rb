@@ -36,10 +36,10 @@ class Edition
 
   # state_machine comes from Workflow
   state_machine.states.map(&:name).each do |state|
-    scope state, where(state: state)
+    scope state, lambda { where(state: state) }
   end
-  scope :archived_or_published, where(:state.in => ["archived", "published"])
-  scope :in_progress, where(:state.nin => ["archived", "published"])
+  scope :archived_or_published, lambda { where(:state.in => %w(archived published)) }
+  scope :in_progress, lambda { where(:state.nin => %w(archived published)) }
   scope :assigned_to, lambda { |user|
     if user
       where(assigned_to_id: user.id)
@@ -60,11 +60,11 @@ class Edition
   before_save :check_for_archived_artefact
   before_destroy :destroy_artefact
 
-  index "assigned_to_id"
-  index [["panopticon_id", Mongo::ASCENDING], ["version_number", Mongo::ASCENDING]], :unique => true
-  index "state"
-  index "created_at"
-  index "updated_at"
+  index assigned_to_id: 1
+  index({panopticon_id: 1, version_number: 1}, unique: true)
+  index state: 1
+  index created_at: 1
+  index updated_at: 1
 
   alias_method :admin_list_title, :title
 
@@ -230,7 +230,7 @@ class Edition
 
   def self.find_or_create_from_panopticon_data(panopticon_id, importing_user)
     existing_publication = Edition.where(panopticon_id: panopticon_id)
-                                  .order_by([:version_number, :desc]).first
+      .order_by(version_number: :desc).first
     return existing_publication if existing_publication
 
     raise "Artefact not found" unless metadata = Artefact.find(panopticon_id)
@@ -245,11 +245,11 @@ class Edition
     scope = where(slug: slug)
 
     if edition.present? and edition == "latest"
-      scope.order_by(:version_number).last
+      scope.order_by(version_number: :asc).last
     elsif edition.present?
       scope.where(version_number: edition).first
     else
-      scope.where(state: "published").order(version_number: "desc").first
+      scope.where(state: "published").order(version_number: :desc).first
     end
   end
 

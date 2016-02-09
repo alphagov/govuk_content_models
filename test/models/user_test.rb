@@ -64,7 +64,7 @@ class UserTest < ActiveSupport::TestCase
   test "should find and update the user with oauth params" do
     attributes = {uid: "1234abcd", name: "Old", email: "old@m.com",
         permissions: ["everything"]}
-    User.create!(attributes, without_protection: true)
+    User.create!(attributes)
     auth_hash = {
       "uid" => "1234abcd",
       "info" => {

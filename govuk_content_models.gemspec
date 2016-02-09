@@ -20,22 +20,24 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "gds-sso",          "~> 11.2"
   gem.add_dependency "govspeak",         "~> 3.1"
-  # Mongoid 2.5.0 supports the newer 1.7.x and 1.8.x Mongo drivers
-  gem.add_dependency "mongoid",          "~> 2.5"
+  gem.add_dependency "mongoid",          "~> 5.1"
+  gem.add_dependency "state_machines",   "~> 0.4"
+  gem.add_dependency "state_machines-mongoid", "~> 0.1"
   gem.add_dependency "plek"
-  gem.add_dependency "state_machine"
 
-  gem.add_development_dependency "database_cleaner", "0.7.2"
-  gem.add_development_dependency "factory_girl", "3.3.0"
+  gem.add_development_dependency "database_cleaner", "1.5.1"
+  gem.add_development_dependency "factory_girl", "4.5.0"
   gem.add_development_dependency "gem_publisher", "1.2.0"
-  gem.add_development_dependency "mocha", "0.13.3"
+  gem.add_development_dependency "mocha", "1.1.0"
   gem.add_development_dependency "multi_json"
   gem.add_development_dependency "rake", "0.9.2.2"
-  gem.add_development_dependency "webmock", "1.8.7"
-  gem.add_development_dependency "shoulda-context", "1.0.0"
+  gem.add_development_dependency "webmock", "1.22.6"
+  gem.add_development_dependency "shoulda-context", "1.2.1"
   gem.add_development_dependency "timecop", "0.5.9.2"
+  gem.add_development_dependency 'govuk-lint', '~> 0.5.1'
+  gem.add_development_dependency 'pry-byebug'
 
   # The following are added to help bundler resolve dependencies
-  gem.add_development_dependency "rack", "~> 1.4.4"
-  gem.add_development_dependency "rails", "= 3.2.17"
+  gem.add_development_dependency "rack", "~> 1.6.4"
+  gem.add_development_dependency "rails", "= 4.2.5.1"
 end
