@@ -1,4 +1,3 @@
-require "traits/recordable_actions"
 require "workflow"
 
 class Edition
