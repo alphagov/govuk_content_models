@@ -24,13 +24,13 @@ class User
   field "disabled",                type: Boolean, default: false
   field "organisation_content_id", type: String
 
-  index({uid: 1}, unique: true)
+  index({ uid: 1 }, unique: true)
   index disabled: 1
 
   scope :alphabetized, lambda { order_by(name: :asc) }
   scope :enabled, lambda {
     any_of({ :disabled.exists => false },
-           { :disabled.in => [false, nil] })
+           { :disabled.in => [false, nil] }) # rubocop:disable Style/BracesAroundHashParameters
   }
 
   def to_s

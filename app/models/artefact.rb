@@ -49,7 +49,7 @@ class Artefact
   #  - every future artefact will be created with a content id
   field "content_id",           type: String
 
-  index({slug: 1}, unique: true)
+  index({ slug: 1 }, unique: true)
 
   # This index allows the `relatable_artefacts` method to use an index-covered
   # query, so it doesn't have to load each of the artefacts.
@@ -143,7 +143,7 @@ class Artefact
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
   has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
-  embeds_many :actions, class_name: "ArtefactAction", order: {created_at: :asc}
+  embeds_many :actions, class_name: "ArtefactAction", order: { created_at: :asc }
 
   embeds_many :external_links, class_name: "ArtefactExternalLink"
   accepts_nested_attributes_for :external_links, :allow_destroy => true,

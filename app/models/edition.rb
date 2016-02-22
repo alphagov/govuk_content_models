@@ -49,7 +49,7 @@ class Edition
   scope :major_updates, lambda { where(major_change: true) }
 
   validates :title, presence: true
-  validates :version_number, presence: true, uniqueness: {scope: :panopticon_id}
+  validates :version_number, presence: true, uniqueness: { scope: :panopticon_id }
   validates :panopticon_id, presence: true
   validates_with SafeHtml
   validates_with LinkValidator, on: :update, unless: :archived?
@@ -60,7 +60,7 @@ class Edition
   before_destroy :destroy_artefact
 
   index assigned_to_id: 1
-  index({panopticon_id: 1, version_number: 1}, unique: true)
+  index({ panopticon_id: 1, version_number: 1 }, unique: true)
   index state: 1
   index created_at: 1
   index updated_at: 1
