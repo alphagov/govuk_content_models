@@ -17,7 +17,7 @@ class Tag
   STATES = ['draft', 'live']
 
   index tag_id: 1
-  index({tag_id: 1, tag_type: 1}, unique: true)
+  index({ tag_id: 1, tag_type: 1 }, unique: true)
   index tag_type: 1
 
   validates_presence_of :tag_id, :title, :tag_type

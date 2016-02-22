@@ -10,5 +10,6 @@ root_path = "#{File.dirname(__FILE__)}/../.."
 end
 
 # Require validators first, then other files in app
-Dir.glob("#{root_path}/app/validators/*.rb").each {|f| require f }
-Dir.glob("#{root_path}/app/**/*.rb").each {|f| require f }
+Dir.glob("#{root_path}/app/validators/*.rb").each { |f| require f }
+Dir.glob("#{root_path}/app/traits/*.rb").each { |f| require f }
+Dir.glob("#{root_path}/app/**/*.rb").each { |f| require f }

@@ -37,7 +37,7 @@ class BusinessSupportEdition < Edition
   validates :min_value, :max_value, :max_employees, :numericality => {:allow_nil => true, :only_integer => true}
 
   scope :for_facets, lambda { |facets|
-    where({ "$and" => facets_criteria(facets) }).order_by(priority: :desc, title: :asc)
+    where("$and" => facets_criteria(facets)).order_by(priority: :desc, title: :asc)
   }
 
 

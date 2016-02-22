@@ -25,7 +25,7 @@ class TravelAdviceEdition
 
   embeds_many :actions
 
-  index({country_slug: 1, version_number: -1}, unique: true)
+  index({ country_slug: 1, version_number: -1 }, unique: true)
 
   attaches :image, :document
 
