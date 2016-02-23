@@ -33,7 +33,7 @@ class SimpleSmartAnswerEdition < Edition
 
 
   # Workaround mongoid conflicting mods error
-  # See https://github.com/mongoid/mongoid/issues/1219
+  # See https://jira.mongodb.org/browse/MONGOID-1220
   # Override update_attributes so that nested nodes are updated individually. 
   # This get around the problem of mongoid issuing a query with conflicting modifications 
   # to the same document. 
@@ -63,6 +63,6 @@ class SimpleSmartAnswerEdition < Edition
   end
 
   def destroy_in_attrs?(attrs)
-    attrs['_destroy'] == '1'
+    attrs.delete('_destroy') == '1'
   end
 end
