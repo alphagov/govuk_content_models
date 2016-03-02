@@ -91,6 +91,18 @@ class ArtefactActionTest < ActiveSupport::TestCase
     )
   end
 
+  test "saving a task should record the task action" do
+    @artefact.description = "Updated automatically"
+    @artefact.save_as_task('TaggingUpdater')
+    @artefact.reload
+
+    assert_equal 2, @artefact.actions.size
+    assert_equal ["create", "update"], @artefact.actions.map(&:action_type)
+
+    assert_equal 'TaggingUpdater', @artefact.actions.last.task_performed_by
+    assert_equal nil, @artefact.actions.last.user
+  end
+
   test "saving as a user should record a user action" do
     user = FactoryGirl.create :user
     updates = {description: "Shiny shiny description"}

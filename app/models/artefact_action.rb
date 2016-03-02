@@ -6,6 +6,7 @@ class ArtefactAction
 
   field "action_type", type: String
   field "snapshot", type: Hash
+  field "task_performed_by", type: String
 
   embedded_in :artefact
 
