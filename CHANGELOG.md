@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 32.3.1
+
+- Update the Artefact FactoryGirl definition
+
 ## 32.3.0
 
 - Add `save_as_task` method to Artefact model [#360](https://github.com/alphagov/govuk_content_models/pull/360)
