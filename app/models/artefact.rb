@@ -321,12 +321,12 @@ class Artefact
   # We should use this method when performing save actions from rake tasks,
   # message queue consumer or any other performed tasks that have no user associated
   # as we are still interested to know what triggered the action.
-  def save_as_task(task_name, options = {})
+  def save_as_task!(task_name, options = {})
     default_action = new_record? ? "create" : "update"
     action_type = options.delete(:action_type) || default_action
 
     record_action(action_type, task_name: task_name)
-    save(options)
+    save!(options)
   end
 
   def record_create_action
