@@ -93,7 +93,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
 
   test "saving a task should record the task action" do
     @artefact.description = "Updated automatically"
-    @artefact.save_as_task('TaggingUpdater')
+    @artefact.save_as_task!('TaggingUpdater')
     @artefact.reload
 
     assert_equal 2, @artefact.actions.size
