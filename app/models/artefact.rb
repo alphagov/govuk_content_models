@@ -316,6 +316,17 @@ class Artefact
     save(options)
   end
 
+  # We should use this method when performing save actions from rake tasks,
+  # message queue consumer or any other performed tasks that have no user associated
+  # as we are still interested to know what triggered the action.
+  def save_as_task!(task_name, options = {})
+    default_action = new_record? ? "create" : "update"
+    action_type = options.delete(:action_type) || default_action
+
+    record_action(action_type, task_name: task_name)
+    save!(options)
+  end
+
   def record_create_action
     record_action "create"
   end
@@ -326,14 +337,21 @@ class Artefact
 
   def record_action(action_type, options={})
     user = options[:user]
+    task_name = options[:task_name]
     current_snapshot = snapshot
-    last_snapshot = actions.last ? actions.last.snapshot : nil
+    last_snapshot = actions.last.snapshot if actions.last
+
     unless current_snapshot == last_snapshot
-      new_action = actions.build(
-        user: user,
+
+      attributes = {
         action_type: action_type,
-        snapshot: current_snapshot
-      )
+        snapshot: current_snapshot,
+      }
+
+      attributes.merge!(user: user) if user
+      attributes.merge!(task_performed_by: task_name) if task_name
+
+      new_action = actions.build(attributes)
       # Mongoid will not fire creation callbacks on embedded documents, so we
       # need to trigger this manually. There is a `cascade_callbacks` option on
       # `embeds_many`, but it doesn't appear to trigger creation events on
