@@ -551,9 +551,6 @@ class ArtefactTest < ActiveSupport::TestCase
       setup do
         FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'crime', :title => 'Crime')
         FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice")
-        FactoryGirl.create(:live_tag, :tag_type => 'legacy_source', :tag_id => 'directgov', :title => 'Directgov')
-        FactoryGirl.create(:live_tag, :tag_type => 'legacy_source', :tag_id => 'businesslink', :title => 'Business Link')
-
         @a = FactoryGirl.create(:artefact, :slug => 'fooey')
       end
 
@@ -567,14 +564,13 @@ class ArtefactTest < ActiveSupport::TestCase
       context "for an artefact with tags" do
         setup do
           @a.sections = ['justice']
-          @a.legacy_sources = ['businesslink']
           @a.save!
         end
 
         should "return an array of tag_id strings in tag_ids" do
           hash = @a.as_json
 
-          assert_equal ['justice', 'businesslink'], hash['tag_ids']
+          assert_equal ['justice'], hash['tag_ids']
         end
 
         should "return an array of tag objects in tags" do
@@ -588,13 +584,6 @@ class ArtefactTest < ActiveSupport::TestCase
               :description => 'All about justice',
               :short_description => nil
             },
-            {
-              :id => 'businesslink',
-              :title => 'Business Link',
-              :type => 'legacy_source',
-              :description => nil,
-              :short_description => nil
-            }
           ]
           assert_equal expected, hash['tags']
         end
@@ -603,7 +592,7 @@ class ArtefactTest < ActiveSupport::TestCase
           @a.tag_ids << 'batman'
           hash = @a.as_json
 
-          assert_equal %w(justice businesslink), hash['tags'].map {|t| t[:id] }
+          assert_equal %w(justice), hash['tags'].map {|t| t[:id] }
         end
       end
     end
