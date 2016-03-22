@@ -80,11 +80,11 @@ class Edition
   end
 
   def previous_siblings
-    siblings.where(:version_number.lt => version_number)
+    siblings.where(:version_number.lt => version_number).order(version_number: "asc")
   end
 
   def subsequent_siblings
-    siblings.where(:version_number.gt => version_number)
+    siblings.where(:version_number.gt => version_number).order(version_number: "asc")
   end
 
   def latest_edition?

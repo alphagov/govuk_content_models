@@ -85,6 +85,16 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal [g1], g3.previous_siblings.to_a
   end
 
+  test "subsequent and previous siblings are in order" do
+    g4 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 4)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
+    g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
+    g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 3)
+
+    assert_equal [g2, g3, g4], g1.subsequent_siblings.to_a
+    assert_equal [g1, g2, g3], g4.previous_siblings.to_a
+  end
+
   test "A programme should have default parts" do
     programme = FactoryGirl.create(:programme_edition, panopticon_id: @artefact.id)
     assert_equal programme.parts.count, ProgrammeEdition::DEFAULT_PARTS.length
