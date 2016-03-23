@@ -3,9 +3,6 @@ require "test_helper"
 class ArtefactTagTest < ActiveSupport::TestCase
 
   TEST_KEYWORDS = [['cheese', 'Cheese'], ['bacon', 'Bacon']]
-  TEST_LEGACY_SOURCES = [
-    ['businesslink', 'Business Link'], ['directgov', 'Directgov'], ['dvla', 'DVLA']
-  ]
 
   setup do
     parent_section = FactoryGirl.create(:live_tag, :tag_id => 'crime', :tag_type => 'section', :title => 'Crime')
@@ -14,9 +11,6 @@ class ArtefactTagTest < ActiveSupport::TestCase
 
     TEST_KEYWORDS.each do |tag_id, title|
       FactoryGirl.create(:live_tag, :tag_id => tag_id, :tag_type => 'keyword', :title => title)
-    end
-    TEST_LEGACY_SOURCES.each do |tag_id, title|
-      FactoryGirl.create(:live_tag, :tag_id => tag_id, :tag_type => 'legacy_source', :title => title)
     end
   end
 
@@ -43,25 +37,14 @@ class ArtefactTagTest < ActiveSupport::TestCase
     a = FactoryGirl.create(:artefact)
 
     a.sections = ['crime', 'crime/the-police']
-    a.legacy_sources = ['businesslink']
     a.keywords = ['bacon']
 
     expected_tags = [
       { "tag_id" => "crime", "tag_type" => "section" },
       { "tag_id" => "crime/the-police", "tag_type" => "section" },
-      { "tag_id" => "businesslink", "tag_type" => "legacy_source" },
       { "tag_id" => "bacon", "tag_type" => "keyword" },
     ]
-    assert_equal ["crime", "crime/the-police", "businesslink", "bacon"], a.tag_ids
+    assert_equal ["crime", "crime/the-police", "bacon"], a.tag_ids
     assert_equal expected_tags, a.attributes["tags"]
-  end
-
-  test "has legacy_sources tag collection" do
-    a = FactoryGirl.build(:artefact)
-    a.legacy_sources = ['businesslink', 'dvla']
-    a.save
-
-    a = Artefact.first
-    assert_equal ["businesslink", "dvla"], a.legacy_source_ids
   end
 end
