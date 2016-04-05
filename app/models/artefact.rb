@@ -17,7 +17,7 @@ class Artefact
 
   include Taggable
   stores_tags_for :sections, :writing_teams, :propositions,
-                  :keywords, :legacy_sources, :specialist_sectors, :organisations
+                  :keywords, :specialist_sectors, :organisations
   has_primary_tag_for :section
 
   field "name",                 type: String

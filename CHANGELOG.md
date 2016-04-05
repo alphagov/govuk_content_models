@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 34.0.0
+
+- Removes `legacy_source` tag [#368](https://github.com/alphagov/govuk_content_models/pull/368)
+
 ## 33.0.0
 
 - Changes `save_as_task` to `save_as_task!` [#364](https://github.com/alphagov/govuk_content_models/pull/364)
