@@ -25,14 +25,38 @@ module PresentationToggles
   end
 
   def organ_donor_registration_key
-    presentation_toggles['organ_donor_registration']
+    presentation_toggles['organ_donor_registration'] || self.class.default_presentation_toggles['organ_donor_registration']
+  end
+
+  def promote_register_to_vote=(value)
+    value = value.is_a?(Boolean) ? value : value != '0' # if assigned using a checkbox
+    register_to_vote_key['promote_register_to_vote'] = value
+  end
+
+  def promote_register_to_vote
+    register_to_vote_key['promote_register_to_vote']
+  end
+  alias_method :promote_register_to_vote?, :promote_register_to_vote
+
+  def register_to_vote_url=(value)
+    register_to_vote_key['register_to_vote_url'] = value
+  end
+  
+  def register_to_vote_url
+    register_to_vote_key['register_to_vote_url']
+  end
+
+  def register_to_vote_key
+    presentation_toggles['register_to_vote'] || self.class.default_presentation_toggles['register_to_vote']
   end
 
   module ClassMethods
     def default_presentation_toggles
       {
         'organ_donor_registration' =>
-          { 'promote_organ_donor_registration' => false, 'organ_donor_registration_url' => '' }
+          { 'promote_organ_donor_registration' => false, 'organ_donor_registration_url' => '' },
+        'register_to_vote' =>
+          { 'promote_register_to_vote' => false, 'register_to_vote_url' => '' },
       }
     end
   end
