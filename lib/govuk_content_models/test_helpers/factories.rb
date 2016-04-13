@@ -64,7 +64,7 @@ FactoryGirl.define do
 
     trait :non_publisher do
       kind            'smart-answer'
-      owning_app      'smart-answers'
+      owning_app      'smartanswers'
     end
 
     trait :draft do
