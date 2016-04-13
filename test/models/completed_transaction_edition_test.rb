@@ -33,4 +33,38 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
     assert completed_transaction_edition.invalid?
     assert_includes completed_transaction_edition.errors[:organ_donor_registration_url], "can't be blank"
   end
+
+  test "stores promotion choice and URL" do
+    completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition)
+
+    completed_transaction_edition.promotion_choice = "none"
+    completed_transaction_edition.save!
+
+    assert_equal "none", completed_transaction_edition.reload.promotion_choice
+
+    completed_transaction_edition.promotion_choice = "organ_donor"
+    completed_transaction_edition.promotion_choice_url = "https://www.organdonation.nhs.uk/registration/"
+    completed_transaction_edition.save!
+
+    assert_equal "organ_donor", completed_transaction_edition.reload.promotion_choice
+    assert_equal "https://www.organdonation.nhs.uk/registration/", completed_transaction_edition.promotion_choice_url
+
+    completed_transaction_edition.promotion_choice = "register_to_vote"
+    completed_transaction_edition.promotion_choice_url = "https://www.gov.uk/register-to-vote"
+    completed_transaction_edition.save!
+
+    assert_equal "register_to_vote", completed_transaction_edition.reload.promotion_choice
+    assert_equal "https://www.gov.uk/register-to-vote", completed_transaction_edition.promotion_choice_url
+  end
+
+  test "passes through legacy organ donor info" do
+    completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition,
+      promote_organ_donor_registration: true)
+
+    completed_transaction_edition.organ_donor_registration_url = "https://www.organdonation.nhs.uk/registration/"
+    completed_transaction_edition.save!
+
+    assert_equal "organ_donor", completed_transaction_edition.reload.promotion_choice
+    assert_equal "https://www.organdonation.nhs.uk/registration/", completed_transaction_edition.promotion_choice_url
+  end
 end

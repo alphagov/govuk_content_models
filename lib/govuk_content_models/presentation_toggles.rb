@@ -28,35 +28,55 @@ module PresentationToggles
     presentation_toggles['organ_donor_registration'] || self.class.default_presentation_toggles['organ_donor_registration']
   end
 
-  def promote_register_to_vote=(value)
-    value = value.is_a?(Boolean) ? value : value != '0' # if assigned using a checkbox
-    register_to_vote_key['promote_register_to_vote'] = value
+  def promotion_choice=(value)
+    is_valid = ["none", "organ_donor", "register_to_vote"].include?(value)
+    if is_valid
+      promotion_choice_key["choice"] = value
+    end
+    # XXX: Should we throw if value is not valid?
   end
 
-  def promote_register_to_vote
-    register_to_vote_key['promote_register_to_vote']
-  end
-  alias_method :promote_register_to_vote?, :promote_register_to_vote
-
-  def register_to_vote_url=(value)
-    register_to_vote_key['register_to_vote_url'] = value
+  def promotion_choice_url=(value)
+    promotion_choice_key['url'] = value
   end
   
-  def register_to_vote_url
-    register_to_vote_key['register_to_vote_url']
+  def promotion_choice
+    has_legacy_promote = promote_organ_donor_registration
+    choice = promotion_choice_key["choice"]
+    if choice.empty?
+      if has_legacy_promote
+        "organ_donor"
+      else
+        "none"
+      end
+    else
+      choice
+    end
+  end
+  alias_method :promotion_choice?, :promotion_choice
+
+  def promotion_choice_url
+    url = promotion_choice_key["url"]
+    url.empty? ? organ_donor_registration_url : url
   end
 
-  def register_to_vote_key
-    presentation_toggles['register_to_vote'] || self.class.default_presentation_toggles['register_to_vote']
+  def promotion_choice_key
+    presentation_toggles['promotion_choice'] || self.class.default_presentation_toggles['promotion_choice']
   end
 
   module ClassMethods
     def default_presentation_toggles
       {
         'organ_donor_registration' =>
-          { 'promote_organ_donor_registration' => false, 'organ_donor_registration_url' => '' },
-        'register_to_vote' =>
-          { 'promote_register_to_vote' => false, 'register_to_vote_url' => '' },
+          {
+            'promote_organ_donor_registration' => false,
+            'organ_donor_registration_url' => ''
+          },
+        'promotion_choice' =>
+          {
+            'choice' => '',
+            'url' => ''
+          }
       }
     end
   end
