@@ -22,6 +22,7 @@ class TravelAdviceEdition
   # This is the publicly presented publish time. For minor updates, this will be the publish time of the previous version
   field :published_at,         type: Time
   field :reviewed_at,          type: Time
+  field :request_id,           type: String
 
   embeds_many :actions
 
