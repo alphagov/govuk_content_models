@@ -19,6 +19,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     ed.change_description = "Some things"
     ed.synonyms = ["Foo", "Bar"]
     ed.parts.build(:title => "Part One", :slug => "one")
+    ed.request_id = "2546-1460985144476-19268198-3242"
     ed.safely.save!
 
     ed = TravelAdviceEdition.first
@@ -35,6 +36,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     assert_equal ["Foo", "Bar"], ed.synonyms
     assert_equal "Some things", ed.change_description
     assert_equal "Part One", ed.parts.first.title
+    assert_equal "2546-1460985144476-19268198-3242", ed.request_id
   end
 
   context "validations" do
