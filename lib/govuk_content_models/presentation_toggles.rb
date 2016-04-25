@@ -27,7 +27,7 @@ module PresentationToggles
   end
 
   def organ_donor_registration_key
-    presentation_toggles['organ_donor_registration'] || self.class.default_presentation_toggles['organ_donor_registration']
+    presentation_toggles['organ_donor_registration'] ||= self.class.default_presentation_toggles['organ_donor_registration']
   end
 
   def promotion_choice=(value)
@@ -62,7 +62,7 @@ module PresentationToggles
   end
 
   def promotion_choice_key
-    presentation_toggles['promotion_choice'] || self.class.default_presentation_toggles['promotion_choice']
+    presentation_toggles['promotion_choice'] ||= self.class.default_presentation_toggles['promotion_choice']
   end
 
   module ClassMethods
