@@ -4,6 +4,8 @@ module PresentationToggles
   included do
     field :presentation_toggles, type: Hash, default: default_presentation_toggles
     validates_presence_of :organ_donor_registration_url, if: :promote_organ_donor_registration?
+    validates :promotion_choice_url, presence: true, if: :promotes_something?
+    validates :promotion_choice, inclusion: { in: %w(none organ_donor register_to_vote) }
   end
 
   def promote_organ_donor_registration=(value)
@@ -19,7 +21,7 @@ module PresentationToggles
   def organ_donor_registration_url=(value)
     organ_donor_registration_key['organ_donor_registration_url'] = value
   end
-  
+
   def organ_donor_registration_url
     organ_donor_registration_key['organ_donor_registration_url']
   end
@@ -29,17 +31,13 @@ module PresentationToggles
   end
 
   def promotion_choice=(value)
-    is_valid = ["none", "organ_donor", "register_to_vote"].include?(value)
-    if is_valid
-      promotion_choice_key["choice"] = value
-    end
-    # XXX: Should we throw if value is not valid?
+    promotion_choice_key["choice"] = value
   end
 
   def promotion_choice_url=(value)
     promotion_choice_key['url'] = value
   end
-  
+
   def promotion_choice
     has_legacy_promote = promote_organ_donor_registration
     choice = promotion_choice_key["choice"]
@@ -53,7 +51,10 @@ module PresentationToggles
       choice
     end
   end
-  alias_method :promotion_choice?, :promotion_choice
+
+  def promotes_something?
+    promotion_choice != 'none'
+  end
 
   def promotion_choice_url
     url = promotion_choice_key["url"]

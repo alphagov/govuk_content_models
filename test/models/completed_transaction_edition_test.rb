@@ -34,6 +34,21 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
     assert_includes completed_transaction_edition.errors[:organ_donor_registration_url], "can't be blank"
   end
 
+  test "invalid if promotion_choice_url is not specified when a promotion choice is made" do
+    completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition,
+      promotion_choice: 'organ_donor', promotion_choice_url: "")
+
+    assert completed_transaction_edition.invalid?
+    assert_includes completed_transaction_edition.errors[:promotion_choice_url], "can't be blank"
+  end
+
+  test "invalid if promotion_choice is not one of the allowed ones" do
+    completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition, promotion_choice: 'cheese')
+
+    assert completed_transaction_edition.invalid?
+    assert_includes completed_transaction_edition.errors[:promotion_choice], "is not included in the list"
+  end
+
   test "stores promotion choice and URL" do
     completed_transaction_edition = FactoryGirl.build(:completed_transaction_edition)
 
