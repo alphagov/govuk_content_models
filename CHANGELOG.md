@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 35.0.0
+
+- Upgrade to Mongoid 5.1 and Rails 4.2
+- Add new done page promotion toggles
+
 ## 34.0.0
 
 - Removes `legacy_source` tag [#368](https://github.com/alphagov/govuk_content_models/pull/368)
