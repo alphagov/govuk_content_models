@@ -6,8 +6,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   def template_users
-    user = User.create(name: "Bob")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Bob")
+    other_user = FactoryGirl.create(:user, name: "James")
     return user, other_user
   end
 
@@ -24,8 +24,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   def publisher_and_guide
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
@@ -40,8 +40,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   def template_user_and_published_transaction
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     transaction = user.create_edition(:transaction, title: "My title", slug: "my-title", panopticon_id: @artefact.id, need_to_know: "Credit card required")
     transaction.save
@@ -110,7 +110,7 @@ class WorkflowTest < ActiveSupport::TestCase
 
   test "a guide should be marked as having reviewables if requested for review" do
     guide = template_guide
-    user = User.create(name:"Ben")
+    user = FactoryGirl.create(:user, name: "Ben")
     refute guide.in_review?
     assert_nil guide.review_requested_at
 
@@ -131,8 +131,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "guide workflow" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
@@ -150,8 +150,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "when fact check has been initiated it can be skipped" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     edition = user.create_edition(:guide, panopticon_id: @artefact.id, overview: "My Overview", title: "My Title", slug: "my-title")
 
@@ -167,8 +167,8 @@ class WorkflowTest < ActiveSupport::TestCase
 
   # until we improve the validation to produce few or no false positives
   test "when processing fact check, it is not validated" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
@@ -182,8 +182,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "fact_check_received can go back to out for fact_check" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
@@ -198,8 +198,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "when processing fact check, an edition can request for amendments" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
@@ -214,9 +214,9 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "ready items may require further amendments" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
-    another_user = User.create(name: "Fiona")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
+    FactoryGirl.create(:user, name: "Fiona")
 
     guide = user.create_edition(:guide, panopticon_id: FactoryGirl.create(:artefact).id, overview: "My Overview", title: "My Title", slug: "my-title")
     edition = guide
@@ -234,8 +234,8 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "check counting reviews" do
-    user = User.create(name: "Ben")
-    other_user = User.create(name: "James")
+    user = FactoryGirl.create(:user, name: "Ben")
+    other_user = FactoryGirl.create(:user, name: "James")
 
     guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
@@ -254,7 +254,7 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "user should not be able to review a guide they requested review for" do
-    user = User.create(name: "Ben")
+    user = FactoryGirl.create(:user, name: "Ben")
 
     guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
@@ -265,7 +265,7 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "user should not be able to okay a guide they requested review for" do
-    user = User.create(name: "Ben")
+    user = FactoryGirl.create(:user, name: "Ben")
 
     guide = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
     edition = guide
@@ -368,7 +368,7 @@ class WorkflowTest < ActiveSupport::TestCase
   end
 
   test "important_note returns last non-resolved important note" do
-    user = User.create(name: "Ben")
+    user = FactoryGirl.create(:user, name: "Ben")
     edition = template_guide
     user.record_note(edition, 'this is an important note', Action::IMPORTANT_NOTE)
     request_review(user, edition)
@@ -396,7 +396,7 @@ class WorkflowTest < ActiveSupport::TestCase
 
     should "return the new edition" do
       new_version = @user.new_version(@edition)
-      assert_include new_version.previous_siblings.to_a, @edition
+      assert_includes new_version.previous_siblings.to_a, @edition
     end
 
     context "creating an edition of a different type" do

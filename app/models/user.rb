@@ -24,16 +24,14 @@ class User
   field "disabled",                type: Boolean, default: false
   field "organisation_content_id", type: String
 
-  index "uid", unique: true
-  index "disabled"
+  index({ uid: 1 }, unique: true)
+  index disabled: 1
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :name, :uid
-  attr_accessible :email, :name, :uid, :permissions, as: :oauth
-
-  scope :alphabetized, order_by(name: :asc)
-  scope :enabled, any_of({ :disabled.exists => false },
-                         { :disabled.in => [false, nil] })
+  scope :alphabetized, lambda { order_by(name: :asc) }
+  scope :enabled, lambda {
+    any_of({ :disabled.exists => false },
+           { :disabled.in => [false, nil] }) # rubocop:disable Style/BracesAroundHashParameters
+  }
 
   def to_s
     name || email || ""

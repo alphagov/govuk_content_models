@@ -1,4 +1,4 @@
-require "state_machine"
+require "state_machines-mongoid"
 
 module Workflow
   class CannotDeletePublishedPublication < RuntimeError; end
@@ -117,7 +117,7 @@ module Workflow
 
   def denormalise_users!
     new_assignee = assigned_to.try(:name)
-    set(:assignee, new_assignee) unless new_assignee == assignee
+    set(assignee: new_assignee) unless new_assignee == assignee
     update_user_action("creator",   [Action::CREATE, Action::NEW_VERSION])
     update_user_action("publisher", [Action::PUBLISH])
     update_user_action("archiver",  [Action::ARCHIVE])
@@ -133,7 +133,7 @@ module Workflow
   end
 
   def mark_as_rejected
-    self.inc(:rejected_count, 1)
+    self.inc(rejected_count: 1)
   end
 
   def previous_edition
@@ -185,7 +185,7 @@ module Workflow
         # collections, but share a model and relationships with eg actions.
         # Therefore, Panopticon might not find a user for an action.
         if action.requester
-          set(property, action.requester.name)
+          set(property => action.requester.name)
         end
       end
     end

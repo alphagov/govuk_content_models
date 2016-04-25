@@ -13,6 +13,8 @@ module GovukContentModels
         else
           edition.build_clone
         end
+
+        @edition.save(validate: false) if record_action?
       end
 
       def record_action?

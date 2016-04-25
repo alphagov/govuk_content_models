@@ -4,7 +4,7 @@ module BusinessSupport
 
     field :name, type: String
     field :slug, type: String
-    index :slug, unique: true
+    index({ slug: 1 }, unique: true)
 
     validates_presence_of :name
     validates_uniqueness_of :name

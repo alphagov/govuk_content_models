@@ -97,12 +97,17 @@ FactoryGirl.define do
         a = create(:artefact)
         a.id
       }
+    transient do
+      version_number nil
+    end
 
     sequence(:slug) { |n| "slug-#{n}" }
     sequence(:title) { |n| "A key answer to your question #{n}" }
 
-    after :build do |ed|
-      if previous = ed.series.order(version_number: "desc").first
+    after :build do |ed, evaluator|
+      if !evaluator.version_number.nil?
+        ed.version_number = evaluator.version_number
+      elsif (previous = ed.series.order(version_number: "desc").first)
         ed.version_number = previous.version_number + 1
       end
     end

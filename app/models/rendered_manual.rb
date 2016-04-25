@@ -11,7 +11,7 @@ class RenderedManual
   field :summary, type: String
   field :section_groups, type: Array
 
-  index "slug", unique: true
+  index({ slug: 1 }, unique: true)
 
   validates_uniqueness_of :slug
 end

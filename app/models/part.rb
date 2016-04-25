@@ -7,7 +7,7 @@ class Part
   embedded_in :programme_edition
   embedded_in :business_support_edition
 
-  scope :in_order, order_by(:order, :asc)
+  scope :in_order, lambda { order_by(order: :asc) }
 
   field :order,      type: Integer
   field :title,      type: String
@@ -20,7 +20,7 @@ class Part
   validates_presence_of :title
   validates_presence_of :slug
   validates_exclusion_of :slug, in: ["video"], message: "Can not be video"
-  validates_format_of :slug, with: /^[a-z0-9\-]+$/i
+  validates_format_of :slug, with: /\A[a-z0-9\-]+\Z/i
   validates_with SafeHtml
   validates_with LinkValidator
 end

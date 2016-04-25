@@ -6,15 +6,16 @@ class LicenceEditionTest < ActiveSupport::TestCase
   end
 
   should "have correct extra fields" do
-    l = FactoryGirl.build(:licence_edition, panopticon_id: @artefact.id)
-    l.licence_identifier = "AB1234"
-    l.licence_short_description = "Short description of licence"
-    l.licence_overview = "Markdown overview of licence..."
-    l.will_continue_on = "The HMRC website"
-    l.continuation_link = "http://www.hmrc.gov.uk"
-    l.safely.save!
+    l = FactoryGirl.create(
+      :licence_edition,
+      panopticon_id: @artefact.id,
+      licence_identifier: "AB1234",
+      licence_short_description: "Short description of licence",
+      licence_overview: "Markdown overview of licence...",
+      will_continue_on: "The HMRC website",
+      continuation_link: "http://www.hmrc.gov.uk"
+    )
 
-    l = LicenceEdition.first
     assert_equal "AB1234", l.licence_identifier
     assert_equal "Short description of licence", l.licence_short_description
     assert_equal "Markdown overview of licence...", l.licence_overview

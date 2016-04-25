@@ -156,13 +156,6 @@ class TagTest < ActiveSupport::TestCase
       assert_equal 'live', tag.state
     end
 
-    should "not mass-assign the state attribute" do
-      tag = Tag.create(@atts.merge(state: 'live'))
-      tag.reload
-
-      refute_equal 'live', tag.state
-    end
-
     should "not be created in another state" do
       tag = Tag.new(@atts)
       tag.state = 'foo'
@@ -187,7 +180,7 @@ class TagTest < ActiveSupport::TestCase
       tag.publish!
       tag.reload
 
-      assert_raises StateMachine::InvalidTransition do
+      assert_raises StateMachines::InvalidTransition do
         tag.publish!
       end
     end

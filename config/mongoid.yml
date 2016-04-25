@@ -1,6 +1,9 @@
 test:
-  host: localhost
-  database: govuk_content_shared_test
-  logger: false
-  use_activesupport_time_zone: true
-  autocreate_indexes: true
+  clients:
+    default:
+      database: govuk_content_shared_test
+      hosts:
+        - localhost
+  options:
+    use_activesupport_time_zone: true
+    log_level: :error

@@ -28,7 +28,7 @@ module Parted
   end
 
   def whole_body
-    self.parts.map {|i| %Q{\# #{i.title}\n\n#{i.body}} }.join("\n\n")
+    self.parts.in_order.map { |i| %(\# #{i.title}\n\n#{i.body}) }.join("\n\n")
   end
 
   private

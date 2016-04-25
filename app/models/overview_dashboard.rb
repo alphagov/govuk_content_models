@@ -7,7 +7,7 @@ class OverviewDashboard
   UNASSIGNED_KEY = "**UNASSIGNED**"
 
   field :dashboard_type,      type: String
-  field :result_group,        type: Integer
+  field :result_group,        type: String
   field :count,               type: Integer
   field :draft,               type: Integer
   field :amends_needed,       type: Integer

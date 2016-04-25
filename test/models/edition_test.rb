@@ -24,8 +24,8 @@ class EditionTest < ActiveSupport::TestCase
 
   def template_published_answer(version_number = 1)
     answer = template_answer(version_number)
-    answer.publish
-    answer.save
+    answer.publish!
+    answer.save!
     answer
   end
 
@@ -85,6 +85,16 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal [g1], g3.previous_siblings.to_a
   end
 
+  test "subsequent and previous siblings are in order" do
+    g4 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 4)
+    g2 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 2)
+    g1 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 1)
+    g3 = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, version_number: 3)
+
+    assert_equal [g2, g3, g4], g1.subsequent_siblings.to_a
+    assert_equal [g1, g2, g3], g4.previous_siblings.to_a
+  end
+
   test "A programme should have default parts" do
     programme = FactoryGirl.create(:programme_edition, panopticon_id: @artefact.id)
     assert_equal programme.parts.count, ProgrammeEdition::DEFAULT_PARTS.length
@@ -103,7 +113,7 @@ class EditionTest < ActiveSupport::TestCase
       edition.body += "some update"
 
       refute edition.valid?
-      assert_include edition.errors.full_messages, %q<Body ["Don't include hover text in links. Delete the text in quotation marks eg \\"This appears when you hover over the link.\\""]>
+      assert_includes edition.errors.full_messages, %q<Body ["Don't include hover text in links. Delete the text in quotation marks eg \\"This appears when you hover over the link.\\""]>
     end
 
     should "allow archiving an edition with invalid links" do
@@ -723,6 +733,8 @@ class EditionTest < ActiveSupport::TestCase
 
     second_edition = edition.build_clone
     second_edition.state = "ready"
+    second_edition.save!
+
     publish(user, second_edition, "Second publication")
 
     # simulate link validation errors in published edition
@@ -732,6 +744,8 @@ class EditionTest < ActiveSupport::TestCase
     # fix link validation error in cloned edition by appending a '/' to the relative url
     third_edition.parts.first.body = "[register your vehicle](/registering-an-imported-vehicle)"
     third_edition.state = "ready"
+    third_edition.save!
+
     publish(user, third_edition, "Third publication")
 
     edition.reload
@@ -854,7 +868,7 @@ class EditionTest < ActiveSupport::TestCase
   test "user should not be able to review an edition they requested review for" do
     user = User.create(name: "Mary")
 
-    edition = ProgrammeEdition.new(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
+    edition = ProgrammeEdition.create(title: "Childcare", slug: "childcare", panopticon_id: @artefact.id)
     assert edition.can_request_review?
     request_review(user, edition)
     refute request_amendments(user, edition)
@@ -1044,8 +1058,8 @@ class EditionTest < ActiveSupport::TestCase
       ed2 = FactoryGirl.build(:edition, :panopticon_id => @artefact.id)
       ed2.version_number = ed1.version_number
 
-      assert_raises Mongo::OperationFailure do
-        ed2.safely.save! :validate => false
+      assert_raises Mongo::Error::OperationFailure do
+        ed2.save! validate: false
       end
     end
   end
@@ -1195,7 +1209,7 @@ class EditionTest < ActiveSupport::TestCase
                                                      state: 'published')
       edition2 = edition1.build_clone
 
-      assert_equal edition1.updated_at, edition2.public_updated_at
+      assert_in_delta edition1.updated_at, edition2.public_updated_at, 1.second
     end
 
     should 'return the timestamp of the first published edition when there are no major updates' do
@@ -1209,8 +1223,8 @@ class EditionTest < ActiveSupport::TestCase
       end
       edition1.update_attributes!(state: 'archived', major_change: false)
 
-      assert_equal edition1.updated_at, edition2.public_updated_at
-      assert_not_equal edition2.updated_at, edition2.public_updated_at
+      assert_in_delta edition1.updated_at, edition2.public_updated_at, 1.second
+      assert_not_in_delta edition2.updated_at, edition2.public_updated_at, 1.second
     end
 
     should 'return nil if there are no major updates and no published editions' do

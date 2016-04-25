@@ -46,7 +46,7 @@ class LocalAuthority
     else
       interactions.excludes(
         lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION
-      ).order_by([:lgil_code, :asc]).first ||
+      ).order_by(lgil_code: :asc).first ||
       interactions.where(
         lgil_code: LocalInteraction::LGIL_CODE_PROVIDING_INFORMATION
       ).first

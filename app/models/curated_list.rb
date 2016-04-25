@@ -11,7 +11,7 @@ class CuratedList
   field "slug", type: String
   has_and_belongs_to_many :artefacts, class_name: "Artefact"
 
-  index "slug"
+  index slug: 1
 
   validates :slug, presence: true, uniqueness: true, slug: true
 
