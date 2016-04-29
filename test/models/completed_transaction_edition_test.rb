@@ -81,6 +81,15 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
         },
       }
     )
+    completed_transaction_edition.save(validate: false)
+    completed_transaction_edition.reload
+
+    completed_transaction_edition.promotion_choice = "register_to_vote"
+    completed_transaction_edition.promotion_choice_url = "https://www.gov.uk/register-to-vote"
+    completed_transaction_edition.save!
+
+    assert_equal "register_to_vote", completed_transaction_edition.reload.promotion_choice
+    assert_equal "https://www.gov.uk/register-to-vote", completed_transaction_edition.promotion_choice_url
 
     completed_transaction_edition.promotion_choice = "none"
     completed_transaction_edition.save!
@@ -93,13 +102,6 @@ class CompletedTransactionEditionTest < ActiveSupport::TestCase
 
     assert_equal "organ_donor", completed_transaction_edition.reload.promotion_choice
     assert_equal "https://www.organdonation.nhs.uk/registration/", completed_transaction_edition.promotion_choice_url
-
-    completed_transaction_edition.promotion_choice = "register_to_vote"
-    completed_transaction_edition.promotion_choice_url = "https://www.gov.uk/register-to-vote"
-    completed_transaction_edition.save!
-
-    assert_equal "register_to_vote", completed_transaction_edition.reload.promotion_choice
-    assert_equal "https://www.gov.uk/register-to-vote", completed_transaction_edition.promotion_choice_url
   end
 
   test "passes through legacy organ donor info" do
