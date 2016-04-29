@@ -5,7 +5,10 @@ require_relative 'simple_smart_answer_edition/node/option'
 class SimpleSmartAnswerEdition < Edition
   include Mongoid::Document
 
-  field :body, type: String
+  field :body,              type: String
+  field :start_button_text, type: String, default: "Start now"
+
+  validates_presence_of :start_button_text
 
   embeds_many :nodes, :class_name => "SimpleSmartAnswerEdition::Node"
 
@@ -34,11 +37,11 @@ class SimpleSmartAnswerEdition < Edition
 
   # Workaround mongoid conflicting mods error
   # See https://jira.mongodb.org/browse/MONGOID-1220
-  # Override update_attributes so that nested nodes are updated individually. 
-  # This get around the problem of mongoid issuing a query with conflicting modifications 
-  # to the same document. 
+  # Override update_attributes so that nested nodes are updated individually.
+  # This get around the problem of mongoid issuing a query with conflicting modifications
+  # to the same document.
   alias_method :original_update_attributes, :update_attributes
-  
+
   def update_attributes(attributes)
     if nodes_attrs = attributes.delete(:nodes_attributes)
       nodes_attrs.each do |index, node_attrs|
