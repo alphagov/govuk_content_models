@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 35.0.1
+
+- Handle saving changes to promotion toggles correctly for existing documents [#381](https://github.com/alphagov/govuk_content_models/pull/381)
+
 ## 35.0.0
 
 - Upgrade to Mongoid 5.1 and Rails 4.2
