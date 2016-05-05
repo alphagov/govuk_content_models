@@ -6,9 +6,9 @@ class SimpleSmartAnswerEdition < Edition
       include Mongoid::Document
 
       embedded_in :node, :class_name => "SimpleSmartAnswerEdition::Node"
-      embeds_many :conditions, :class_name => "SimpleSmartAnswerEdition::Node::Option::Condition"
+      embeds_many :conditions, class_name: "SimpleSmartAnswerEdition::Node::Option::Condition"
 
-      accepts_nested_attributes_for :conditions, :allow_destroy => true
+      accepts_nested_attributes_for :conditions, allow_destroy: true
 
       field :label, type: String
       field :slug, type: String
@@ -33,9 +33,9 @@ class SimpleSmartAnswerEdition < Edition
 
       def either_next_node_or_conditions
         if next_node
-          errors.add(:conditions, "cannot be added when the next node is defined") if conditions.present? and conditions.any?
+          errors.add(:conditions, "cannot be added when the next node is defined") if conditions.present? && conditions.any?
         else
-          errors.add(:next_node, "must be populated when there are no conditions defined") unless conditions.present? and conditions.any?
+          errors.add(:next_node, "must be populated when there are no conditions defined") unless conditions.present? && conditions.any?
         end
       end
     end

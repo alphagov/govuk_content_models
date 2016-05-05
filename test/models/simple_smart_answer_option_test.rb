@@ -134,7 +134,7 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
 
         @option.reload
         assert_equal 2, @option.conditions.count
-        assert_equal ["Yes", "No"], @option.conditions.all.map(&:label)
+        assert_equal %w(Yes No), @option.conditions.all.map(&:label)
         assert_equal ["question-1", "question-2"], @option.conditions.all.map(&:slug)
         assert_equal ["question-3", "question-4"], @option.conditions.all.map(&:next_node)
       end
