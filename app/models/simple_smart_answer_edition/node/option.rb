@@ -6,6 +6,7 @@ class SimpleSmartAnswerEdition < Edition
       include Mongoid::Document
 
       embedded_in :node, :class_name => "SimpleSmartAnswerEdition::Node"
+      embeds_many :conditions, :class_name => "SimpleSmartAnswerEdition::Node::Option::Condition"
 
       field :label, type: String
       field :slug, type: String
