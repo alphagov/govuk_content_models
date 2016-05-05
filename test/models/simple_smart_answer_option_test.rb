@@ -93,5 +93,69 @@ class SimpleSmartAnswerOptionTest < ActiveSupport::TestCase
         end
       end
     end
+
+    context "conditions" do
+      should "be able to create an option without conditions" do
+        @option = @node.options.build(@atts.merge(conditions_attributes: []))
+
+        assert @option.valid?
+        assert @option.save!
+      end
+
+      should "not be valid if an option has both a next node and conditions" do
+        @option = @node.options.build(@atts.merge(conditions_attributes: [
+          { label: "Yes", slug: "question-1", next_node: "question-3" }
+        ]))
+
+        refute @option.valid?
+        assert @option.errors.keys.include?(:conditions)
+      end
+
+      should "not be valid if there are neither a next node nor conditions" do
+        @option = @node.options.build(@atts.merge(next_node: nil, conditions_attributes: []))
+
+        refute @option.valid?
+        assert @option.errors.keys.include?(:next_node)
+      end
+
+      should "be able to create conditions if there is no next node on the option" do
+        @option = @node.options.build(@atts.merge(next_node: nil, conditions_attributes: [
+          { label: "Yes", slug: "question-1", next_node: "question-3" }
+        ]))
+
+        assert @option.valid?
+      end
+
+      should "be able to create conditions using nested attributes" do
+        @option = @node.options.create!(@atts.merge(next_node: nil, conditions_attributes: [
+          { label: "Yes", slug: "question-1", next_node: "question-3" },
+          { label: "No", slug: "question-2", next_node: "question-4" }
+        ]))
+
+        @option.reload
+        assert_equal 2, @option.conditions.count
+        assert_equal ["Yes", "No"], @option.conditions.all.map(&:label)
+        assert_equal ["question-1", "question-2"], @option.conditions.all.map(&:slug)
+        assert_equal ["question-3", "question-4"], @option.conditions.all.map(&:next_node)
+      end
+
+      should "be able to destroy conditions using nested attributes" do
+        @option = @node.options.create!(@atts.merge(next_node: nil, conditions_attributes: [
+          { label: "Yes", slug: "question-1", next_node: "question-3" },
+          { label: "No", slug: "question-2", next_node: "question-4" }
+        ]))
+        assert_equal 2, @option.conditions.count
+
+        @option.update_attributes!(conditions_attributes: {
+          "1" => { "id" => @option.conditions.first.id, "_destroy" => "1" }
+        })
+        @node.reload
+
+        assert_equal 1, @option.conditions.count
+        assert_equal ["No"], @option.conditions.all.map(&:label)
+        assert_equal ["question-2"], @option.conditions.all.map(&:slug)
+        assert_equal ["question-4"], @option.conditions.all.map(&:next_node)
+      end
+    end
   end
 end
