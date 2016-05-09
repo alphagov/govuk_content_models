@@ -32,7 +32,7 @@ class SimpleSmartAnswerEdition < Edition
       end
 
       def either_next_node_or_conditions
-        if next_node
+        if next_node.present?
           errors.add(:conditions, "cannot be added when the next node is defined") if conditions.present? && conditions.any?
         else
           errors.add(:next_node, "must be populated when there are no conditions defined") unless conditions.present? && conditions.any?
