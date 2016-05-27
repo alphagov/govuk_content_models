@@ -48,7 +48,7 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
     kind            Artefact::FORMATS.first
     owning_app      'publisher'
-    content_id      { SecureRandom.uuid } 
+    content_id      { SecureRandom.uuid }
 
     trait :whitehall do
       sequence(:slug) {|n| "government/slug--#{n}"}
