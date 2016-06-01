@@ -9,6 +9,9 @@ class SimpleSmartAnswerEdition < Edition
         field :slug, type: String
         field :label, type: String
         field :next_node, type: String
+        field :order, type: Integer
+
+        default_scope lambda { order_by(order: :asc) }
 
         validates :slug, :label, :next_node, presence: true
         validates :slug, format: { with: /\A[a-z0-9-]+\z/ }
