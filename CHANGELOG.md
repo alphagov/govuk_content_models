@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 36.0.0
+
+- Remove fields from LocalAuthority
+  - `contact_address`
+  - `contact_url`
+  - `contact_phone`
+  - `contact_email`
+
 ## 35.0.1
 
 - Handle saving changes to promotion toggles correctly for existing documents [#381](https://github.com/alphagov/govuk_content_models/pull/381)
