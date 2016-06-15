@@ -48,7 +48,7 @@ FactoryGirl.define do
     sequence(:slug) { |n| "slug-#{n}" }
     kind            Artefact::FORMATS.first
     owning_app      'publisher'
-    content_id      { SecureRandom.uuid } 
+    content_id      { SecureRandom.uuid }
 
     trait :whitehall do
       sequence(:slug) {|n| "government/slug--#{n}"}
@@ -214,13 +214,6 @@ FactoryGirl.define do
     sequence(:snac) {|n| "%02dAA" % n }
     sequence(:local_directgov_id)
     tier "county"
-  end
-
-  factory :local_authority_with_contact, parent: :local_authority do
-    contact_address ["line one", "line two", "line three"]
-    contact_url "http://www.magic.com/contact"
-    contact_phone "0206778654"
-    contact_email "contact@local.authority.gov.uk"
   end
 
   factory :local_interaction do

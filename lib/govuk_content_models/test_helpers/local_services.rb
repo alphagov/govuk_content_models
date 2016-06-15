@@ -1,6 +1,6 @@
 module LocalServicesHelper
   def make_authority(tier, options)
-    authority = FactoryGirl.create(:local_authority_with_contact,
+    authority = FactoryGirl.create(:local_authority,
                                    snac: options[:snac], tier: tier)
     add_service_interaction(authority, options[:lgsl]) if options[:lgsl]
     authority
