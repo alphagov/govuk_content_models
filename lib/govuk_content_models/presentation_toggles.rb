@@ -3,34 +3,8 @@ module PresentationToggles
 
   included do
     field :presentation_toggles, type: Hash, default: default_presentation_toggles
-    validates_presence_of :organ_donor_registration_url, if: :promote_organ_donor_registration?
     validates :promotion_choice_url, presence: true, if: :promotes_something?
     validates :promotion_choice, inclusion: { in: %w(none organ_donor register_to_vote) }
-  end
-
-  def promote_organ_donor_registration=(value)
-    value = value.is_a?(Boolean) ? value : value != '0' # if assigned using a checkbox
-    organ_donor_registration_key['promote_organ_donor_registration'] = value
-  end
-
-  def promote_organ_donor_registration
-    organ_donor_registration_key['promote_organ_donor_registration']
-  end
-  alias_method :promote_organ_donor_registration?, :promote_organ_donor_registration
-
-  def organ_donor_registration_url=(value)
-    organ_donor_registration_key['organ_donor_registration_url'] = value
-  end
-
-  def organ_donor_registration_url
-    organ_donor_registration_key['organ_donor_registration_url']
-  end
-
-  def organ_donor_registration_key
-    unless presentation_toggles.key? 'organ_donor_registration'
-      presentation_toggles['organ_donor_registration'] = self.class.default_presentation_toggles['organ_donor_registration']
-    end
-    presentation_toggles['organ_donor_registration']
   end
 
   def promotion_choice=(value)
@@ -42,17 +16,8 @@ module PresentationToggles
   end
 
   def promotion_choice
-    has_legacy_promote = promote_organ_donor_registration
     choice = promotion_choice_key["choice"]
-    if choice.empty?
-      if has_legacy_promote
-        "organ_donor"
-      else
-        "none"
-      end
-    else
-      choice
-    end
+    choice.empty? ? "none" : choice
   end
 
   def promotes_something?
@@ -60,8 +25,7 @@ module PresentationToggles
   end
 
   def promotion_choice_url
-    url = promotion_choice_key["url"]
-    url.empty? ? organ_donor_registration_url : url
+    promotion_choice_key["url"]
   end
 
   def promotion_choice_key
@@ -74,11 +38,6 @@ module PresentationToggles
   module ClassMethods
     def default_presentation_toggles
       {
-        'organ_donor_registration' =>
-          {
-            'promote_organ_donor_registration' => false,
-            'organ_donor_registration_url' => ''
-          },
         'promotion_choice' =>
           {
             'choice' => '',
