@@ -20,141 +20,52 @@ class LocalServiceTest < ActiveSupport::TestCase
       tier: "county",
       snac: "AA00"
     )
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: @county_council,
-      lgsl_code:       @lgsl_code,
-      url:             "http://some.county.council.gov/do-123.html"
-    )
     @district_council = FactoryGirl.create(
       :local_authority,
       tier: "district",
       snac: "AA"
-    )
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: @district_council,
-      lgsl_code:       @lgsl_code,
-      url:             "http://some.district.council.gov/do-123.html"
     )
     @unitary_authority = FactoryGirl.create(
       :local_authority,
       tier: "unitary",
       snac: "BB00"
     )
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: @unitary_authority,
-      lgsl_code:       @lgsl_code,
-      url:             "http://some.unitary.council.gov/do-123.html"
-    )
   end
 
-  test "should return county URL for county/UA service in county" do
-    service = create_service_for_tiers(:county, :unitary)
-    councils = [@county_council.snac, @district_council.snac]
-    assert_equal "http://some.county.council.gov/do-123.html",
-                 service.preferred_interaction(councils).url
+  test "should not list a county as providing a service for districts" do
+    service = create_service_for_tiers(:district, :unitary)
+
+    refute_includes service.provided_by.map(&:snac), @county_council.snac
   end
 
-  test "should return UA URL for county/UA service in UA" do
+  test "should not list a district as providing a service for counties" do
     service = create_service_for_tiers(:county, :unitary)
-    councils = [@unitary_authority.snac]
-    assert_equal "http://some.unitary.council.gov/do-123.html",
-                 service.preferred_interaction(councils).url
+
+    refute_includes service.provided_by.map(&:snac), @district_council.snac
   end
 
-  test "should return nil for county/UA service in district" do
+  test "should list a county as providing a service for counties and unitaries" do
     service = create_service_for_tiers(:county, :unitary)
-    councils = [@district_council.snac]
-    assert_nil service.preferred_interaction(councils)
-  end
 
-  test "should allow overriding returned LGIL" do
-    FactoryGirl.create(:local_interaction,
-      local_authority: @county_council,
-      lgsl_code:       @lgsl_code,
-      lgil_code:       12,
-      url:             "http://some.county.council.gov/do-456.html"
-    )
-    service = create_service_for_tiers(:county, :unitary)
-    councils = [@county_council.snac, @district_council.snac]
-    assert_equal "http://some.county.council.gov/do-456.html",
-                 service.preferred_interaction(councils, 12).url
-  end
-
-  test "should not list a county (in a UA) as providing a service it does not provide" do
-    service = create_service_for_tiers(:county, :unitary)
-    other_service = service.lgsl_code.to_i + 1
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: @county_council,
-      lgsl_code:       other_service
-    )
-    authority = FactoryGirl.create(
-      :local_authority,
-      tier: "county",
-      snac: "CC00"
-    )
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: authority,
-      lgsl_code:       other_service
-    )
-
-    refute_includes service.provided_by.map(&:snac), "CC00"
-  end
-
-  test "should not list a UA as providing a service it does not provide" do
-    service = create_service_for_tiers(:county, :unitary)
-    other_service = service.lgsl_code.to_i + 1
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: @county_council,
-      lgsl_code:       other_service
-    )
-    authority = FactoryGirl.create(
-      :local_authority,
-      tier: "unitary",
-      snac: "CC01"
-    )
-    FactoryGirl.create(
-      :local_interaction,
-      local_authority: authority,
-      lgsl_code:       other_service
-    )
-
-    refute_includes service.provided_by.map(&:snac), "CC01"
-  end
-
-  test "should list a county (in a UA) that provides a service" do
-    service = create_service_for_tiers(:county, :unitary)
     assert_includes service.provided_by.map(&:snac), @county_council.snac
   end
 
-  test "should list a UA that provides a service" do
+  test "should list a district as providing a service for districts and unitaries" do
+    service = create_service_for_tiers(:district, :unitary)
+
+    assert_includes service.provided_by.map(&:snac), @district_council.snac
+  end
+
+  test "should list a UA as providing a service for counties and unitaries" do
     service = create_service_for_tiers(:county, :unitary)
+
     assert_includes service.provided_by.map(&:snac), @unitary_authority.snac
   end
 
-  test "should return district URL for district/UA service in county/district" do
-    service = create_service_for_tiers(:district, :unitary)
-    councils = [@county_council.snac, @district_council.snac]
-    assert_equal "http://some.district.council.gov/do-123.html",
-                 service.preferred_interaction(councils).url
-  end
+  test "should list a UA as providing a service for districts and unitaries" do
+    service = create_service_for_tiers(:county, :unitary)
 
-  test "should return UA URL for district/UA service in UA" do
-    service = create_service_for_tiers(:district, :unitary)
-    councils = [@unitary_authority.snac]
-    assert_match "http://some.unitary.council.gov/do-123.html",
-                 service.preferred_interaction(councils).url
-  end
-
-  test "should return nil for district/UA service in county" do
-    service = create_service_for_tiers(:district, :unitary)
-    councils = [@county_council.snac]
-    assert_nil service.preferred_interaction(councils)
+    assert_includes service.provided_by.map(&:snac), @unitary_authority.snac
   end
 
   test "should list only districts and UAs as providers" do
@@ -163,29 +74,6 @@ class LocalServiceTest < ActiveSupport::TestCase
     assert_equal 2, providers.length
     assert_includes providers.map(&:snac), @district_council.snac
     assert_includes providers.map(&:snac), @unitary_authority.snac
-  end
-
-  test "should return district URL for both-tier service in county/district" do
-    service = create_service_for_tiers("district", "unitary", "county")
-    councils = [@county_council.snac, @district_council.snac]
-    url = service.preferred_interaction(councils).url
-    assert_equal "http://some.district.council.gov/do-123.html", url
-  end
-
-  test "should return UA URL for both-tier service in UA" do
-    service = create_service_for_tiers("district", "unitary", "county")
-    councils = [@unitary_authority.snac]
-    url = service.preferred_interaction(councils).url
-    assert_equal "http://some.unitary.council.gov/do-123.html", url
-  end
-
-  # This shouldn't really ever happen and suggests that the data
-  # is incorrect somehow, but we might as well fall back to county council
-  test "should return county URL for both-tier service in county" do
-    service = create_service_for_tiers("district", "unitary", "county")
-    councils = [@county_council.snac]
-    url = service.preferred_interaction(councils).url
-    assert_equal "http://some.county.council.gov/do-123.html", url
   end
 
   test "should list all authorities providing a both-tier service" do

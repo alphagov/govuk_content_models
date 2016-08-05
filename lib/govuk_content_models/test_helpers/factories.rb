@@ -216,13 +216,6 @@ FactoryGirl.define do
     tier "county"
   end
 
-  factory :local_interaction do
-    association :local_authority
-    url "http://some.council.gov/do.html"
-    sequence(:lgsl_code) {|n| 120 + n }
-    lgil_code 0
-  end
-
   factory :place_edition, parent: :edition, class: 'PlaceEdition'  do
     title "Far far away"
     introduction "Test introduction"
