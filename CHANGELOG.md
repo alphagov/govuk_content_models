@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 38.0.0
+
+- Removed LocalInteraction model as this information is now obtained from Local
+Links Manager [#389](https://github.com/alphagov/govuk_content_models/pull/389)
+
+## 37.0.0
+
+- Removed old style (organ donor registration) promotion code [#387](https://github.com/alphagov/govuk_content_models/pull/387)
+
 ## 36.0.0
 
 - Remove fields from LocalAuthority
