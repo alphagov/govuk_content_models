@@ -32,7 +32,7 @@ class LocalTransactionEdition < Edition
 
   def service_provided_by?(snac)
     authority = LocalAuthority.find_by_snac(snac)
-    authority && authority.provides_service?(lgsl_code)
+    authority && service.provided_by.include?(authority)
   end
 
   def whole_body
