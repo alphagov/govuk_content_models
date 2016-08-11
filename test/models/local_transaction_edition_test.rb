@@ -11,40 +11,6 @@ class LocalTransactionEditionTest < ActiveSupport::TestCase
     @artefact = FactoryGirl.create(:artefact)
   end
 
-  test "should report that an authority provides a service if the snac references a real authority in the same tier" do
-    bins_transaction = LocalTransactionEdition.new(
-      lgsl_code:     BINS,
-      title:         "Transaction",
-      slug:          "slug",
-      panopticon_id: @artefact.id
-    )
-    make_service(BINS, %w(county unitary))
-    county_council = make_authority('county', snac: '00PP')
-    assert bins_transaction.service_provided_by?(county_council.snac)
-  end
-
-  test "should report that an authority does not provide a service if the snac does not reference a real authority" do
-    bins_transaction = LocalTransactionEdition.new(
-      lgsl_code:     BINS,
-      title:         "Transaction",
-      slug:          "slug",
-      panopticon_id: @artefact.id
-    )
-    refute bins_transaction.service_provided_by?('No-Such-SNAC')
-  end
-
-  test "should report that an authority does not provide a service if the snac references a real authority in the wrong tier" do
-    bins_transaction = LocalTransactionEdition.new(
-      lgsl_code:     BINS,
-      title:         "Transaction",
-      slug:          "slug",
-      panopticon_id: @artefact.id
-    )
-    make_service(BINS, %w(district unitary))
-    county_council = make_authority('county', snac: '00ZZ')
-    refute bins_transaction.service_provided_by?(county_council.snac)
-  end
-
   test "should be a transaction search format" do
     bins_transaction = LocalTransactionEdition.new(
       lgsl_code:     BINS,

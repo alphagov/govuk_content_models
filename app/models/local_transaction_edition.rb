@@ -30,11 +30,6 @@ class LocalTransactionEdition < Edition
     LocalService.find_by_lgsl_code(lgsl_code)
   end
 
-  def service_provided_by?(snac)
-    authority = LocalAuthority.find_by_snac(snac)
-    authority && service.provided_by.include?(authority)
-  end
-
   def whole_body
     self.introduction
   end
