@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 40.0.0
+
+- Removed `need_extended_font` attribute
+
 ## 39.0.0
 
 - Removed LocalAuthority model as this information is now obtained from Local Links Manager [#391](https://github.com/alphagov/govuk_content_models/pull/391)
