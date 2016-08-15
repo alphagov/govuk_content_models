@@ -27,7 +27,6 @@ class ArtefactActionTest < ActiveSupport::TestCase
     "paths" => [],
     "prefixes" => [],
     "language" => "en",
-    "need_extended_font" => false
   }
 
   def base_fields
