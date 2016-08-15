@@ -530,20 +530,6 @@ class ArtefactTest < ActiveSupport::TestCase
 
       assert ! a.valid?
     end
-
-    should "has has_extended_chars field set to false by default" do
-      a = Artefact.new
-      assert_equal false, a.need_extended_font
-    end
-
-    should "allow has_extended_chars to be set" do
-      a = FactoryGirl.build(:artefact)
-      a.need_extended_font = true
-      a.save
-
-      a = Artefact.first
-      assert_equal true, a.need_extended_font
-    end
   end
 
   context "returning json representation" do
