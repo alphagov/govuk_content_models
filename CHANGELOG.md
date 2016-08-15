@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 39.0.0
+
+- Removed LocalAuthority model as this information is now obtained from Local Links Manager [#391](https://github.com/alphagov/govuk_content_models/pull/391)
+
 ## 38.0.0
 
 - Removed LocalInteraction model as this information is now obtained from Local
