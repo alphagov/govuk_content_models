@@ -1,5 +1,4 @@
 require "csv"
-require "local_authority"
 require "safe_html"
 
 class LocalService
@@ -18,23 +17,4 @@ class LocalService
   def self.find_by_lgsl_code(lgsl_code)
     LocalService.where(lgsl_code: lgsl_code).first
   end
-
-  def preferred_provider(snac_or_snac_list)
-    snac_list = [*snac_or_snac_list]
-    providers = LocalAuthority.for_snacs(snac_list)
-    select_tier(providers)
-  end
-
-  def provided_by
-    LocalAuthority.any_in(tier: providing_tier)
-  end
-
-private
-
-  def select_tier(authorities)
-    by_tier = Hash[authorities.map {|a| [a.tier, a]}]
-    tier = providing_tier.find { |t| by_tier.has_key?(t) }
-    tier && by_tier[tier]
-  end
-
 end
