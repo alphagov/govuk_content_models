@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 41.0.0
+
+- Add start button text attribute for SimpleSmartAnswerEdition
+
 ## 40.0.0
 
 - Removed `need_extended_font` attribute
