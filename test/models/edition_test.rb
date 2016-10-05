@@ -890,12 +890,6 @@ class EditionTest < ActiveSupport::TestCase
     refute edition.can_publish?
   end
 
-  test "a draft edition can be emergency published" do
-    edition = FactoryGirl.create(:guide_edition, panopticon_id: @artefact.id, state: "draft")
-    assert edition.can_emergency_publish?
-  end
-
-
   # test denormalisation
 
   test "should denormalise an edition with an assigned user and action requesters" do
