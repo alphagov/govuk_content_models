@@ -86,10 +86,6 @@ module Workflow
         transition [:ready, :scheduled_for_publishing] => :published
       end
 
-      event :emergency_publish do
-        transition draft: :published
-      end
-
       event :archive do
         transition all => :archived, :unless => :archived?
       end
