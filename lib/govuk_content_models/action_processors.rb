@@ -18,6 +18,7 @@ module GovukContentModels
       publish: 'PublishProcessor',
       archive: 'ArchiveProcessor',
       new_version: 'NewVersionProcessor',
+      skip_review: 'SkipReviewProcessor',
     }
   end
 end

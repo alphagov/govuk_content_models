@@ -149,6 +149,21 @@ class WorkflowTest < ActiveSupport::TestCase
     assert edition.can_publish?
   end
 
+  test "skip review workflow" do
+    user = FactoryGirl.create(:user, name: "Ben", permissions: ["skip_review"])
+    other = FactoryGirl.create(:user, name: "Ben", permissions: ["signin"])
+
+    edition = user.create_edition(:guide, title: "My Title", slug: "my-title", panopticon_id: @artefact.id)
+
+    assert edition.can_request_review?
+    request_review(user, edition)
+    assert edition.can_skip_review?
+    refute skip_review(other, edition)
+    assert skip_review(user, edition)
+    assert edition.ready?
+    assert edition.can_publish?
+  end
+
   test "when fact check has been initiated it can be skipped" do
     user = FactoryGirl.create(:user, name: "Ben")
     other_user = FactoryGirl.create(:user, name: "James")

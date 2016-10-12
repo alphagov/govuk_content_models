@@ -34,6 +34,10 @@ module GovukContentModels
           publish_at: action_attributes[:publish_at] || Time.zone.now.utc,
           comment: action_attributes[:comment] || 'Schedule!' })
       end
+
+      def skip_review(user, edition)
+        user.progress(edition, request_type: :skip_review, comment: "Skipping review as this is an out of hours urgent update.")
+      end
     end
   end
 end
