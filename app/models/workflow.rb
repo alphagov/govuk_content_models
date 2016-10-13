@@ -28,7 +28,7 @@ module Workflow
         edition.publish_at = nil
       end
 
-      before_transition on: [:approve_review, :request_amendments] do |edition, transition|
+      before_transition on: [:approve_review, :skip_review, :request_amendments] do |edition, _transition|
         edition.reviewer = nil
       end
 
@@ -54,6 +54,10 @@ module Workflow
 
       event :request_amendments do
         transition [:fact_check_received, :in_review, :ready, :fact_check] => :amends_needed
+      end
+
+      event :skip_review do
+        transition in_review: :ready
       end
 
       # Editions can optionally be sent out for fact check
