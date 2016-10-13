@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 41.1.0
+
+- Adds 'skip review' Edition workflow processor
+
 ## 41.0.0
 
 - Add start button text attribute for SimpleSmartAnswerEdition
