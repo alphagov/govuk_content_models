@@ -1,4 +1,4 @@
-require "workflow"
+require_dependency "workflow"
 
 class Edition
   include Mongoid::Document
