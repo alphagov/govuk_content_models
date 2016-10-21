@@ -1,7 +1,7 @@
 require "digest/md5"
 require "cgi"
 require "gds-sso/user"
-require "safe_html"
+require_dependency "safe_html"
 
 class User
   include Mongoid::Document

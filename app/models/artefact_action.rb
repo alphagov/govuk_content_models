@@ -1,4 +1,4 @@
-require "safe_html"
+require_dependency "safe_html"
 
 class ArtefactAction
   include Mongoid::Document

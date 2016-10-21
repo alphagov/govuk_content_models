@@ -1,5 +1,5 @@
 require "traits/taggable"
-require "safe_html"
+require_dependency "safe_html"
 
 class CuratedList
   include Mongoid::Document
