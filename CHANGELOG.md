@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Use `require_dependency` to avoid warnings in publisher sidekiq in development mode
+
 ## 41.1.0
 
 - Adds 'skip review' Edition workflow processor
