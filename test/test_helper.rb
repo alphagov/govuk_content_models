@@ -3,6 +3,15 @@ ENV["RACK_ENV"] = "test"
 require "bundler/setup"
 
 require "active_support/test_case"
+
+# NOTE: this test_helper does not introduce enough of rails to make
+# require_dependency to be available, requiring "active_support/dependencies"
+# causes the tests to fail, so we introduce our own require_dependency
+# that simply passes through to require
+def require_dependency(*args)
+  require(*args)
+end
+
 require "shoulda/context"
 require "minitest/autorun"
 require "mocha/mini_test"
