@@ -1,4 +1,4 @@
-require "safe_html"
+require_dependency "safe_html"
 require 'tag_id_validator'
 require 'state_machines-mongoid'
 

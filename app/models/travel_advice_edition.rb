@@ -1,7 +1,7 @@
 require 'attachable'
 require 'parted'
 require 'state_machines-mongoid'
-require 'safe_html'
+require_dependency 'safe_html'
 
 class TravelAdviceEdition
   include Mongoid::Document

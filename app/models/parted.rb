@@ -1,4 +1,4 @@
-require "part"
+require_dependency "part"
 
 module Parted
   def self.included(klass)
