@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 41.1.1
+
 - Use `require_dependency` to avoid warnings in publisher sidekiq in development mode
 
 ## 41.1.0
