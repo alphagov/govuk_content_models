@@ -1,7 +1,6 @@
 require "factory_girl"
 require "answer_edition"
 require "artefact"
-require "tag"
 require "user"
 
 FactoryGirl.define do
@@ -24,23 +23,6 @@ FactoryGirl.define do
     start_time (Date.today + 1).to_time + (15 * 60 * 60)
     end_time (Date.today + 1).to_time + (18 * 60 * 60)
     artefact
-  end
-
-  factory :tag do
-    sequence(:tag_id) { |n| "crime-and-justice-#{n}" }
-    sequence(:title) { |n| "The title #{n}" }
-    tag_type "section"
-
-    trait :draft do
-      state "draft"
-    end
-
-    trait :live do
-      state "live"
-    end
-
-    factory :draft_tag, traits: [:draft]
-    factory :live_tag, traits: [:live]
   end
 
   factory :artefact do

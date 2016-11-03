@@ -1,5 +1,4 @@
 require "plek"
-require "traits/taggable"
 require "artefact_action"  # Require this when running outside Rails
 require_dependency "safe_html"
 
@@ -14,11 +13,6 @@ end
 class Artefact
   include Mongoid::Document
   include Mongoid::Timestamps
-
-  include Taggable
-  stores_tags_for :sections, :writing_teams, :propositions,
-                  :keywords, :specialist_sectors, :organisations
-  has_primary_tag_for :section
 
   field "name",                 type: String
   field "slug",                 type: String
@@ -59,8 +53,6 @@ class Artefact
         _id: 1
 
   scope :not_archived, lambda { where(:state.nin => ["archived"]) }
-
-  MAXIMUM_RELATED_ITEMS = 8
 
   FORMATS_BY_DEFAULT_OWNING_APP = {
     "publisher"               => ["answer",
@@ -124,7 +116,6 @@ class Artefact
                                   "world_location_news_article",
                                   "worldwide_priority",
                                   "written_statement"],
-    "panopticon"              => ["specialist_sector"],
   }.freeze
 
   FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
@@ -141,7 +132,6 @@ class Artefact
     "find my nearest"                  => "place",
   }.tap { |h| h.default_proc = -> _, k { k } }.freeze
 
-  has_and_belongs_to_many :related_artefacts, class_name: "Artefact"
   embeds_many :actions, class_name: "ArtefactAction", order: { created_at: :asc }
 
   embeds_many :external_links, class_name: "ArtefactExternalLink"
@@ -165,27 +155,12 @@ class Artefact
   validate :format_of_new_need_ids, if: :need_ids_changed?
   validate :validate_redirect_url
 
-  scope :relatable_items, proc {
-    where(:kind.ne => "completed_transaction", :state.ne => "archived")
-      .order_by(name: :asc)
-  }
-
   def self.in_alphabetical_order
     order_by(name: :asc)
   end
 
   def self.find_by_slug(s)
     where(slug: s).first
-  end
-
-  # The old-style section string identifier, of the form 'Crime:Prisons'
-  def section
-    return '' unless self.primary_section
-    if primary_section.parent
-      [primary_section.parent.title, primary_section.title].join ':'
-    else
-      primary_section.title
-    end
   end
 
   # Fallback to english if no language is present
@@ -204,67 +179,10 @@ class Artefact
     ].reject(&:blank?).join("?")
   end
 
-  # TODO: Replace this nonsense with a proper API layer.
   def as_json(options={})
     super.tap { |hash|
-      if hash["tag_ids"]
-        hash["tags"] = Tag.by_tag_ids(hash["tag_ids"]).map(&:as_json)
-      else
-        hash["tag_ids"] = []
-        hash["tags"] = []
-      end
-
-      if self.primary_section
-        hash['primary_section'] = self.primary_section.tag_id
-      end
-
-      unless options[:ignore_related_artefacts]
-        hash["related_items"] = published_related_artefacts.map do |a|
-          {"artefact" => a.as_json(ignore_related_artefacts: true)}
-        end
-      end
-      hash.delete("related_artefacts")
-      hash.delete("related_artefact_ids")
       hash["id"] = hash.delete("_id")
-
-      # Add a section identifier if needed
-      hash["section"] ||= section
     }
-  end
-
-  def published_related_artefacts
-    related_artefacts.select do |related_artefact|
-      if related_artefact.owning_app == "publisher"
-        related_artefact.any_editions_published?
-      else
-        true
-      end
-    end
-  end
-
-  # Pass in the desired scope, eg self.related_artefacts.live,
-  # get back the items in the order they were set in, rather than natural order
-  def ordered_related_artefacts(scope_or_array = self.related_artefacts)
-    scope_or_array.sort_by { |artefact| related_artefact_ids.index(artefact.id) }
-  end
-
-  def related_artefacts_grouped_by_distance(scope_or_array = self.related_artefacts)
-    groups = { "subsection" => [], "section" => [], "other" => [] }
-    scoped_artefacts = ordered_related_artefacts(scope_or_array)
-
-    if primary_tag = self.primary_section
-      groups['subsection'] = scoped_artefacts.select {|a| a.tag_ids.include?(primary_tag.tag_id) }
-
-      if primary_tag.parent_id.present?
-        pattern = Regexp.new "^#{Regexp.quote(primary_tag.parent_id)}\/.+"
-        groups['section'] = scoped_artefacts.reject {|a| groups['subsection'].include?(a) }.select {|a|
-          a.tag_ids.grep(pattern).count > 0
-        }
-      end
-    end
-    groups['other'] = scoped_artefacts.reject {|a| (groups['subsection'] + groups['section']).include?(a) }
-
-    groups
   end
 
   def any_editions_published?
@@ -370,9 +288,6 @@ class Artefact
   def snapshot
     attributes
       .except("_id", "created_at", "updated_at", "actions")
-      .merge(
-        "related_artefact_ids" => self.related_artefact_ids
-      )
   end
 
   def need_id=(new_need_id)
