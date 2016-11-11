@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## Unreleased
+## 42.0.0
 
-- Remove everything related to tagging and related links. We now use the content 
+- Remove everything related to tagging and related links. We now use the content
   store for this.
 
 ## 41.1.1
