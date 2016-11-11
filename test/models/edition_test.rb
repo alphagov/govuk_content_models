@@ -14,8 +14,6 @@ class EditionTest < ActiveSupport::TestCase
     artefact = FactoryGirl.create(:artefact,
         kind: "answer",
         name: "Foo bar",
-        # primary_section: "test-section",
-        # sections: ["test-section"],
         owning_app: "publisher")
 
     AnswerEdition.create(state: "ready", slug: "childcare", panopticon_id: artefact.id,
@@ -490,13 +488,10 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should not change edition metadata if archived" do
-    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
         owning_app: "publisher",
     )
 
@@ -588,9 +583,6 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should also delete associated artefact" do
-
-    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
-
     user1 = FactoryGirl.create(:user)
     edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
 
@@ -600,8 +592,6 @@ class EditionTest < ActiveSupport::TestCase
   end
 
   test "should not delete associated artefact if there are other editions of this publication" do
-
-    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     user1 = FactoryGirl.create(:user)
     edition = AnswerEdition.find_or_create_from_panopticon_data(@artefact.id, user1)
     edition.update_attribute(:state, "published")
@@ -924,13 +914,10 @@ class EditionTest < ActiveSupport::TestCase
 
   test "should denormalise a creator's name when an edition is created" do
     user = FactoryGirl.create(:user)
-    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
         owning_app: "publisher",
     )
 
@@ -1020,7 +1007,7 @@ class EditionTest < ActiveSupport::TestCase
     end
   end
 
-  test "should return related artefact" do
+  test "should return the artefact" do
     assert_equal "Foo bar", template_published_answer.artefact.name
   end
 
@@ -1090,74 +1077,6 @@ class EditionTest < ActiveSupport::TestCase
         expected = "Some Part Title! This is some version text. Another Part Title This is link text."
         assert_equal expected, edition.indexable_content
       end
-    end
-  end
-
-  context "Tagging to collections" do
-    setup do
-      @edition = FactoryGirl.create(:guide_edition)
-    end
-
-    should "allow tagging to browse pages" do
-      sample_browse_pages = [
-        'education/school-admissions-transport',
-        'driving/drivers-lorries-buses'
-      ]
-
-      @edition.browse_pages = sample_browse_pages
-      @edition.save!; @edition.reload
-
-      assert_equal sample_browse_pages, @edition.browse_pages
-    end
-
-    should "allow tagging to a primary topic" do
-      sample_primary_topic = 'oil-and-gas/carbon-capture-and-storage'
-
-      @edition.primary_topic = sample_primary_topic
-      @edition.save!; @edition.reload
-
-      assert_equal sample_primary_topic, @edition.primary_topic
-    end
-
-    should "allow tagging to multiple additional topics" do
-      sample_additional_topics = [
-        'oil-and-gas/fields-and-wells',
-        'oil-and-gas/licensing'
-      ]
-
-      @edition.additional_topics = sample_additional_topics
-      @edition.save!; @edition.reload
-
-      assert_equal sample_additional_topics, @edition.additional_topics
-    end
-
-    should "validates topics" do
-      assert_includes Edition.validators.map(&:class), TopicValidator
-    end
-
-    should "validates browse pages" do
-      assert_includes Edition.validators.map(&:class), BrowsePageValidator
-    end
-
-    should "retain collections across new editions" do
-      edition = FactoryGirl.create(:guide_edition,
-        panopticon_id: @artefact.id,
-        state: "published",
-        primary_topic: 'oil-and-gas/carbon-capture-and-storage',
-        additional_topics: [
-          'oil-and-gas/fields-and-wells',
-          'oil-and-gas/licensing'
-        ],
-        browse_pages: [
-          'education/school-admissions-transport',
-          'driving/drivers-lorries-buses'
-        ]
-      )
-
-      new_edition = edition.build_clone
-      assert_equal edition.primary_topic, new_edition.primary_topic
-      assert_equal edition.additional_topics, new_edition.additional_topics
-      assert_equal edition.browse_pages, new_edition.browse_pages
     end
   end
 

@@ -18,10 +18,6 @@ class Edition
   field :slug,                 type: String
   field :rejected_count,       type: Integer,  default: 0
 
-  field :browse_pages,         type: Array, default: []
-  field :primary_topic,        type: String
-  field :additional_topics,    type: Array, default: []
-
   field :assignee,             type: String
   field :reviewer,             type: String
   field :creator,              type: String
@@ -53,7 +49,7 @@ class Edition
   validates :panopticon_id, presence: true
   validates_with SafeHtml
   validates_with LinkValidator, on: :update, unless: :archived?
-  validates_with TopicValidator, BrowsePageValidator, ReviewerValidator
+  validates_with ReviewerValidator
   validates_presence_of :change_note, if: :major_change
 
   before_save :check_for_archived_artefact
@@ -252,10 +248,6 @@ class Edition
     end
   end
 
-  def panopticon_uri
-    Plek.current.find("panopticon") + "/artefacts/" + (panopticon_id || slug).to_s
-  end
-
   def format
     self.class.to_s.gsub("Edition", "")
   end
@@ -332,9 +324,6 @@ private
       :panopticon_id,
       :overview,
       :slug,
-      :browse_pages,
-      :primary_topic,
-      :additional_topics,
     ]
   end
 

@@ -19,11 +19,8 @@ class ArtefactActionTest < ActiveSupport::TestCase
 
   DEFAULTS = {
     "active" => false,
-    "tag_ids" => [],
-    "tags" => [],
     "need_ids" => [],
     "state" => "draft",
-    "related_artefact_ids" => [],
     "paths" => [],
     "prefixes" => [],
     "language" => "en",

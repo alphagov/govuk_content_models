@@ -76,24 +76,6 @@ class SlugTest < ActiveSupport::TestCase
     end
   end
 
-  context "Specialist sector browse pages" do
-    should "allow a single path part" do
-      assert document_with_slug("oil-and-gas", kind: "specialist_sector").valid?
-    end
-
-    should "allow two path parts" do
-      assert document_with_slug("oil-and-gas/fields-and-wells", kind: "specialist_sector").valid?
-    end
-
-    should "not allow three path parts" do
-      refute document_with_slug("oil-and-gas/fields-and-wells/development", kind: "specialist_sector").valid?
-    end
-
-    should "not allow invalid path segments" do
-      refute document_with_slug("oil-and-gas/not.a.valid.slug", kind: "specialist_sector").valid?
-    end
-  end
-
   context "Detailed guides slugs" do
     should "allow a '/' in the slug" do
       assert document_with_slug("guidance/british-forces-overseas-posting-cyprus", kind: "detailed_guide").valid?

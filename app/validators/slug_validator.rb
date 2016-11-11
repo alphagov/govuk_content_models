@@ -8,7 +8,6 @@ class SlugValidator < ActiveModel::EachValidator
       FinderEmailSignupValidator,
       GovernmentPageValidator,
       ManualPageValidator,
-      BrowsePageValidator,
       DetailedGuideValidator,
       DefaultValidator
     ].map { |klass| klass.new(record, attribute, value) }
@@ -143,21 +142,6 @@ protected
     def validate_parts_as_slugs!
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
         record.errors[attribute] << 'must be usable in a URL'
-      end
-    end
-  end
-
-  class BrowsePageValidator < InstanceValidator
-    def applicable?
-      of_kind?('specialist_sector')
-    end
-
-    def validate!
-      unless [1, 2].include?(url_parts.size)
-        record.errors[attribute] << "must contains one or two path parts"
-      end
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << "must be usable in a URL"
       end
     end
   end

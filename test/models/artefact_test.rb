@@ -272,63 +272,6 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_equal "other", a.kind
   end
 
-  test "should store and return related artefacts in order" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
-    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
-
-    a.related_artefacts = [b, c]
-    a.save!
-    a.reload
-
-    assert_equal [b, c], a.ordered_related_artefacts
-  end
-
-  test "should store and return related artefacts in order, even when not in natural order" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
-    b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
-
-    a.related_artefacts = [c, b]
-    a.save!
-    a.reload
-
-    assert_equal [c, b], a.ordered_related_artefacts
-  end
-
-  test "should store and return related artefacts in order, with a scope" do
-    a = Artefact.create!(slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
-    b = Artefact.create!(state: "live", slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
-    c = Artefact.create!(slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
-    d = Artefact.create!(state: "live", slug: "d", name: "d", kind: "place", need_ids: ["100001"], owning_app: "x")
-
-    a.related_artefacts = [d, c, b]
-    a.save!
-    a.reload
-
-    assert_equal [d, b], a.ordered_related_artefacts(a.related_artefacts.where(state: "live"))
-  end
-
-  test "published_related_artefacts should return all non-publisher artefacts, but only published publisher artefacts" do
-    # because currently only publisher has an idea of "published"
-
-    parent = Artefact.create!(slug: "parent", name: "Parent", kind: "guide", owning_app: "x")
-
-    a = Artefact.create!(slug: "a", name: "has no published editions", kind: "guide", owning_app: "publisher")
-    GuideEdition.create!(panopticon_id: a.id, title: "Unpublished", state: "draft")
-    parent.related_artefacts << a
-
-    b = Artefact.create!(slug: "b", name: "has a published edition", kind: "guide", owning_app: "publisher")
-    GuideEdition.create!(panopticon_id: b.id, title: "Published", state: "published")
-    parent.related_artefacts << b
-
-    c = Artefact.create!(slug: "c", name: "not a publisher artefact", kind: "place", owning_app: "x")
-    parent.related_artefacts << c
-    parent.save!
-
-    assert_equal [b.slug, c.slug], parent.published_related_artefacts.map(&:slug)
-  end
-
   test "should raise a not found exception if the slug doesn't match" do
     assert_raise Mongoid::Errors::DocumentNotFound do
       Artefact.from_param("something-fake")
@@ -398,13 +341,10 @@ class ArtefactTest < ActiveSupport::TestCase
   # should continue to work in the way it has been:
   # i.e. you can edit everything but the name/title for published content in panop
   test "on save title should not be applied to already published content" do
-    FactoryGirl.create(:live_tag, tag_id: "test-section", title: "Test section", tag_type: "section")
     artefact = FactoryGirl.create(:artefact,
         slug: "foo-bar",
         kind: "answer",
         name: "Foo bar",
-        primary_section: "test-section",
-        sections: ["test-section"],
         owning_app: "publisher",
     )
 
@@ -532,156 +472,11 @@ class ArtefactTest < ActiveSupport::TestCase
     end
   end
 
-  context "returning json representation" do
-    context "returning tags" do
-      setup do
-        FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'crime', :title => 'Crime')
-        FactoryGirl.create(:live_tag, :tag_type => 'section', :tag_id => 'justice', :title => 'Justice', :description => "All about justice")
-        @a = FactoryGirl.create(:artefact, :slug => 'fooey')
-      end
-
-      should "return empty array of tags and tag_ids" do
-        hash = @a.as_json
-
-        assert_equal [], hash['tag_ids']
-        assert_equal [], hash['tags']
-      end
-
-      context "for an artefact with tags" do
-        setup do
-          @a.sections = ['justice']
-          @a.save!
-        end
-
-        should "return an array of tag_id strings in tag_ids" do
-          hash = @a.as_json
-
-          assert_equal ['justice'], hash['tag_ids']
-        end
-
-        should "return an array of tag objects in tags" do
-          hash = @a.as_json
-
-          expected = [
-            {
-              :id => 'justice',
-              :title => 'Justice',
-              :type => 'section',
-              :description => 'All about justice',
-              :short_description => nil
-            },
-          ]
-          assert_equal expected, hash['tags']
-        end
-
-        should "omit non-existent tags referenced from the tag_ids array" do
-          @a.tag_ids << 'batman'
-          hash = @a.as_json
-
-          assert_equal %w(justice), hash['tags'].map {|t| t[:id] }
-        end
-      end
-    end
-  end
-
-  context "artefact related external links" do
-    should "have none by default" do
-      artefact = FactoryGirl.create(:artefact)
-      assert_equal 0, artefact.external_links.length
-    end
-
-    should "contain the title and URL of the link" do
-      artefact = FactoryGirl.create(:artefact)
-      artefact.external_links << ArtefactExternalLink.new(:title => "Foo", :url => "http://bar.com")
-      assert_equal 1, artefact.external_links.length
-      assert_equal "Foo", artefact.external_links.first.title
-    end
-  end
-
   should "have an archived? helper method" do
     published_artefact = FactoryGirl.create(:artefact, :slug => "scooby", :state => "live")
     archived_artefact = FactoryGirl.create(:artefact, :slug => "doo", :state => "archived")
 
     refute published_artefact.archived?
     assert archived_artefact.archived?
-  end
-
-  should "have a related_items method which discards artefacts that are archived or completed transactions" do
-    generic = FactoryGirl.create(:artefact, slug: "generic")
-    archived = FactoryGirl.create(:artefact, :slug => "archived", :state => "archived")
-    completed = FactoryGirl.create(:artefact, slug: "completed-transaction", kind: "completed_transaction")
-
-    assert_equal [generic], Artefact.relatable_items
-  end
-
-  context "related artefacts grouped by section tags" do
-    setup do
-      FactoryGirl.create(:live_tag, :tag_id => "fruit", :tag_type => 'section', :title => "Fruit")
-      FactoryGirl.create(:live_tag, :tag_id => "fruit/simple", :tag_type => 'section', :title => "Simple fruits", :parent_id => "fruit")
-      FactoryGirl.create(:live_tag, :tag_id => "fruit/aggregate", :tag_type => 'section', :title => "Aggregrate fruits", :parent_id => "fruit")
-      FactoryGirl.create(:live_tag, :tag_id => "vegetables", :tag_type => 'section', :title => "Vegetables")
-
-      @artefact = Artefact.create!(slug: "apple", name: "Apple", sections: [], kind: "guide", need_ids: ["100001"], owning_app: "x")
-    end
-
-    context "when related items are present in all groups" do
-      setup do
-        @artefact.sections = ["fruit/simple"]
-
-        @artefact.related_artefacts = [
-          Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x"),
-          Artefact.create!(slug: "pineapple", name: "Pineapple", kind: "guide", sections: ["fruit/aggregate"], need_ids: ["100001"], owning_app: "x"),
-          Artefact.create!(slug: "broccoli", name: "Broccoli", kind: "guide", sections: ["vegetables"], need_ids: ["100001"], owning_app: "x")
-        ]
-        @artefact.save!
-        @artefact.reload
-      end
-
-      should "return a hash of artefacts in the same subsection" do
-        artefacts = @artefact.related_artefacts_grouped_by_distance
-        assert_equal ["pear"], artefacts['subsection'].map(&:slug)
-      end
-
-      should "return a hash of other artefacts in the same parent section" do
-        artefacts = @artefact.related_artefacts_grouped_by_distance
-        assert_equal ["pineapple"], artefacts['section'].map(&:slug)
-      end
-
-      should "return a hash of artefacts in other sections" do
-        artefacts = @artefact.related_artefacts_grouped_by_distance
-        assert_equal ["broccoli"], artefacts['other'].map(&:slug)
-      end
-
-      should "return related artefacts in order, with a scope" do
-        a = Artefact.create!(state: "live", slug: "a", name: "a", kind: "place", need_ids: ["100001"], owning_app: "x")
-        b = Artefact.create!(slug: "b", name: "b", kind: "place", need_ids: ["100001"], owning_app: "x")
-        c = Artefact.create!(state: "live", slug: "c", name: "c", kind: "place", need_ids: ["100001"], owning_app: "x")
-
-        @artefact.related_artefacts = [c,b,a]
-        @artefact.save!
-        @artefact.reload
-
-        assert_equal [c, a], @artefact.related_artefacts_grouped_by_distance(@artefact.related_artefacts.where(state: "live"))["other"]
-      end
-    end
-
-    should "return an empty array for a group with no related artefacts" do
-      # @artefact with no related items created in setup block
-
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["other"]
-    end
-
-    should "return all related artefacts in 'other' when an artefact has no sections" do
-      @artefact.related_artefacts = [
-        Artefact.create!(slug: "pear", name: "Pear", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x"),
-        Artefact.create!(slug: "banana", name: "Banana", kind: "guide", sections: ["fruit/simple"], need_ids: ["100001"], owning_app: "x")
-      ]
-
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["subsection"]
-      assert_equal [], @artefact.related_artefacts_grouped_by_distance["section"]
-      assert_equal ["pear", "banana"], @artefact.related_artefacts_grouped_by_distance["other"].map(&:slug)
-    end
   end
 end

@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+- Remove everything related to tagging and related links. We now use the content 
+  store for this.
+
 ## 41.1.1
 
 - Use `require_dependency` to avoid warnings in publisher sidekiq in development mode
