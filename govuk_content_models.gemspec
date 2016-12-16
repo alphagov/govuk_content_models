@@ -8,9 +8,8 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Shared models for Panopticon and Publisher, as a Rails Engine}
   gem.homepage      = "https://github.com/alphagov/govuk_content_models"
 
-  gem.files         = `git ls-files`.split($\)
+  gem.files         = `git ls-files`.split($\).reject { |f| f.include?('test/') }
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.name          = "govuk_content_models"
   gem.require_paths = ["lib", "app"]
   gem.version       = GovukContentModels::VERSION
