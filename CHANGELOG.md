@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 42.0.1
+
+- Fix bug in Attachable which prevents the upload of attachments.
+- Remove test files from the built gem.
+
 ## 42.0.0
 
 - Remove everything related to tagging and related links. We now use the content
