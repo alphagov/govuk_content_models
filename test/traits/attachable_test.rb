@@ -52,20 +52,20 @@ class AttachableTest < ActiveSupport::TestCase
     should "make the request to the asset api" do
       @edition.image_id = "an_image_id"
 
-      asset = OpenStruct.new(:file_url => "/path/to/image")
+      asset = { "file_url" => "/path/to/image" }
       @mock_asset_api.expects(:asset).with("an_image_id").returns(asset)
 
-      assert_equal "/path/to/image", @edition.image.file_url
+      assert_equal "/path/to/image", @edition.image["file_url"]
     end
 
     should "cache the asset from the api" do
       @edition.image_id = "an_image_id"
 
-      asset = OpenStruct.new(:something => "one", :something_else => "two")
+      asset = { "something" => "one", "something_else" => "two" }
       @mock_asset_api.expects(:asset).once.with("an_image_id").returns(asset)
 
-      assert_equal "one", @edition.image.something
-      assert_equal "two", @edition.image.something_else
+      assert_equal "one", @edition.image["something"]
+      assert_equal "two", @edition.image["something_else"]
     end
 
     should "assign a file and detect it has changed" do
@@ -78,10 +78,10 @@ class AttachableTest < ActiveSupport::TestCase
   context "saving an edition without update_existing set" do
     setup do
       @file = File.open(File.expand_path("../../fixtures/uploads/image.jpg", __FILE__))
-      @asset = OpenStruct.new(
-        id: 'http://asset-manager.dev.gov.uk/assets/an_image_id',
-        file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
-      )
+      @asset = {
+        "id" => 'http://asset-manager.dev.gov.uk/assets/an_image_id',
+        "file_url" => 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
+      }
     end
 
     should "create another asset even if an asset already exists" do
@@ -117,8 +117,7 @@ class AttachableTest < ActiveSupport::TestCase
 
       @edition_with_url_field.image = @file
       @edition_with_url_field.save!
-
-      assert_equal 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg', @edition_with_url_field.image_url
+      assert_equal 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg', @edition_with_url_field["image_url"]
     end
 
     should "not create the attachment url attribute if not requested" do
@@ -188,10 +187,10 @@ class AttachableTest < ActiveSupport::TestCase
 
       @asset_id = 'an_image_id'
 
-      @asset_response = OpenStruct.new(
-        id: "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
-        file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
-      )
+      @asset_response = {
+        "id" => "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
+        "file_url" => 'http://asset-manager.dev.gov.uk/media/an_image_id/image.jpg'
+      }
     end
 
     context "saving an edition without an existing asset" do
@@ -209,19 +208,19 @@ class AttachableTest < ActiveSupport::TestCase
         @edition_with_update_option.save!
 
         assert_equal @asset_id, @edition_with_update_option.image_id
-        assert_equal @asset_response.file_url, @edition_with_update_option.image_url
+        assert_equal @asset_response["file_url"], @edition_with_update_option.image_url
       end
     end
 
     context "saving an edition with and existing asset" do
       setup do
-        @existing_asset = OpenStruct.new(
-          id: "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
-          file_url: 'http://asset-manager.dev.gov.uk/media/an_image_id/old_image.jpg'
-        )
+        @existing_asset = {
+          "id" => "http://asset-manager.dev.gov.uk/assets/#{@asset_id}",
+          "file_url" => 'http://asset-manager.dev.gov.uk/media/an_image_id/old_image.jpg'
+        }
 
         @edition_with_update_option.image_id = @asset_id
-        @edition_with_update_option.image_url = @existing_asset.file_url
+        @edition_with_update_option.image_url = @existing_asset["file_url"]
       end
 
       should "update the asset on save" do
@@ -237,7 +236,7 @@ class AttachableTest < ActiveSupport::TestCase
         @edition_with_update_option.image = @file
         @edition_with_update_option.save!
 
-        assert_equal @asset_response.file_url, @edition_with_update_option.image_url
+        assert_equal @asset_response["file_url"], @edition_with_update_option.image_url
       end
     end
   end
