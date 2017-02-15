@@ -17,7 +17,7 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "gds-api-adapters", ">= 10.9.0"
 
-  gem.add_dependency "gds-sso",          "~> 11.2"
+  gem.add_dependency "gds-sso",          "11.2.1"
   gem.add_dependency "govspeak",         "~> 3.1"
   gem.add_dependency "mongoid",          "~> 5.1"
   gem.add_dependency "state_machines",   "~> 0.4"
