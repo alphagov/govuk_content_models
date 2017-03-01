@@ -40,7 +40,7 @@ module PresentationToggles
       {
         'promotion_choice' =>
           {
-            'choice' => '',
+            'choice' => 'none',
             'url' => ''
           }
       }
