@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 43.0.0
+
+- Bump Ruby version to 2.2.3
+- Change the default_presentation_toggles promotion choice to `none` for Completed Transactions
+- Remove panopticon from apps that use this repo
+
 ## 42.0.1
 
 - Fix bug in Attachable which prevents the upload of attachments.
