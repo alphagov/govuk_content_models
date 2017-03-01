@@ -18,7 +18,6 @@ require "mocha/mini_test"
 require "mongoid"
 require "govuk_content_models/require_all"
 require "database_cleaner"
-require "gds_api/test_helpers/panopticon"
 require "webmock/minitest"
 require "govuk_content_models/test_helpers/factories"
 require 'govuk_content_models/test_helpers/action_processor_helpers'
@@ -39,7 +38,6 @@ DatabaseCleaner.clean
 class ActiveSupport::TestCase
   PROJECT_ROOT = File.expand_path("../..", __FILE__)
 
-  include GdsApi::TestHelpers::Panopticon
   include GovukContentModels::TestHelpers::ActionProcessorHelpers
 
   def without_metadata_denormalisation(*klasses, &block)
