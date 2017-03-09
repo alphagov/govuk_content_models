@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Expose the display_start_time of a Downtime object
+
 ## 43.0.0
 
 - Bump Ruby version to 2.2.3

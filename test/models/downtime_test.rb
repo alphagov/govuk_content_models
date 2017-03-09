@@ -64,7 +64,7 @@ class DowntimeTest < ActiveSupport::TestCase
   end
 
   context "publicising downtime" do
-    should "start at midnight a day before it is scheduled" do
+    should "start at display_start_time" do
       now = Time.zone.parse("2015-01-01")
       Timecop.freeze(now) do
         downtime = FactoryGirl.build(:downtime)
@@ -90,4 +90,12 @@ class DowntimeTest < ActiveSupport::TestCase
     end
   end
 
+  context "#display_start_time" do
+    should "return the datetime of midnight the day before it's scheduled" do
+      downtime = FactoryGirl.build(:downtime)
+      downtime.start_time = Time.zone.parse("2015-01-02 03:00")
+      expected_start_time = Time.zone.parse("2015-01-01 00:00")
+      assert_equal expected_start_time, downtime.display_start_time
+    end
+  end
 end
