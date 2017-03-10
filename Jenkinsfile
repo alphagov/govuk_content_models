@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 
-REPOSITORY = 'govuk_navigation_helpers'
+REPOSITORY = 'govuk_content_models'
 
 node {
   def govuk = load '/var/lib/jenkins/groovy_scripts/govuk_jenkinslib.groovy'
