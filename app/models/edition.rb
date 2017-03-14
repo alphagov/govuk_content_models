@@ -103,6 +103,10 @@ class Edition
     !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
   end
 
+  def retired_format?
+    Artefact::RETIRED_FORMATS.include? format.downcase
+  end
+
   def major_updates_in_series
     history.published.major_updates
   end
