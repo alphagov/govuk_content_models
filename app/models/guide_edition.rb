@@ -14,6 +14,6 @@ class GuideEdition < Edition
   end
 
   def safe_to_preview?
-    parts.any? and parts.first.slug.present?
+    super && parts.any? && parts.first.slug.present?
   end
 end
