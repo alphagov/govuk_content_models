@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 43.1.0
+
 - Add list of retired formats to Artefact
 
 ## 43.0.1
