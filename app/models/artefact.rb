@@ -118,7 +118,7 @@ class Artefact
                                   "written_statement"],
   }.freeze
 
-  RETIRED_FORMATS = ["video"]
+  RETIRED_FORMATS = %w[video programme]
 
   FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
 

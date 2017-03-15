@@ -263,24 +263,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal edition.whole_body, new_edition.body
   end
 
-  test "Cloning from ProgrammeEdition into AnswerEdition" do
-    edition = FactoryGirl.create(
-        :programme_edition,
-        state: "published",
-        panopticon_id: @artefact.id,
-        version_number: 1,
-        overview: "I am a test overview"
-    )
-    new_edition = edition.build_clone AnswerEdition
-
-    assert_equal AnswerEdition, new_edition.class
-    assert_equal 2, new_edition.version_number
-    assert_equal @artefact.id.to_s, new_edition.panopticon_id
-    assert_equal "draft", new_edition.state
-    assert_equal "I am a test overview", new_edition.overview
-    assert_equal edition.whole_body, new_edition.whole_body
-  end
-
   test "Cloning from TransactionEdition into AnswerEdition" do
     edition = FactoryGirl.create(
         :transaction_edition,
@@ -376,24 +358,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal edition.whole_body, new_edition.more_information
   end
 
-  test "Cloning from ProgrammeEdition into TransactionEdition" do
-    edition = FactoryGirl.create(
-        :programme_edition,
-        state: "published",
-        panopticon_id: @artefact.id,
-        version_number: 1,
-        overview: "I am a test overview",
-    )
-    new_edition = edition.build_clone TransactionEdition
-
-    assert_equal TransactionEdition, new_edition.class
-    assert_equal 2, new_edition.version_number
-    assert_equal @artefact.id.to_s, new_edition.panopticon_id
-    assert_equal "draft", new_edition.state
-    assert_equal "I am a test overview", new_edition.overview
-    assert_equal edition.whole_body, new_edition.more_information
-  end
-
   test "Cloning from AnswerEdition into GuideEdition" do
     edition = FactoryGirl.create(
         :answer_edition,
@@ -409,20 +373,6 @@ class EditionTest < ActiveSupport::TestCase
     assert_equal @artefact.id.to_s, new_edition.panopticon_id
     assert_equal "draft", new_edition.state
     assert_equal "I am a test overview", new_edition.overview
-  end
-
-  test "Cloning between types with parts" do
-    edition = FactoryGirl.create(:programme_edition_with_multiple_parts,
-                                 panopticon_id: @artefact.id,
-                                 state: "published",
-                                 version_number: 1,
-                                 overview: "I am a shiny programme",
-                                 )
-    new_edition = edition.build_clone GuideEdition
-
-    assert_equal(new_edition.parts.map {|part| part.title },
-                 edition.parts.map {|part| part.title })
-    assert_equal 7, new_edition.parts.size #there are 5 'default' parts plus an additional two created by the factory
   end
 
   test "knows the common fields of two edition subclasses" do
