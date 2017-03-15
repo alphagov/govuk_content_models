@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Add list of retired formats to Artefact
+
 ## 43.0.1
 
 - Expose the display_start_time of a Downtime object

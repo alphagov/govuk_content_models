@@ -100,7 +100,12 @@ class Edition
   end
 
   def can_create_new_edition?
+    return false if retired_format?
     !scheduled_for_publishing? && subsequent_siblings.in_progress.empty?
+  end
+
+  def retired_format?
+    Artefact::RETIRED_FORMATS.include? format.downcase
   end
 
   def major_updates_in_series

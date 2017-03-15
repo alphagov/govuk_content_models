@@ -46,19 +46,4 @@ class VideoEditionTest < ActiveSupport::TestCase
       assert_equal expected, v.whole_body
     end
   end
-
-  should "clone extra fields when cloning edition" do
-    video = FactoryGirl.create(:video_edition,
-                               :panopticon_id => @artefact.id,
-                               :state => "published",
-                               :video_url => "http://www.youtube.com/watch?v=qySFp3qnVmM",
-                               :video_summary => "Coke smoothie",
-                               :body => "Description of video")
-
-    new_video = video.build_clone
-
-    assert_equal video.video_url, new_video.video_url
-    assert_equal video.video_summary, new_video.video_summary
-    assert_equal video.body, new_video.body
-  end
 end
