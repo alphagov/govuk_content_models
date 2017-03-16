@@ -266,7 +266,7 @@ class Edition
   end
 
   def safe_to_preview?
-    true
+    !archived?
   end
 
   def has_sibling_in_progress?
