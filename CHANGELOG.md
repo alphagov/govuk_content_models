@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 43.2.0
+
 - Add Programme to the list of retired formats
 
 ## 43.1.0
