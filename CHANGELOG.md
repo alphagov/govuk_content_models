@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 44.0.0
+
+- Archived editions are not `safe_to_preview?` anymore
+
 ## 43.2.0
 
 - Add Programme to the list of retired formats
