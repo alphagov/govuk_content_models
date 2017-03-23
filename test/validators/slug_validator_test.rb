@@ -33,10 +33,6 @@ class SlugTest < ActiveSupport::TestCase
       # Gems like friendly_id use -- to de-dup slug collisions
       assert document_with_slug("normal-slug--1").valid?
     end
-
-    should "allow a done page slug" do
-      assert document_with_slug("done/normal-slug").valid?
-    end
   end
 
   context "Foreign travel advice pages" do
@@ -57,6 +53,17 @@ class SlugTest < ActiveSupport::TestCase
 
     should "not allow non-help pages to start with help/" do
       refute document_with_slug("help/test", kind: "answer").valid?
+    end
+  end
+
+  context "Done pages" do
+    should "start with done/" do
+      refute document_with_slug("test", kind: "completed_transaction").valid?
+      assert document_with_slug("done/test", kind: "completed_transaction").valid?
+    end
+
+    should "not allow non-done pages to start with done/" do
+      refute document_with_slug("done/test", kind: "answer").valid?
     end
   end
 

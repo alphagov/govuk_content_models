@@ -19,12 +19,7 @@ class ArtefactTest < ActiveSupport::TestCase
       assert a.errors[:slug].any?
     end
 
-    should "allow slashes in slugs when the namespace is 'done'" do
-      a = FactoryGirl.build(:artefact, slug: "done/its-a-nice-day")
-      assert a.valid?
-    end
-
-    should "not allow slashes in slugs when the namespace is not 'done'" do
+    should "not allow slashes in slugs when the namespace is not 'done' or 'help'" do
       a = FactoryGirl.build(:artefact, slug: "something-else/its-a-nice-day")
       refute a.valid?
       assert a.errors[:slug].any?
@@ -32,6 +27,16 @@ class ArtefactTest < ActiveSupport::TestCase
 
     should "allow travel-advice to have a slug prefixed with 'foreign-travel-advice/'" do
       a = FactoryGirl.build(:artefact, slug: "foreign-travel-advice/aruba", kind: "travel-advice")
+      assert a.valid?
+    end
+
+    should "allow help pages to have a slug prefixed with 'help/'" do
+      a = FactoryGirl.build(:artefact, slug: "help/a-page", kind: "help_page")
+      assert a.valid?
+    end
+
+    should "allow done pages to have a slug prefixed with 'done/'" do
+      a = FactoryGirl.build(:artefact, slug: "done/a-page", kind: "completed_transaction")
       assert a.valid?
     end
 

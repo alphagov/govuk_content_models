@@ -53,10 +53,11 @@ protected
 
   class DonePageValidator < InstanceValidator
     def applicable?
-      starts_with?("done/")
+      of_kind?("completed_transaction")
     end
 
     def validate!
+      record.errors[attribute] << "Done page slugs must have a done/ prefix" unless starts_with?("done/")
       url_after_first_slash_is_valid_slug!
     end
   end
