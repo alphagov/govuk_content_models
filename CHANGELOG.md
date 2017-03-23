@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 44.0.1
+
+- Validate that completed transaction page slugs start with `done/`
+
 ## 44.0.0
 
 - Archived editions are not `safe_to_preview?` anymore
