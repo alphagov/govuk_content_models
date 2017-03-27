@@ -1,5 +1,7 @@
 # CHANGELOG
 
+- Add Campaign to the list of retired formats
+
 ## 44.0.1
 
 - Validate that completed transaction page slugs start with `done/`
