@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 44.2.0
+
+- Add Business Support to the list of retired formats
+
 ## 44.1.0
 
 - Add Campaign to the list of retired formats

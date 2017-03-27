@@ -118,7 +118,7 @@ class Artefact
                                   "written_statement"],
   }.freeze
 
-  RETIRED_FORMATS = %w[campaign programme video]
+  RETIRED_FORMATS = %w[ business_support campaign programme video]
 
   FORMATS = FORMATS_BY_DEFAULT_OWNING_APP.values.flatten
 
