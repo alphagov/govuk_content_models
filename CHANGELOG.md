@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 44.1.0
+
 - Add Campaign to the list of retired formats
 
 ## 44.0.1
