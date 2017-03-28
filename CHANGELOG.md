@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 44.2.1
+
+- Use #underscore instead of #downcase to convert retired format names to string
+
 ## 44.2.0
 
 - Add Business Support to the list of retired formats
