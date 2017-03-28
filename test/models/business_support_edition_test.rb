@@ -127,63 +127,6 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
       @bs.continuation_link = "http://www.hmrc.gov.uk"
       assert @bs.valid?, "continuation_link validation should pass with a valid url"
     end
-
-  end
-
-  should "clone extra fields when cloning edition" do
-    support = FactoryGirl.create(
-      :business_support_edition,
-      :panopticon_id => @artefact.id,
-      :state => "published",
-      :short_description => "Short description of support format",
-      :body => "Body to be cloned",
-      :min_value => 1,
-      :max_value => 2,
-      :max_employees => 3,
-      :organiser => "Organiser to be cloned",
-      :eligibility => "Eligibility to be cloned",
-      :evaluation => "Evaluation to be cloned",
-      :additional_information => "Additional info to be cloned",
-      :will_continue_on => "Continuation text to be cloned",
-      :continuation_link => "http://www.gov.uk",
-      :contact_details => "Contact details to be cloned",
-      :priority => 2,
-      :area_gss_codes => ['G123','G9999'],
-      :business_sizes => ['up-to-249'],
-      :locations => ['london'],
-      :purposes => ['start-up'],
-      :sectors => ['agriculture','manufacturing'],
-      :stages => ['grow-and-sustain'],
-      :support_types => ['grant','loan'],
-      :start_date => 1.year.ago(Date.today),
-      :end_date => 1.year.since(Date.today),
-    )
-
-    new_support = support.build_clone
-
-    assert_equal support.short_description, new_support.short_description
-    assert_equal support.body, new_support.body
-    assert_equal support.min_value, new_support.min_value
-    assert_equal support.max_value, new_support.max_value
-    assert_equal support.max_employees, new_support.max_employees
-    assert_equal support.organiser, new_support.organiser
-    assert_equal support.eligibility, new_support.eligibility
-    assert_equal support.evaluation, new_support.evaluation
-    assert_equal support.additional_information, new_support.additional_information
-    assert_equal support.will_continue_on, new_support.will_continue_on
-    assert_equal support.continuation_link, new_support.continuation_link
-    assert_equal support.contact_details, new_support.contact_details
-
-    assert_equal support.priority, new_support.priority
-    assert_equal support.area_gss_codes, new_support.area_gss_codes
-    assert_equal support.business_sizes, new_support.business_sizes
-    assert_equal support.locations, new_support.locations
-    assert_equal support.purposes, new_support.purposes
-    assert_equal support.sectors, new_support.sectors
-    assert_equal support.stages, new_support.stages
-    assert_equal support.support_types, new_support.support_types
-    assert_equal support.start_date, new_support.start_date
-    assert_equal support.end_date, new_support.end_date
   end
 
   context "for facets" do
