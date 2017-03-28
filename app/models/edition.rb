@@ -105,7 +105,7 @@ class Edition
   end
 
   def retired_format?
-    Artefact::RETIRED_FORMATS.include? format.downcase
+    Artefact::RETIRED_FORMATS.include? format.underscore
   end
 
   def major_updates_in_series
