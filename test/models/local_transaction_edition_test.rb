@@ -23,15 +23,15 @@ class LocalTransactionEditionTest < ActiveSupport::TestCase
 
 
   test "should validate on save that a LocalService exists for that lgsl_code" do
-    s = LocalService.create!(lgsl_code: BINS, providing_tier: %w{county unitary})
+    service = LocalService.create!(lgsl_code: BINS, providing_tier: %w{county unitary})
 
-    lt = LocalTransactionEdition.new(lgsl_code: NONEXISTENT, title: "Foo", slug: "foo", panopticon_id: @artefact.id)
-    lt.save
-    assert !lt.valid?
+    local_transaction = LocalTransactionEdition.new(lgsl_code: NONEXISTENT, lgil_code: 1, title: "Foo", slug: "foo", panopticon_id: @artefact.id)
+    local_transaction.save
+    assert !local_transaction.valid?
 
-    lt = LocalTransactionEdition.new(lgsl_code: s.lgsl_code, title: "Bar", slug: "bar", panopticon_id: @artefact.id)
-    lt.save
-    assert lt.valid?
-    assert lt.persisted?
+    local_transaction = LocalTransactionEdition.new(lgsl_code: service.lgsl_code, lgil_code: 1, title: "Bar", slug: "bar", panopticon_id: @artefact.id)
+    local_transaction.save
+    assert local_transaction.valid?
+    assert local_transaction.persisted?
   end
 end
