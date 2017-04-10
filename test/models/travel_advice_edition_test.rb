@@ -364,38 +364,39 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       Timecop.freeze(1.days.ago) do
         # this is done to make sure there's a significant difference in time
         # between creating the edition and it being published
-        @ed = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
+        @edition = FactoryGirl.create(:travel_advice_edition, :country_slug => 'aruba')
       end
     end
 
     should "be updated to published time when edition is published" do
-      @ed.change_description = "Did some stuff"
-      @ed.publish!
-      assert_equal @ed.published_at, @ed.reviewed_at
+      @edition.change_description = "Did some stuff"
+      @edition.publish!
+      assert_equal @edition.published_at, @edition.reviewed_at
     end
 
     should "be set to the previous version's reviewed_at when a minor update is published" do
-      @ed.minor_update = true
-      @ed.publish!
-      assert_equal @published.reviewed_at, @ed.reviewed_at
+      @edition.minor_update = true
+      @edition.publish!
+      assert_equal @published.reviewed_at, @edition.reviewed_at
     end
 
     should "be able to be updated without affecting other dates" do
-      published_at = @ed.published_at
+      @edition.published_at = Time.zone.now
+      @edition.save!
       Timecop.freeze(1.day.from_now) do
-        @ed.reviewed_at = Time.zone.now
-        assert_equal published_at, @ed.published_at
+        @edition.reviewed_at = Time.zone.now
+        assert_equal @edition.published_at, @edition.published_at
       end
     end
 
     should "be able to update reviewed_at on a published edition" do
-      @ed.minor_update = true
-      @ed.publish!
+      @edition.minor_update = true
+      @edition.publish!
       Timecop.freeze(1.day.from_now) do
         new_time = Time.zone.now
-        @ed.reviewed_at = new_time
-        @ed.save!
-        assert_equal new_time.utc.to_i, @ed.reviewed_at.to_i
+        @edition.reviewed_at = new_time
+        @edition.save!
+        assert_equal new_time.utc.to_i, @edition.reviewed_at.to_i
       end
     end
   end
