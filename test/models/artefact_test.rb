@@ -168,7 +168,7 @@ class ArtefactTest < ActiveSupport::TestCase
 
         @artefact.need_id = nil
 
-        assert_equal nil, @artefact.need_id
+        assert_nil @artefact.need_id
         assert_equal %w(100044 100045), @artefact.need_ids
       end
     end
@@ -428,7 +428,7 @@ class ArtefactTest < ActiveSupport::TestCase
 
     # Make the edition invalid, check that it persisted the invalid state
     edition.update_attribute(:title, nil)
-    assert_equal(nil, edition.reload.title)
+    assert_nil edition.reload.title
 
     artefact.update_attributes_as(user1, state: "archived")
     artefact.save!

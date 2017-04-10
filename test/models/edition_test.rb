@@ -1060,7 +1060,7 @@ class EditionTest < ActiveSupport::TestCase
     should 'return nil if there is no major update in the edition series' do
       edition1 = FactoryGirl.create(:answer_edition, major_change: false,
                                                      state: 'published')
-      assert_equal nil, edition1.latest_change_note
+      assert_nil edition1.latest_change_note
     end
   end
 
@@ -1095,7 +1095,7 @@ class EditionTest < ActiveSupport::TestCase
                                                      updated_at: 1.minute.ago,
                                                      state: 'draft')
 
-      assert_equal nil, edition1.public_updated_at
+      assert_nil edition1.public_updated_at
     end
   end
 

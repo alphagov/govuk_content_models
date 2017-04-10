@@ -253,7 +253,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
       should "do nothing if country_slug is not set" do
         ed = TravelAdviceEdition.new(:country_slug => '')
         ed.valid?
-        assert_equal nil, ed.version_number
+        assert_nil ed.version_number
       end
     end
 
@@ -310,7 +310,7 @@ class TravelAdviceEditionTest < ActiveSupport::TestCase
     end
 
     should "return nil if there is no previous version" do
-      assert_equal nil, @ed1.previous_version
+      assert_nil @ed1.previous_version
     end
   end
 

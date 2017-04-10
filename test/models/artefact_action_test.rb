@@ -96,7 +96,7 @@ class ArtefactActionTest < ActiveSupport::TestCase
     assert_equal ["create", "update"], @artefact.actions.map(&:action_type)
 
     assert_equal 'TaggingUpdater', @artefact.actions.last.task_performed_by
-    assert_equal nil, @artefact.actions.last.user
+    assert_nil @artefact.actions.last.user
   end
 
   test "saving as a user should record a user action" do
