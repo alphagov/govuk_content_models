@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 44.3.0
+
+- Add mandatory lgil_code field for local transactions
+
 ## 44.2.1
 
 - Use #underscore instead of #downcase to convert retired format names to string
