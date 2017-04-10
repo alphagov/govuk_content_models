@@ -101,7 +101,7 @@ class BusinessSupportEditionTest < ActiveSupport::TestCase
         @support.send("#{field}=", "")
         @support.save!
         s = BusinessSupportEdition.find(@support.id)
-        assert_equal nil, s.send(field)
+        assert_nil s.send(field)
       end
     end
   end
