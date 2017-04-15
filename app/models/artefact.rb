@@ -63,6 +63,7 @@ class Artefact
                                   "help_page",
                                   "licence",
                                   "local_transaction",
+                                  "person",
                                   "place",
                                   "programme",
                                   "simple_smart_answer",
