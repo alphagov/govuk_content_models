@@ -344,7 +344,7 @@ class Artefact
 
   def valid_redirect_url_path?(target)
     URI.parse(target)
-    target.starts_with?("/") && target !~ %r{//} && target !~ %r{./\z}
+    target !~ %r{[^:]//}
   rescue URI::InvalidURIError
     false
   end

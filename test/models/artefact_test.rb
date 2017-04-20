@@ -239,9 +239,6 @@ class ArtefactTest < ActiveSupport::TestCase
   should "validate redirect_url" do
     artefact = FactoryGirl.create(:artefact)
 
-    artefact.redirect_url = "foobar"
-    refute artefact.valid?
-
     artefact.redirect_url = "/foobar"
     assert artefact.valid?
 
@@ -251,13 +248,12 @@ class ArtefactTest < ActiveSupport::TestCase
     artefact.redirect_url = "/foobar#chapter"
     assert artefact.valid?
 
-    artefact.redirect_url = "http://foo.bar/"
-    refute artefact.valid?
+    artefact.redirect_url = "http://foo.bar.gov.uk/"
+    assert artefact.valid?
 
     [
       "\jkhsdfgjkhdjskfgh//fdf#th",
       "not a URL path",
-      "bar/baz",
       "/foo//bar",
     ].each do |invalid_path|
       artefact.redirect_url = invalid_path
