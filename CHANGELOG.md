@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Remove redirect_url validation.
+
 ## 44.3.0
 
 - Add mandatory lgil_code field for local transactions
