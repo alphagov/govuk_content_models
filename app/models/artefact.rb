@@ -155,7 +155,6 @@ class Artefact
   validates_with CannotEditSlugIfEverPublished
   validate :validate_prefixes_and_paths
   validate :format_of_new_need_ids, if: :need_ids_changed?
-  validate :validate_redirect_url
 
   def self.in_alphabetical_order
     order_by(name: :asc)
@@ -331,20 +330,6 @@ class Artefact
     return false unless path.starts_with?("/")
     uri = URI.parse(path)
     uri.path == path && path !~ %r{//} && path !~ %r{./\z}
-  rescue URI::InvalidURIError
-    false
-  end
-
-  def validate_redirect_url
-    return unless self.redirect_url.present?
-    unless valid_redirect_url_path?(self.redirect_url)
-      errors[:redirect_url] << "is not a valid redirect target"
-    end
-  end
-
-  def valid_redirect_url_path?(target)
-    URI.parse(target)
-    target.starts_with?("/") && target !~ %r{//} && target !~ %r{./\z}
   rescue URI::InvalidURIError
     false
   end
