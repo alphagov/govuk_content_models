@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 44.4.0
 
 - Remove redirect_url validation.
 
