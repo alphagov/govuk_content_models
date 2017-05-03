@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Bump dependencies to rails 5.0.2, rack 2.0.1, factory_girl to 4.8.0, mongoid to 6.1 and gds-sso to 13.2
+
 ## 44.4.0
 
 - Remove redirect_url validation.
