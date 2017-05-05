@@ -67,37 +67,6 @@ class SlugTest < ActiveSupport::TestCase
     end
   end
 
-  context "Inside government slugs" do
-    should "allow slug starting government/" do
-      refute document_with_slug("test", kind: "policy").valid?
-      assert document_with_slug("government/test", kind: "policy").valid?
-    end
-
-    should "allow abritrarily deep slugs" do
-      assert document_with_slug("government/test/foo", kind: "policy").valid?
-      assert document_with_slug("government/test/foo/bar", kind: "policy").valid?
-    end
-
-    should "allow . in slugs" do
-      assert document_with_slug("government/world-location-news/221033.pt", kind: "news_story").valid?
-    end
-  end
-
-  context "Detailed guides slugs" do
-    should "allow a '/' in the slug" do
-      assert document_with_slug("guidance/british-forces-overseas-posting-cyprus", kind: "detailed_guide").valid?
-    end
-
-    should "allow only one '/' in the slug" do
-      refute document_with_slug("guidance/british-forces-overseas-posting-cyprus/more-information", kind: "detailed_guide").valid?
-    end
-
-    should "ensure it allows slugs that start at the root" do
-      assert document_with_slug("british-forces-overseas-posting-cyprus", kind: "detailed_guide").valid?
-    end
-    #TODO: disallow this once guidance migration has been complete
-  end
-
   context "Manual pages" do
     should "allow slugs starting guidance/" do
       refute document_with_slug("manuals/a-manual", kind: "manual").valid?

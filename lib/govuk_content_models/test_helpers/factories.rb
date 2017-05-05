@@ -32,12 +32,6 @@ FactoryGirl.define do
     owning_app      'publisher'
     content_id      { SecureRandom.uuid }
 
-    trait :whitehall do
-      sequence(:slug) {|n| "government/slug--#{n}"}
-      owning_app      "whitehall"
-      kind            Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"].first
-    end
-
     trait :with_published_edition do
       after(:create) {|object|
         self.create("#{object.kind}_edition".to_sym, panopticon_id: object.id, slug: object.slug, state: "published")
@@ -66,10 +60,6 @@ FactoryGirl.define do
     factory :archived_artefact, traits: [:archived]
 
     factory :live_artefact_with_edition, traits: [:live, :with_published_edition]
-
-    factory :whitehall_draft_artefact, traits: [:whitehall, :draft]
-    factory :whitehall_live_artefact, traits: [:whitehall, :live]
-    factory :whitehall_archived_artefact, traits: [:whitehall, :archived]
 
     factory :non_publisher_artefact, traits: [:non_publisher]
   end
