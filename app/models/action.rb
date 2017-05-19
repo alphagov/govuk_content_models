@@ -28,8 +28,8 @@ class Action
 
   embedded_in :edition
 
-  belongs_to :recipient, class_name: "User"
-  belongs_to :requester, class_name: "User"
+  belongs_to :recipient, class_name: "User", optional: true
+  belongs_to :requester, class_name: "User", optional: true
 
   field :approver_id,        type: Integer
   field :approved,           type: DateTime

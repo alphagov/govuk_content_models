@@ -17,15 +17,15 @@ Gem::Specification.new do |gem|
   gem.add_dependency "bson_ext"
   gem.add_dependency "gds-api-adapters", ">= 10.9.0"
 
-  gem.add_dependency "gds-sso",          "~> 11.2"
+  gem.add_dependency "gds-sso",          "~> 13.2"
   gem.add_dependency "govspeak",         "~> 3.1"
-  gem.add_dependency "mongoid",          "~> 5.1"
+  gem.add_dependency "mongoid",          "~> 6.1"
   gem.add_dependency "state_machines",   "~> 0.4"
   gem.add_dependency "state_machines-mongoid", "~> 0.1"
   gem.add_dependency "plek"
 
   gem.add_development_dependency "database_cleaner", "1.5.1"
-  gem.add_development_dependency "factory_girl", "4.5.0"
+  gem.add_development_dependency "factory_girl", "4.8.0"
   gem.add_development_dependency "gem_publisher", "1.2.0"
   gem.add_development_dependency "mocha", "1.1.0"
   gem.add_development_dependency "multi_json"
@@ -37,6 +37,6 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'pry-byebug'
 
   # The following are added to help bundler resolve dependencies
-  gem.add_development_dependency "rack", "~> 1.6.4"
-  gem.add_development_dependency "rails", "= 4.2.5.1"
+  gem.add_development_dependency "rack", "~> 2.0.1"
+  gem.add_development_dependency "rails", "= 5.0.2"
 end

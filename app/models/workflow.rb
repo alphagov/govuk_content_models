@@ -13,7 +13,7 @@ module Workflow
     after_create :notify_siblings_of_new_edition
 
     field :state, type: String, default: "draft"
-    belongs_to :assigned_to, class_name: "User"
+    belongs_to :assigned_to, class_name: "User", optional: true
 
     state_machine initial: :draft do
       after_transition on: :request_amendments do |edition, transition|
