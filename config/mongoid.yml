@@ -7,3 +7,4 @@ test:
   options:
     use_activesupport_time_zone: true
     log_level: :error
+    belongs_to_required_by_default: false

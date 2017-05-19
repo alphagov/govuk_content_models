@@ -13,7 +13,7 @@ class ArtefactAction
   # Ideally we would like to use the UID field here, since that will be the
   # same across all applications, but Mongoid doesn't yet support using a
   # custom primary key on a related field
-  belongs_to :user
+  belongs_to :user, optional: true
 
   # Not validating presence of a user just yet, since there may be some
   # circumstances where we can't reliably determine the user. As an example

@@ -6,7 +6,7 @@ class Downtime
   field :start_time, type: DateTime
   field :end_time, type: DateTime
 
-  belongs_to :artefact
+  belongs_to :artefact, optional: true
 
   validates_presence_of :message, :start_time, :end_time, :artefact
   validate :end_time_is_in_future, on: :create

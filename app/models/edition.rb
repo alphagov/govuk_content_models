@@ -27,7 +27,7 @@ class Edition
   field :change_note,          type: String
   field :review_requested_at,  type: DateTime
 
-  belongs_to :assigned_to, class_name: "User"
+  belongs_to :assigned_to, class_name: "User", optional: true
 
   # state_machine comes from Workflow
   state_machine.states.map(&:name).each do |state|
