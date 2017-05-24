@@ -1,7 +1,5 @@
 # GOV.UK Content Models
 
-A gem containing the shared models for the old GOV.UK publishing applications:
+A gem containing the shared models for the old GOV.UK [Publisher][publisher] application.
 
-- [Publisher](https://github.com/alphagov/publisher)
-- [Content API](https://github.com/alphagov/govuk_content_api)
-
+[Publisher]: https://github.com/alphagov/publisher
