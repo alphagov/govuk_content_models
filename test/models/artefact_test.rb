@@ -52,31 +52,6 @@ class ArtefactTest < ActiveSupport::TestCase
       assert a.errors[:slug].any?
     end
 
-    should "allow a government prefix for Inside Government artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "government/slug", kind: "case_study")
-      assert a.valid?
-    end
-
-    should "allow a government prefix and multiple path parts for Inside Government artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "government/something/somewhere/somehow/slug", kind: "case_study")
-      assert a.valid?
-    end
-
-    should "not allow a government prefix with invalid path parts" do
-      a = FactoryGirl.build(:artefact, slug: "government/SomeThing/some.where/somehow/slug", kind: "case_study")
-      refute a.valid?
-    end
-
-    should "require a government prefix for Inside Government artefacts" do
-      a = FactoryGirl.build(:artefact, slug: "slug", kind: "case_study")
-      refute a.valid?
-    end
-
-    should "not require a government prefix for Detailed Guides" do
-      a = FactoryGirl.build(:artefact, slug: "slug", kind: "detailed_guide")
-      assert a.valid?
-    end
-
     context "help page special case" do
       should "allow a help page to have a help/ prefix on the slug" do
         a = FactoryGirl.build(:artefact, :slug => "help/foo", :kind => "help_page")
@@ -415,13 +390,6 @@ class ArtefactTest < ActiveSupport::TestCase
     assert_raise RuntimeError do
       edition.update_attributes({state: "archived", title: "Shabba", slug: "do-not-allow"})
     end
-  end
-
-  should "not remove double dashes in a Detailed Guide slug" do
-    a = FactoryGirl.create(:artefact, slug: "duplicate-slug--1", kind: "detailed_guide")
-    a.reload
-
-    assert_equal "duplicate-slug--1", a.slug
   end
 
   context "artefact language" do

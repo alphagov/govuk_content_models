@@ -6,9 +6,7 @@ class SlugValidator < ActiveModel::EachValidator
       ForeignTravelAdvicePageValidator,
       HelpPageValidator,
       FinderEmailSignupValidator,
-      GovernmentPageValidator,
       ManualPageValidator,
-      DetailedGuideValidator,
       DefaultValidator
     ].map { |klass| klass.new(record, attribute, value) }
 
@@ -93,29 +91,6 @@ protected
     end
   end
 
-  class GovernmentPageValidator < InstanceValidator
-    def url_parts
-      # Some inside govt slugs have a . in them (eg news articles with no english translation)
-      super.map {|part| part.gsub(/\./, '') }
-    end
-
-    def applicable?
-      record.respond_to?(:kind) && prefixed_whitehall_format_names.include?(record.kind)
-    end
-
-    def validate!
-      record.errors[attribute] << "Inside Government slugs must have a government/ prefix" unless starts_with?('government/')
-      unless url_parts.all? { |url_part| valid_slug?(url_part) }
-        record.errors[attribute] << "must be usable in a URL"
-      end
-    end
-
-  protected
-    def prefixed_whitehall_format_names
-      Artefact::FORMATS_BY_DEFAULT_OWNING_APP["whitehall"] - ["detailed_guide"]
-    end
-  end
-
   class ManualPageValidator < InstanceValidator
     def applicable?
       of_kind?('manual')
@@ -144,16 +119,6 @@ protected
       unless url_parts.all? { |url_part| valid_slug?(url_part) }
         record.errors[attribute] << 'must be usable in a URL'
       end
-    end
-  end
-
-  class DetailedGuideValidator < InstanceValidator
-    def applicable?
-      of_kind?('detailed_guide')
-    end
-
-    def validate!
-      record.errors[attribute] << "must be a valid URL either at the root or under 'guidance/'" unless value.match(%r{^(guidance/)?[a-z0-9\-_]+$})
     end
   end
 
