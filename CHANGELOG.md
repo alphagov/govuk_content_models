@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 46.0.0
+
+- Remove references to Whitehall
+
 ## 45.0.0
 
 - Bump dependencies to rails 5.0.2, rack 2.0.1, factory_girl to 4.8.0, mongoid to 6.1 and gds-sso to 13.2
