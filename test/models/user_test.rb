@@ -147,9 +147,4 @@ class UserTest < ActiveSupport::TestCase
 
     assert_nil publication.assigned_to
   end
-
-
-  test "should default to a collection called 'users'" do
-    assert_equal "users", User.collection_name
-  end
 end

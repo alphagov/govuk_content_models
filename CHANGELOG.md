@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+- Deprecate `User.collection_name` to specify the user database table - instead, use the `USER_COLLECTION_NAME` environment variable directly.
+
 ## 46.0.1
 
 - Downgrade mongoid to 6.1.0 due to a bug caused by 6.1.1 in `SimpleSmartAnswerEdition`.
