@@ -19,7 +19,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "gds-sso",          "~> 13.2"
   gem.add_dependency "govspeak",         "~> 3.1"
-  gem.add_dependency "mongoid",          "~> 6.1"
+  gem.add_dependency "mongoid",          "6.1.0"
   gem.add_dependency "state_machines",   "~> 0.4"
   gem.add_dependency "state_machines-mongoid", "~> 0.1"
   gem.add_dependency "plek"
