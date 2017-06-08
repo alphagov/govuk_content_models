@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 46.0.1
+
+- Downgrade mongoid to 6.1.0 due to a bug caused by 6.1.1 in `SimpleSmartAnswerEdition`.
+
 ## 46.0.0
 
 - Remove references to Whitehall
