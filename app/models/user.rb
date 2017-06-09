@@ -8,10 +8,12 @@ class User
   include Mongoid::Timestamps
   include GDS::SSO::User
 
-  # Let an app configure the collection name to use, e.g. set a constant in an
-  # initializer
-  def self.collection_name
-    defined?(USER_COLLECTION_NAME) ? USER_COLLECTION_NAME : "users"
+  # Let an app configure the symbolized collection name to use,
+  # e.g. set a constant in an initializer.
+  if defined?(USER_COLLECTION_NAME)
+    store_in collection: USER_COLLECTION_NAME.to_sym
+  else
+    store_in collection: :users
   end
 
   field "name",                    type: String
