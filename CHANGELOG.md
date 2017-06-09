@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 47.0.0
 
 - Deprecate `User.collection_name` to specify the user database table - instead, use the `USER_COLLECTION_NAME` environment variable directly.
 
